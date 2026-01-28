@@ -30,6 +30,7 @@ export interface Product {
   image_url?: string; // Supabase convention
   stock: number;
   features: string[];
+  is_featured?: boolean;
   seo_title?: string;
   seo_description?: string;
   seo_slug?: string;
@@ -41,7 +42,7 @@ export interface CartItem extends Product {
 
 export interface Order {
   id: string;
-  user_id: string;
+  user_id: string | null; // null for guest orders
   items: CartItem[];
   total: number;
   status: 'pending' | 'processing' | 'shipped' | 'delivered';
@@ -52,6 +53,7 @@ export interface Order {
     address: string;
     city: string;
     phone: string;
+    guest_email?: string; // For guest orders with optional account creation
   };
 }
 

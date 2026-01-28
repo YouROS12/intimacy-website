@@ -6,7 +6,7 @@ export const MOCK_PRODUCTS: Product[] = [
     name: 'Manix Skyn Original (10 Pack)',
     description: 'The closest thing to wearing nothing. Revolutionary non-latex material (Polyisoprene) that feels soft and natural. Ideal for those with latex allergies.',
     price: 110,
-    category: ProductCategory.CONDOM,
+    category: ProductCategory.CONDOMS,
     imageUrl: 'https://m.media-amazon.com/images/I/71u-fD1CqSL._AC_SL1500_.jpg',
     stock: 50,
     features: ['Non-Latex', 'Ultra Soft', 'Natural Feel']
@@ -16,7 +16,7 @@ export const MOCK_PRODUCTS: Product[] = [
     name: 'Durex Invisible Extra Thin (10 Pack)',
     description: 'The thinnest condom ever developed by Durex, designed to maximize sensitivity while providing a high level of security and protection.',
     price: 95,
-    category: ProductCategory.CONDOM,
+    category: ProductCategory.CONDOMS,
     imageUrl: 'https://m.media-amazon.com/images/I/61S+0+s-mXL._AC_SL1000_.jpg',
     stock: 120,
     features: ['Extra Thin', 'Maximum Sensitivity', 'Straight Walled']
@@ -29,7 +29,8 @@ export const MOCK_PRODUCTS: Product[] = [
     category: ProductCategory.DELAY,
     imageUrl: 'https://www.manix.net/wp-content/uploads/2021/04/packshot-endurance-gel.png',
     stock: 30,
-    features: ['Delay Effect', 'Paraben Free', 'Long Lasting']
+    features: ['Delay Effect', 'Paraben Free', 'Long Lasting'],
+    is_featured: true
   },
   {
     id: '4',
@@ -46,10 +47,11 @@ export const MOCK_PRODUCTS: Product[] = [
     name: 'Durex Mutual Climax (10 Pack)',
     description: 'Designed to speed her up and slow him down. Ribbed and dotted texture for her, and Performa lubricant with 5% benzocaine for him.',
     price: 120,
-    category: ProductCategory.CONDOM,
+    category: ProductCategory.CONDOMS,
     imageUrl: 'https://m.media-amazon.com/images/I/81xU+E-yK+L._AC_SL1500_.jpg',
     stock: 80,
-    features: ['Ribbed & Dotted', 'Delay Lubricant', 'Dual Action']
+    features: ['Ribbed & Dotted', 'Delay Lubricant', 'Dual Action'],
+    is_featured: true
   },
   {
     id: '6',
@@ -66,7 +68,7 @@ export const MOCK_PRODUCTS: Product[] = [
     name: 'Durex Pleasure Me (10 Pack)',
     description: 'Ensures stimulation for you and your partner. The specially designed shape has uniquely positioned ribs and raised dots.',
     price: 85,
-    category: ProductCategory.CONDOM,
+    category: ProductCategory.CONDOMS,
     imageUrl: 'https://m.media-amazon.com/images/I/81A+S+yKq+L._AC_SL1500_.jpg',
     stock: 90,
     features: ['Ribbed', 'Dotted', 'Easy-On Shape']
@@ -76,7 +78,7 @@ export const MOCK_PRODUCTS: Product[] = [
     name: 'Manix Infini (12 Pack)',
     description: 'Ultra-thin condoms for optimal sensitivity. Manix Infini is so thin you might forget you are wearing it.',
     price: 100,
-    category: ProductCategory.CONDOM,
+    category: ProductCategory.CONDOMS,
     imageUrl: 'https://www.manix.net/wp-content/uploads/2021/04/packshot-infini-x14.png',
     stock: 40,
     features: ['Ultra Thin', 'Lubricated', 'Reservoir Tip']

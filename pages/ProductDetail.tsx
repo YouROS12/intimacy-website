@@ -150,6 +150,7 @@ const ProductDetail: React.FC = () => {
                     <img
                       src={rp.imageUrl}
                       alt={rp.name}
+                      loading="lazy"
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                     />
                   </div>

@@ -5,6 +5,7 @@ import { Order } from '../types';
 import { Calendar, MapPin, Phone, User as UserIcon, Edit2, Save, X } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import { validateMoroccanPhone, formatAddress, parseAddress } from '../utils/helpers';
+import { sanitizeInput, sanitizePhone } from '../utils/sanitize';
 
 const Profile: React.FC = () => {
     const { user, isLoading, refreshProfile } = useAuth();
@@ -70,12 +71,17 @@ const Profile: React.FC = () => {
 
         setIsSaving(true);
         try {
+            // Sanitize inputs before saving to prevent XSS
+            const sanitizedName = sanitizeInput(editForm.full_name);
+            const sanitizedPhone = sanitizePhone(editForm.phone);
+            const sanitizedAddress = sanitizeInput(editForm.street_address);
+
             // Use helper to format address for storage
-            const fullAddress = formatAddress(editForm.city, editForm.street_address);
+            const fullAddress = formatAddress(editForm.city, sanitizedAddress);
 
             await updateUserProfile(user.id, {
-                full_name: editForm.full_name,
-                phone: editForm.phone,
+                full_name: sanitizedName,
+                phone: sanitizedPhone,
                 address: fullAddress
             });
             await refreshProfile();
