@@ -12,7 +12,8 @@ export const getProducts = async (): Promise<Product[]> => {
 
   const { data, error } = await supabase
     .from('products')
-    .select('*');
+    .select('*')
+    .order('price', { ascending: false });
 
   if (error) {
     console.error("Supabase fetch error:", error);
@@ -33,6 +34,28 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .eq('show_on_homepage', true)
+    .order('price', { ascending: false })
+    .limit(8);
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data.map((p: any) => ({
+    ...p,
+    imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
+  }));
+};
+
+export const getHomepageProducts = async (): Promise<Product[]> => {
+  if (!isSupabaseConfigured()) return [];
+
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .eq('show_on_homepage', true)
+    .order('price', { ascending: false })
     .limit(4);
 
   if (error || !data) {
@@ -92,10 +115,12 @@ export const addProduct = async (product: Omit<Product, 'id'>) => {
     description: product.description,
     price: product.price,
     category: product.category,
+    brand: product.brand,
     image_url: product.imageUrl,
     stock: product.stock,
     features: product.features,
-    is_featured: product.is_featured
+    is_featured: product.is_featured,
+    show_on_homepage: product.show_on_homepage
   };
 
   const { error } = await supabase.from('products').insert([dbProduct]);
@@ -128,10 +153,12 @@ export const updateProduct = async (product: Product) => {
     description: product.description,
     price: product.price,
     category: product.category,
+    brand: product.brand,
     image_url: product.imageUrl,
     stock: product.stock,
     features: product.features,
-    is_featured: product.is_featured
+    is_featured: product.is_featured,
+    show_on_homepage: product.show_on_homepage
   };
 
   const { error } = await supabase

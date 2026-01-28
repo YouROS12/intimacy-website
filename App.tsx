@@ -1,14 +1,15 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import CartDrawer from './components/CartDrawer';
 import ScrollToTop from './components/ScrollToTop';
 import CookieConsent from './components/CookieConsent';
-import AgeGate from './components/AgeGate';
 import WhatsAppButton from './components/WhatsAppButton';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { CartProvider } from './contexts/CartContext';
+
 import { UserRole } from './types';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Lazy load pages for code splitting
 const Home = React.lazy(() => import('./pages/Home'));
@@ -61,12 +62,17 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main>{children}</main>
       <footer className="bg-slate-900 text-slate-400 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2024 Intimacy Wellness Morocco. All rights reserved.</p>
-          <p className="text-sm mt-2">Discreet Shipping | Secure Payment</p>
+          <p>&copy; 2026 Intimacy Wellness Morocco. Tous droits réservés.</p>
+          <p className="text-sm mt-2">Livraison Discrète | Paiement Sécurisé</p>
+          <p className="text-xs mt-2 text-slate-600">
+            Propulsé par <a href="https://vitasana.ma" target="_blank" rel="noopener noreferrer" className="hover:text-slate-400">vitasana.ma</a>
+          </p>
           <div className="mt-4 flex justify-center gap-4 text-xs text-slate-500">
-            <Link to="/legal/privacy" className="hover:text-slate-300">Privacy Policy</Link>
+            <Link to="/about" className="hover:text-slate-300">À propos</Link>
             <span>|</span>
-            <Link to="/legal/terms" className="hover:text-slate-300">Terms of Service</Link>
+            <Link to="/legal/privacy" className="hover:text-slate-300">Politique de Confidentialité</Link>
+            <span>|</span>
+            <Link to="/legal/terms" className="hover:text-slate-300">Conditions d'Utilisation</Link>
           </div>
         </div>
       </footer>
@@ -82,41 +88,42 @@ const App: React.FC = () => {
       <CartProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <AgeGate />
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
-              <Route path="/login" element={<Login />} />
+          <ErrorBoundary>
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/login" element={<Login />} />
 
-              <Route path="/" element={<Layout><Home /></Layout>} />
-              <Route path="/shop" element={<Layout><Shop /></Layout>} />
-              <Route path="/education" element={<Layout><EducationIndex /></Layout>} />
-              <Route path="/blog" element={<Layout><BlogIndex /></Layout>} />
-              <Route path="/solution/:slug" element={<Layout><PseoSolution /></Layout>} />
-              <Route path="/guide/:slug" element={<Layout><BlogPost /></Layout>} />
+                <Route path="/" element={<Layout><Home /></Layout>} />
+                <Route path="/shop" element={<Layout><Shop /></Layout>} />
+                <Route path="/education" element={<Layout><EducationIndex /></Layout>} />
+                <Route path="/blog" element={<Layout><BlogIndex /></Layout>} />
+                <Route path="/solution/:slug" element={<Layout><PseoSolution /></Layout>} />
+                <Route path="/guide/:slug" element={<Layout><BlogPost /></Layout>} />
 
-              <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
-              <Route path="/about" element={<Layout><About /></Layout>} />
-              <Route path="/legal/privacy" element={<Layout><Legal /></Layout>} />
-              <Route path="/legal/terms" element={<Layout><Legal /></Layout>} />
+                <Route path="/product/:id" element={<Layout><ProductDetail /></Layout>} />
+                <Route path="/about" element={<Layout><About /></Layout>} />
+                <Route path="/legal/privacy" element={<Layout><Legal /></Layout>} />
+                <Route path="/legal/terms" element={<Layout><Legal /></Layout>} />
 
-              <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
-              <Route path="/order-confirmation" element={<Layout><OrderConfirmation /></Layout>} />
-              <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
+                <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
+                <Route path="/order-confirmation" element={<Layout><OrderConfirmation /></Layout>} />
+                <Route path="/profile" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
 
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute requiredRole={UserRole.ADMIN}>
-                    <Layout>
-                      <AdminDashboard />
-                    </Layout>
-                  </ProtectedRoute>
-                }
-              />
+                <Route
+                  path="/admin"
+                  element={
+                    <ProtectedRoute requiredRole={UserRole.ADMIN}>
+                      <Layout>
+                        <AdminDashboard />
+                      </Layout>
+                    </ProtectedRoute>
+                  }
+                />
 
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>

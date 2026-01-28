@@ -2,17 +2,19 @@ import React, { useEffect, useState, useRef } from 'react';
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { Users, ShoppingBag, DollarSign, Package, Plus, Trash2, Database, AlertTriangle, Truck, CheckCircle, Clock, Edit, X, Save, Upload, FileSpreadsheet, Download, Copy, FileText, Globe, Eye } from 'lucide-react';
+import { Users, ShoppingBag, DollarSign, Package, Plus, Trash2, Database, AlertTriangle, Truck, CheckCircle, Clock, Edit, X, Save, Upload, FileSpreadsheet, Download, Copy, FileText, Globe, Eye, MessageCircle, XCircle, RotateCcw } from 'lucide-react';
 import { getDashboardStats, getAllOrders, getProducts, deleteProduct, addProduct, addBulkProducts, updateProduct, seedDatabase, updateOrderStatus, getWeeklySales, adminGetAllPseoPages, adminUpdatePseoPage } from '../services/api';
 import { Order, Product, ProductCategory } from '../types';
 import { isSupabaseConfigured } from '../services/supabase';
 import * as XLSX from 'xlsx';
 
 const AdminDashboard: React.FC = () => {
-    const [activeTab, setActiveTab] = useState<'overview' | 'inventory' | 'orders' | 'seo' | 'setup'>('overview');
+    const [activeTab, setActiveTab] = useState<'overview' | 'inventory' | 'orders' | 'seo'>('overview');
     const [stats, setStats] = useState({ totalRevenue: 0, totalOrders: 0, activeUsers: 0 });
     const [salesData, setSalesData] = useState<{ name: string, sales: number }[]>([]);
     const [orders, setOrders] = useState<Order[]>([]);
+    const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+    const [orderFilter, setOrderFilter] = useState('all');
     const [pseoPages, setPseoPages] = useState<any[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -25,12 +27,18 @@ const AdminDashboard: React.FC = () => {
         description: '',
         price: 0,
         category: ProductCategory.LUBRICANT,
+        brand: '',
         stock: 0,
         imageUrl: '',
         features: [],
-        is_featured: false
+        is_featured: false,
+        show_on_homepage: false
     });
     const [featureInput, setFeatureInput] = useState('');
+
+    // --- Order Modal State ---
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
     // --- Bulk Upload Modal State ---
     const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
@@ -49,6 +57,7 @@ const AdminDashboard: React.FC = () => {
             // @ts-ignore
             setStats(s);
             setOrders(o);
+            setFilteredOrders(o); // Initialize filtered list
             setProducts(p);
             setSalesData(sales);
             setPseoPages(pseo);
@@ -107,6 +116,40 @@ const AdminDashboard: React.FC = () => {
         }
     };
 
+    const filterOrders = (status: string) => {
+        setOrderFilter(status);
+        if (status === 'all') {
+            setFilteredOrders(orders);
+        } else {
+            setFilteredOrders(orders.filter(o => o.status === status));
+        }
+    };
+
+    const openOrderDetails = (order: Order) => {
+        setSelectedOrder(order);
+        setIsOrderModalOpen(true);
+    };
+
+    const handleWhatsApp = (order: Order) => {
+        if (!order.shipping_info?.phone) return alert("Pas de numéro de téléphone disponible");
+
+        const phone = order.shipping_info.phone.replace(/\s+/g, '').replace('+', '');
+        const itemsList = order.items.map(i => `- ${i.quantity}x ${i.name}`).join('\n');
+
+        const message = `Bonjour ${order.shipping_info.first_name},
+Merci pour votre commande sur Intimacy Wellness.
+Nous souhaitons confirmer la livraison de :
+${itemsList}
+
+Total : ${order.total} MAD
+Adresse : ${order.shipping_info.address}, ${order.shipping_info.city}
+
+Confirmez-vous la livraison ?`;
+
+        const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(url, '_blank');
+    };
+
     // --- Modal Handlers ---
 
     const openAddProduct = () => {
@@ -116,10 +159,12 @@ const AdminDashboard: React.FC = () => {
             description: '',
             price: 0,
             category: ProductCategory.LUBRICANT,
+            brand: '',
             stock: 0,
             imageUrl: '',
             features: [],
-            is_featured: false
+            is_featured: false,
+            show_on_homepage: false
         });
         setFeatureInput('');
         setIsProductModalOpen(true);
@@ -284,12 +329,6 @@ const AdminDashboard: React.FC = () => {
                         >
                             SEO Engine
                         </button>
-                        <button
-                            onClick={() => setActiveTab('setup')}
-                            className={`px-4 py-2 rounded-md text-sm font-medium ${activeTab === 'setup' ? 'bg-brand-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                        >
-                            Database Setup
-                        </button>
                     </div>
                 </div>
 
@@ -394,67 +433,115 @@ const AdminDashboard: React.FC = () => {
                 {/* --- Orders Tab --- */}
                 {activeTab === 'orders' && (
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div className="px-4 py-5 sm:px-6 border-b border-gray-200">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Order Management</h3>
-                            <p className="mt-1 text-sm text-gray-500">View and update customer orders.</p>
+                        <div className="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div>
+                                <h3 className="text-lg leading-6 font-medium text-gray-900">Gestion des Commandes</h3>
+                                <p className="mt-1 text-sm text-gray-500">Suivi et mise à jour des commandes clients.</p>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {['all', 'pending', 'shipped', 'delivered', 'returned', 'cancelled'].map((status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => filterOrders(status)}
+                                        className={`px-3 py-1 rounded-full text-xs font-medium capitalize border transition-colors ${orderFilter === status
+                                            ? 'bg-brand-100 text-brand-800 border-brand-200'
+                                            : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        {status === 'all' ? 'Tout' :
+                                            status === 'pending' ? 'À Confirmer' :
+                                                status === 'returned' ? 'Retourné' :
+                                                    status === 'cancelled' ? 'Annulé' :
+                                                        status === 'shipped' ? 'Expédié' : 'Livré'}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Réf.</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {orders.map((order) => (
-                                        <tr key={order.id}>
+                                    {filteredOrders.map((order) => (
+                                        <tr key={order.id} className="hover:bg-slate-50 transition-colors">
                                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id.slice(0, 8)}</td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {order.shipping_info ? `${order.shipping_info.first_name} ${order.shipping_info.last_name}` : 'Unknown'}
+                                                <div className="font-medium text-gray-900">{order.shipping_info ? `${order.shipping_info.first_name} ${order.shipping_info.last_name}` : 'Inconnu'}</div>
                                                 <div className="text-xs text-gray-400">{order.shipping_info?.phone}</div>
                                             </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.total} MAD</td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{order.total} MAD</td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
                                                     order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-yellow-100 text-yellow-800'
+                                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                            order.status === 'returned' ? 'bg-orange-100 text-orange-800' :
+                                                                'bg-yellow-100 text-yellow-800'
                                                     }`}>
-                                                    {order.status}
+                                                    {order.status === 'delivered' ? 'Livré' :
+                                                        order.status === 'shipped' ? 'Expédié' :
+                                                            order.status === 'cancelled' ? 'Annulé' :
+                                                                order.status === 'returned' ? 'Retourné' :
+                                                                    'À Confirmer'}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {new Date(order.created_at).toLocaleDateString()}
+                                                {new Date(order.created_at).toLocaleDateString('fr-FR')}
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
                                                 <button
-                                                    onClick={() => handleStatusUpdate(order.id, 'processing')}
-                                                    className="text-yellow-600 hover:text-yellow-900 p-1"
-                                                    title="Mark Processing"
+                                                    onClick={() => handleWhatsApp(order)}
+                                                    className="text-green-600 hover:text-green-800 p-1"
+                                                    title="Confirmer sur WhatsApp"
                                                 >
-                                                    <Clock className="h-5 w-5" />
+                                                    <MessageCircle className="h-5 w-5" />
                                                 </button>
+                                                <button
+                                                    onClick={() => openOrderDetails(order)}
+                                                    className="text-gray-400 hover:text-brand-600 p-1"
+                                                    title="Voir Détails"
+                                                >
+                                                    <Eye className="h-5 w-5" />
+                                                </button>
+                                                <div className="h-5 w-px bg-gray-200 mx-1"></div>
                                                 <button
                                                     onClick={() => handleStatusUpdate(order.id, 'shipped')}
                                                     className="text-blue-600 hover:text-blue-900 p-1"
-                                                    title="Mark Shipped"
+                                                    title="Marquer Expédié"
                                                 >
                                                     <Truck className="h-5 w-5" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleStatusUpdate(order.id, 'delivered')}
                                                     className="text-green-600 hover:text-green-900 p-1"
-                                                    title="Mark Delivered"
+                                                    title="Marquer Livré"
                                                 >
                                                     <CheckCircle className="h-5 w-5" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleStatusUpdate(order.id, 'cancelled')}
+                                                    className="text-red-600 hover:text-red-900 p-1"
+                                                    title="Annuler"
+                                                >
+                                                    <XCircle className="h-5 w-5" />
                                                 </button>
                                             </td>
                                         </tr>
                                     ))}
+                                    {filteredOrders.length === 0 && (
+                                        <tr>
+                                            <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                                Aucune commande trouvée avec ce statut.
+                                            </td>
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
@@ -605,156 +692,6 @@ const AdminDashboard: React.FC = () => {
                     </div>
                 )}
 
-                {/* --- Database Setup Tab --- */}
-                {activeTab === 'setup' && (
-                    <div className="bg-white shadow sm:rounded-lg p-6">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Database Master Reset</h3>
-                        <p className="mb-4 text-gray-600">
-                            Use this script to completely rebuild your database tables, policies, and triggers. <span className="text-red-600 font-bold">WARNING: This will delete existing public data.</span>
-                        </p>
-
-                        <div className="bg-gray-800 rounded-lg p-4 relative group">
-                            <button
-                                onClick={() => {
-                                    const sql = document.getElementById('sql-code')?.innerText;
-                                    if (sql) {
-                                        navigator.clipboard.writeText(sql);
-                                        alert("SQL copied to clipboard!");
-                                    }
-                                }}
-                                className="absolute top-4 right-4 text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 p-2 rounded transition-colors"
-                                title="Copy SQL"
-                            >
-                                <Copy className="h-4 w-4" />
-                            </button>
-                            <pre id="sql-code" className="text-green-400 font-mono text-sm overflow-x-auto whitespace-pre-wrap">
-                                {`-- ==============================================================================
--- MASTER RESET SCRIPT
--- WARNING: This will DELETE existing data in the public tables to ensure a clean slate.
--- ==============================================================================
-
--- 1. CLEANUP (Remove old conflicts)
-drop trigger if exists on_auth_user_created on auth.users;
-drop function if exists public.handle_new_user();
-drop table if exists public.orders;
-drop table if exists public.products;
-drop table if exists public.profiles;
-
--- 2. CREATE TABLES
-
--- Profiles: Links to Supabase Auth, stores User roles
-create table public.profiles (
-  id uuid references auth.users(id) on delete cascade not null primary key,
-  email text,
-  full_name text,
-  phone text,
-  address text,
-  role text default 'user', -- 'admin' or 'user'
-  updated_at timestamp with time zone default now()
-);
-
--- Products: Store inventory
-create table public.products (
-  id uuid default gen_random_uuid() primary key,
-  name text not null,
-  description text,
-  price float8 not null,
-  category text,
-  image_url text,
-  stock int default 0,
-  features text[] -- Array of strings
-);
-
--- Orders: Store purchase history
-create table public.orders (
-  id uuid default gen_random_uuid() primary key,
-  user_id uuid references auth.users(id) on delete cascade not null,
-  items jsonb not null, -- Stores snapshot of cart items
-  total float8 not null,
-  status text default 'pending', -- pending, processing, shipped, delivered
-  shipping_info jsonb,
-  created_at timestamp with time zone default now()
-);
-
--- 3. ENABLE SECURITY (RLS)
-
-alter table public.profiles enable row level security;
-alter table public.products enable row level security;
-alter table public.orders enable row level security;
-
--- 4. CREATE POLICIES (Permissions)
-
--- Profiles
-create policy "Public profiles are viewable by everyone" 
-  on public.profiles for select using (true);
-
-create policy "Users can update their own profile" 
-  on public.profiles for update using (auth.uid() = id);
-
--- Products
-create policy "Anyone can read products" 
-  on public.products for select using (true);
-
-create policy "Admins can insert products" 
-  on public.products for insert 
-  with check (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'));
-
-create policy "Admins can update products" 
-  on public.products for update 
-  using (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'));
-
-create policy "Admins can delete products" 
-  on public.products for delete 
-  using (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'));
-
--- Orders
-create policy "Users can view their own orders" 
-  on public.orders for select 
-  using (auth.uid() = user_id);
-
-create policy "Admins can view all orders" 
-  on public.orders for select 
-  using (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'));
-
-create policy "Users can insert their own orders" 
-  on public.orders for insert 
-  with check (auth.uid() = user_id);
-
-create policy "Admins can update order status" 
-  on public.orders for update 
-  using (exists (select 1 from public.profiles where id = auth.uid() and role = 'admin'));
-
--- 5. AUTOMATION (Auto-create Profile on Signup)
-
-create or replace function public.handle_new_user() 
-returns trigger as $$
-begin
-  insert into public.profiles (id, email, full_name, phone, address, role)
-  values (
-    new.id, 
-    new.email, 
-    new.raw_user_meta_data->>'full_name', 
-    new.raw_user_meta_data->>'phone', 
-    new.raw_user_meta_data->>'address', 
-    'user'
-  );
-  return new;
-end;
-$$ language plpgsql security definer;
-
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();
-
--- 6. REPAIR (Backfill for existing users if any)
-insert into public.profiles (id, email)
-select id, email from auth.users
-where id not in (select id from public.profiles)
-on conflict (id) do nothing;`}
-                            </pre>
-                        </div>
-                    </div>
-                )}
 
                 {/* --- Product Modal --- */}
                 {isProductModalOpen && (
@@ -797,6 +734,16 @@ on conflict (id) do nothing;`}
                                                         <option key={c} value={c}>{c}</option>
                                                     ))}
                                                 </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700">Brand</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.brand || ''}
+                                                    onChange={e => setFormData({ ...formData, brand: e.target.value })}
+                                                    placeholder="e.g. Durex, Manix"
+                                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
+                                                />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
@@ -858,6 +805,18 @@ on conflict (id) do nothing;`}
                                                     />
                                                     <label htmlFor="is_featured" className="ml-2 block text-sm text-gray-900">
                                                         Featured Product (Shows at top of list)
+                                                    </label>
+                                                </div>
+                                                <div className="flex items-center mt-3">
+                                                    <input
+                                                        id="show_on_homepage"
+                                                        type="checkbox"
+                                                        checked={formData.show_on_homepage || false}
+                                                        onChange={e => setFormData({ ...formData, show_on_homepage: e.target.checked })}
+                                                        className="h-4 w-4 text-pink-600 focus:ring-pink-500 border-gray-300 rounded"
+                                                    />
+                                                    <label htmlFor="show_on_homepage" className="ml-2 block text-sm text-gray-900">
+                                                        ⭐ Show on Homepage (Trending Section)
                                                     </label>
                                                 </div>
                                             </div>
@@ -963,8 +922,152 @@ on conflict (id) do nothing;`}
                         </div>
                     </div>
                 )}
-            </div>
-        </div>
+
+                {/* --- Order Details Modal --- */}
+                {isOrderModalOpen && selectedOrder && (
+                    <div className="fixed inset-0 z-50 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 transition-opacity" aria-hidden="true" onClick={() => setIsOrderModalOpen(false)}>
+                                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full">
+                                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <h3 className="text-xl leading-6 font-bold text-gray-900">
+                                                Commande #{selectedOrder.id.slice(0, 8)}
+                                            </h3>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                Passée le {new Date(selectedOrder.created_at).toLocaleString('fr-FR')}
+                                            </p>
+                                        </div>
+                                        <button onClick={() => setIsOrderModalOpen(false)} className="bg-gray-100 hover:bg-gray-200 rounded-full p-2 text-gray-500">
+                                            <X className="h-5 w-5" />
+                                        </button>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-8 mb-8 border-b border-gray-100 pb-8">
+                                        <div>
+                                            <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                                <Users className="h-4 w-4 text-brand-500" /> Informations Client
+                                            </h4>
+                                            <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600 space-y-1">
+                                                <p className="font-bold text-gray-900 text-base">
+                                                    {selectedOrder.shipping_info?.first_name} {selectedOrder.shipping_info?.last_name}
+                                                </p>
+                                                <p>{selectedOrder.shipping_info?.phone}</p>
+                                                <p>{selectedOrder.shipping_info?.address}</p>
+                                                <p>{selectedOrder.shipping_info?.city}</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                                <Package className="h-4 w-4 text-brand-500" /> Statut & Paiement
+                                            </h4>
+                                            <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600 space-y-3">
+                                                <div className="flex justify-between items-center">
+                                                    <span>Statut actuel:</span>
+                                                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase ${selectedOrder.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                        selectedOrder.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                            'bg-yellow-100 text-yellow-800'
+                                                        }`}>
+                                                        {selectedOrder.status}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span>Méthode:</span>
+                                                    <span className="font-medium">Paiement à la livraison (COD)</span>
+                                                </div>
+                                                <div className="flex justify-between items-center border-t border-gray-200 pt-2 mt-2">
+                                                    <span className="font-bold text-gray-900">Total à encaisser:</span>
+                                                    <span className="font-bold text-xl text-brand-600">{selectedOrder.total} MAD</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                            <ShoppingBag className="h-4 w-4 text-brand-500" /> Articles commandés ({selectedOrder.items.length})
+                                        </h4>
+                                        <ul className="divide-y divide-gray-100">
+                                            {selectedOrder.items.map((item, idx) => (
+                                                <li key={idx} className="py-3 flex items-center justify-between">
+                                                    <div className="flex items-center gap-4">
+                                                        <div className="h-12 w-12 rounded-md bg-gray-100 border border-gray-200 overflow-hidden flex-shrink-0">
+                                                            <img src={item.imageUrl} alt={item.name} className="h-full w-full object-cover" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-medium text-gray-900">{item.name}</p>
+                                                            <p className="text-sm text-gray-500">Quantité: {item.quantity}</p>
+                                                        </div>
+                                                    </div>
+                                                    <span className="font-bold text-gray-900">
+                                                        {item.price * item.quantity} MAD
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleWhatsApp(selectedOrder)}
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-600 focus:outline-none sm:w-auto sm:text-sm"
+                                    >
+                                        <MessageCircle className="h-4 w-4 mr-2" /> Confirmer sur WhatsApp
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            handleStatusUpdate(selectedOrder.id, 'shipped');
+                                            setIsOrderModalOpen(false);
+                                        }}
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:w-auto sm:text-sm"
+                                    >
+                                        <Truck className="h-4 w-4 mr-2" /> Marquer Expédié
+                                    </button>
+                                    {(selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'returned') && (
+                                        <>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    handleStatusUpdate(selectedOrder.id, 'returned');
+                                                    setIsOrderModalOpen(false);
+                                                }}
+                                                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-orange-600 text-base font-medium text-white hover:bg-orange-700 focus:outline-none sm:w-auto sm:text-sm"
+                                            >
+                                                <RotateCcw className="h-4 w-4 mr-2" /> Retourné
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    handleStatusUpdate(selectedOrder.id, 'cancelled');
+                                                    setIsOrderModalOpen(false);
+                                                }}
+                                                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:w-auto sm:text-sm"
+                                            >
+                                                <XCircle className="h-4 w-4 mr-2" /> Annuler
+                                            </button>
+                                        </>
+                                    )}
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsOrderModalOpen(false)}
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                                    >
+                                        Fermer
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div >
+        </div >
     );
 };
 

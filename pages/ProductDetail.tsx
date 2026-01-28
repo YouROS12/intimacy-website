@@ -16,20 +16,27 @@ const ProductDetail: React.FC = () => {
   const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (id) {
       setLoading(true);
       // Scroll to top when id changes
       window.scrollTo(0, 0);
 
       getProductById(id).then(async (p) => {
+        if (!isMounted) return;
         setProduct(p);
         if (p) {
           const related = await getRelatedProducts(p.category, p.id);
-          setRelatedProducts(related);
+          if (isMounted) setRelatedProducts(related);
         }
-        setLoading(false);
+        if (isMounted) setLoading(false);
       });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleAddToCart = (p: Product) => {

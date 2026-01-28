@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Package, Lock, ChevronRight, Droplet, Clock } from 'lucide-react';
-import { getFeaturedProducts } from '../services/api';
+import { ArrowRight, Shield, Package, Lock, Droplet, Clock, Flame, Sparkles, Heart } from 'lucide-react';
+import { getHomepageProducts } from '../services/api';
 import { Product } from '../types';
 import LoveAtmosphere from '../components/LoveAtmosphere';
 import SeoHead from '../components/SeoHead';
@@ -11,228 +11,433 @@ const Home: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getFeaturedProducts().then(products => {
+        getHomepageProducts().then(products => {
             setFeaturedProducts(products);
             setLoading(false);
         });
     }, []);
 
     return (
-        <div className="bg-white">
+        <div className="bg-black text-white overflow-x-hidden">
             <SeoHead
-                title="Premium Sexual Wellness Morocco"
-                description="Discreet delivery of condoms, lubricants, and delay sprays in Morocco. Authentic brands, plain packaging, and 100% privacy guaranteed."
+                title="Intimacy Wellness Maroc | Premium Sexual Wellness"
+                description="Livraison discrète de préservatifs, lubrifiants et sprays retardants au Maroc. Marques authentiques, emballage neutre, 100% confidentialité."
             />
 
-            {/* Hero Section - Modernized & Dynamic */}
-            <div className="relative bg-slate-900 overflow-hidden">
-                {/* Dynamic Heart Background */}
+            {/* ═══════════════════════════════════════════════════════════════════════
+                🔥 HERO SECTION - FULL IMMERSIVE EXPERIENCE
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 md:py-40 flex items-center justify-center overflow-hidden">
+                {/* Animated Gradient Background */}
+                <div
+                    className="absolute inset-0 bg-gradient-to-br from-black via-slate-900 to-brand-950 animate-gradient_shift"
+                    style={{ backgroundSize: '400% 400%' }}
+                />
+
+                {/* Floating Hearts Atmosphere */}
                 <LoveAtmosphere />
 
-                <div className="absolute inset-0">
-                    <img
-                        className="w-full h-full object-cover opacity-40 mix-blend-overlay"
-                        src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1920&auto=format&fit=crop"
-                        alt="Wellness background"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-900/30" />
-                </div>
+                {/* Glowing Orbs */}
+                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-brand-500/20 rounded-full filter blur-[150px] animate-pulse_glow" />
+                <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/20 rounded-full filter blur-[120px] animate-pulse_glow" style={{ animationDelay: '2s' }} />
 
-                <div className="relative max-w-7xl mx-auto py-24 px-4 sm:py-32 sm:px-6 lg:px-8 flex flex-col justify-center min-h-[600px]">
-                    <div className="max-w-2xl relative z-10">
-                        <span className="inline-block py-1 px-3 rounded-full bg-brand-500/20 text-brand-300 text-sm font-semibold mb-6 border border-brand-500/30 backdrop-blur-sm animate-pulse_slow">
-                            #1 Wellness Store in Morocco
+                {/* Hero Content */}
+                <div className="relative z-10 max-w-7xl mx-auto px-4 text-center">
+                    {/* Badge */}
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl mb-8 animate-reveal_up">
+                        <Flame className="h-4 w-4 text-brand-400" />
+                        <span className="text-sm font-medium text-brand-300 tracking-wide">#1 Wellness Store au Maroc</span>
+                        <Sparkles className="h-4 w-4 text-brand-400" />
+                    </div>
+
+                    {/* Main Headline */}
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-[0.95] tracking-tight">
+                        <span className="block animate-text_reveal" style={{ animationDelay: '0.1s' }}>
+                            Éveillez
                         </span>
-                        <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-7xl mb-6 leading-tight">
-                            Intimacy, <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-300 to-brand-500">Elevated.</span>
-                        </h1>
-                        <p className="mt-4 text-xl text-slate-300 max-w-xl leading-relaxed">
-                            Experience premium sexual wellness with absolute confidence.
-                            We deliver authentic international brands to your doorstep in
-                            <span className="text-white font-semibold"> completely plain packaging</span>.
-                        </p>
-                        <div className="mt-10 flex flex-col sm:flex-row gap-4">
+                        <span
+                            className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-pink-400 to-purple-400 animate-text_reveal"
+                            style={{
+                                animationDelay: '0.3s',
+                                backgroundSize: '200% auto',
+                            }}
+                        >
+                            Vos Sens
+                        </span>
+                    </h1>
+
+                    {/* Subheadline */}
+                    <p className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed animate-reveal_up" style={{ animationDelay: '0.5s' }}>
+                        Produits premium. Discrétion absolue.
+                        <span className="block mt-2 text-white/80">Livré chez vous dans un emballage 100% neutre.</span>
+                    </p>
+
+                    {/* CTA Buttons */}
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center animate-reveal_up" style={{ animationDelay: '0.7s' }}>
+                        <Link
+                            to="/shop"
+                            className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold rounded-full overflow-hidden transition-all duration-500"
+                        >
+                            {/* Glowing background */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-brand-500 via-pink-500 to-brand-600 animate-glow rounded-full" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-brand-500 via-pink-500 to-brand-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ filter: 'blur(20px)' }} />
+                            <span className="relative z-10 flex items-center gap-2">
+                                Explorer la Boutique
+                                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                            </span>
+                        </Link>
+                        <Link
+                            to="/education"
+                            className="inline-flex items-center justify-center px-10 py-5 text-lg font-bold rounded-full bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/30 backdrop-blur-sm transition-all duration-300"
+                        >
+                            <Heart className="h-5 w-5 mr-2 text-brand-400" />
+                            Centre d'Expertise
+                        </Link>
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════════════════
+                🔥 PERFORMAX SPOTLIGHT - ULTRA PREMIUM SECTION
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 overflow-hidden">
+                {/* Dark gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-slate-900 to-black" />
+
+                {/* Animated glow behind product */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/10 rounded-full filter blur-[200px] animate-pulse_glow" />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        {/* Left: Product Image with Glow */}
+                        <div className="relative group order-2 lg:order-1">
+                            {/* Outer glow ring */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-600 rounded-3xl opacity-20 blur-3xl group-hover:opacity-40 transition-opacity duration-700 scale-110" />
+
+                            {/* Product container */}
+                            <div className="relative bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-white/10 overflow-hidden">
+                                {/* Shimmer effect */}
+                                <div
+                                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"
+                                    style={{ backgroundSize: '200% 100%' }}
+                                />
+
+                                <img
+                                    src="/durex-performax-intense.jpg"
+                                    alt="Durex Performax Intense"
+                                    className="relative w-full max-w-xs mx-auto drop-shadow-2xl group-hover:scale-105 transition-transform duration-700 animate-float_slow"
+                                />
+                            </div>
+
+                            {/* Floating badges */}
+                            <div className="absolute -top-4 -right-4 px-4 py-2 bg-gradient-to-r from-pink-500 to-red-500 rounded-full text-sm font-bold shadow-lg shadow-pink-500/30 animate-float_slow">
+                                🔥 BEST-SELLER
+                            </div>
+                        </div>
+
+                        {/* Right: Content */}
+                        <div className="order-1 lg:order-2 text-left lg:text-left">
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-sm font-bold tracking-wider mb-6">
+                                ENDURANCE & PLAISIR
+                            </span>
+
+                            <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                                Durex
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-red-400 to-pink-500">
+                                    Performax Intense
+                                </span>
+                            </h2>
+
+                            <p className="text-xl text-slate-400 mb-8 leading-relaxed max-w-lg">
+                                <span className="text-white font-semibold">Une expérience plus intense pour vous deux.</span>
+                                <span className="block mt-3 text-lg">Gel retardant pour lui, texture perlée pour elle. 10 préservatifs.</span>
+                            </p>
+
+                            {/* Features */}
+                            <div className="grid grid-cols-2 gap-4 mb-10">
+                                {[
+                                    { icon: Clock, text: "Effet Retardant" },
+                                    { icon: Sparkles, text: "Texture Perlée" },
+                                    { icon: Shield, text: "Protection Maximale" },
+                                    { icon: Heart, text: "Plaisir Mutuel" },
+                                ].map((feature, i) => (
+                                    <div key={i} className="flex items-center gap-3 px-4 py-3 bg-white/5 rounded-xl border border-white/10">
+                                        <feature.icon className="h-5 w-5 text-pink-400" />
+                                        <span className="text-sm font-medium text-slate-300">{feature.text}</span>
+                                    </div>
+                                ))}
+                            </div>
+
                             <Link
                                 to="/shop"
-                                className="inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-bold rounded-full text-white bg-brand-600 hover:bg-brand-700 md:text-lg transition-all shadow-lg hover:shadow-brand-500/30 animate-heartbeat"
+                                className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white rounded-full font-bold text-lg transition-all duration-300 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50"
                             >
-                                Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
+                                Commander Maintenant
+                                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════════════════
+                💧 LUBRICANTS - SENSUAL COLLECTION
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 overflow-hidden">
+                {/* Gradient Background */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-950/50 via-black to-pink-950/30" />
+
+                {/* Animated orbs */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-pink-500/10 rounded-full filter blur-[200px] animate-blob" />
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-purple-500/10 rounded-full filter blur-[150px] animate-blob" style={{ animationDelay: '3s' }} />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        {/* Left: Content */}
+                        <div className="text-left">
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-pink-500/10 border border-pink-500/30 text-pink-400 text-sm font-bold tracking-wider mb-6">
+                                COLLECTION SENSUELLE
+                            </span>
+
+                            <h2 className="text-4xl md:text-6xl font-black mb-6 leading-tight">
+                                Glisse
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-rose-400">
+                                    Infinie
+                                </span>
+                            </h2>
+
+                            <p className="text-xl text-slate-400 mb-8 leading-relaxed max-w-lg">
+                                Lubrifiants premium à base d'eau et silicone.
+                                <span className="block mt-3 text-white font-semibold">
+                                    Confort absolu. Sensations décuplées.
+                                </span>
+                            </p>
+
+                            {/* Glowing feature cards */}
+                            <div className="space-y-4 mb-10">
+                                {[
+                                    { title: "Base Aqueuse", desc: "Compatible préservatifs, douceur naturelle" },
+                                    { title: "Base Silicone", desc: "Longue durée, idéal pour le bain" },
+                                ].map((item, i) => (
+                                    <div
+                                        key={i}
+                                        className="group relative px-6 py-4 bg-white/5 rounded-2xl border border-white/10 hover:border-pink-500/30 transition-all duration-300 overflow-hidden"
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 via-pink-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                        <h4 className="font-bold text-white mb-1">{item.title}</h4>
+                                        <p className="text-sm text-slate-400">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+
                             <Link
-                                to="/about"
-                                className="inline-flex justify-center items-center px-8 py-4 border border-slate-600 text-base font-bold rounded-full text-slate-200 hover:bg-slate-800 md:text-lg transition-all backdrop-blur-sm bg-white/5"
+                                to="/shop"
+                                className="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full font-bold text-lg transition-all duration-300 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50"
                             >
-                                How We Ship Discreetly
+                                Voir la Collection
+                                <Droplet className="ml-2 h-5 w-5 group-hover:scale-110 transition-transform" />
                             </Link>
                         </div>
-                    </div>
-                </div>
-            </div>
 
-            {/* Category Quick Links */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Category 1 */}
-                    <Link to="/shop?q=Condom" className="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-blue-50 rounded-xl text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                                <Shield className="h-8 w-8" />
+                        {/* Right: Visual Grid */}
+                        <div className="relative">
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="relative rounded-3xl overflow-hidden group animate-float_slow p-8 bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm border border-white/10">
+                                    <Droplet className="w-16 h-16 text-pink-400 mx-auto mb-4" />
+                                    <p className="text-center text-white font-bold">Base Aqueuse</p>
+                                    <p className="text-center text-slate-400 text-sm">Naturelle & Douce</p>
+                                </div>
+                                <div className="relative rounded-3xl overflow-hidden group animate-float_slow p-8 bg-gradient-to-br from-pink-900/50 to-purple-900/50 backdrop-blur-sm border border-white/10" style={{ animationDelay: '1s' }}>
+                                    <Sparkles className="w-16 h-16 text-purple-400 mx-auto mb-4" />
+                                    <p className="text-center text-white font-bold">Base Silicone</p>
+                                    <p className="text-center text-slate-400 text-sm">Longue Durée</p>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-bold text-gray-900 text-lg">Condoms</h3>
-                                <p className="text-sm text-gray-500">Safe & Sensitive</p>
-                            </div>
-                        </div>
-                        <div className="h-8 w-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
-                            <ChevronRight className="h-5 w-5" />
-                        </div>
-                    </Link>
-
-                    {/* Category 2 */}
-                    <Link to="/shop?q=Lubricant" className="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-pink-50 rounded-xl text-pink-600 group-hover:bg-pink-600 group-hover:text-white transition-colors duration-300">
-                                <Droplet className="h-8 w-8" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-900 text-lg">Lubricants</h3>
-                                <p className="text-sm text-gray-500">Smooth & Silky</p>
-                            </div>
-                        </div>
-                        <div className="h-8 w-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
-                            <ChevronRight className="h-5 w-5" />
-                        </div>
-                    </Link>
-
-                    {/* Category 3 */}
-                    <Link to="/shop?q=Delay" className="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="p-4 bg-purple-50 rounded-xl text-purple-600 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
-                                <Clock className="h-8 w-8" />
-                            </div>
-                            <div>
-                                <h3 className="font-bold text-gray-900 text-lg">Delay Sprays</h3>
-                                <p className="text-sm text-gray-500">Last Longer</p>
-                            </div>
-                        </div>
-                        <div className="h-8 w-8 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 group-hover:bg-brand-50 group-hover:text-brand-600 transition-colors">
-                            <ChevronRight className="h-5 w-5" />
-                        </div>
-                    </Link>
-                </div>
-            </div>
-
-            {/* Features Grid with Background Blob Animation */}
-            <div className="py-24 bg-white relative overflow-hidden">
-                {/* Animated Background Blobs */}
-                <div className="absolute top-0 left-0 w-72 h-72 bg-brand-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-                <div className="absolute top-0 right-0 w-72 h-72 bg-purple-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
-                <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl">Why Choose Us?</h2>
-                        <p className="mt-4 text-lg text-gray-500">We prioritize your experience, privacy, and health above all else.</p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-12 sm:grid-cols-3">
-                        <div className="flex flex-col items-center text-center group">
-                            <div className="flex items-center justify-center h-20 w-20 rounded-full bg-brand-50 text-brand-600 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                <Package className="h-10 w-10" />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900">100% Blind Packaging</h3>
-                            <p className="mt-4 text-base text-gray-500 leading-relaxed">
-                                No logos, no branding, no product descriptions on the box. The courier won't even know what's inside.
-                            </p>
-                        </div>
-                        <div className="flex flex-col items-center text-center group">
-                            <div className="flex items-center justify-center h-20 w-20 rounded-full bg-blue-50 text-blue-600 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                <Shield className="h-10 w-10" />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900">Authentic Brands</h3>
-                            <p className="mt-4 text-base text-gray-500 leading-relaxed">
-                                We only stock certified international brands like Durex and Manix. Quality you can trust.
-                            </p>
-                        </div>
-                        <div className="flex flex-col items-center text-center group">
-                            <div className="flex items-center justify-center h-20 w-20 rounded-full bg-green-50 text-green-600 mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                <Lock className="h-10 w-10" />
-                            </div>
-                            <h3 className="text-xl font-bold text-gray-900">Secure & Private</h3>
-                            <p className="mt-4 text-base text-gray-500 leading-relaxed">
-                                Your data is encrypted. We never share your information with third parties beyond delivery necessities.
-                            </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Featured Products */}
-            <div className="bg-gray-50 py-24">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-end mb-12">
+            {/* ═══════════════════════════════════════════════════════════════════════
+                🛡️ TRUST SECTION - WHY CHOOSE US
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-slate-900/50 to-black" />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-4">
+                    {/* Section Header */}
+                    <div className="text-center mb-20">
+                        <span className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-400 text-sm font-medium tracking-wider mb-6">
+                            POURQUOI NOUS
+                        </span>
+                        <h2 className="text-4xl md:text-5xl font-black mb-6">
+                            Votre Confiance,
+                            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-pink-400">
+                                Notre Priorité
+                            </span>
+                        </h2>
+                    </div>
+
+                    {/* Features Grid */}
+                    <div className="grid md:grid-cols-3 gap-8">
+                        {[
+                            {
+                                icon: Package,
+                                color: 'from-brand-500 to-pink-500',
+                                title: 'Emballage 100% Discret',
+                                desc: 'Aucun logo, aucune marque. Le livreur ne saura jamais ce qu\'il y a dedans.'
+                            },
+                            {
+                                icon: Shield,
+                                color: 'from-blue-500 to-cyan-500',
+                                title: 'Marques Authentiques',
+                                desc: 'Durex, Manix, et autres marques internationales certifiées.'
+                            },
+                            {
+                                icon: Lock,
+                                color: 'from-purple-500 to-violet-500',
+                                title: 'Données Sécurisées',
+                                desc: 'Vos informations sont cryptées et ne sont jamais partagées.'
+                            }
+                        ].map((feature, idx) => (
+                            <div
+                                key={idx}
+                                className="group relative p-8 rounded-3xl bg-white/5 border border-white/10 hover:border-white/20 transition-all duration-500 overflow-hidden"
+                            >
+                                {/* Hover glow */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+
+                                {/* Icon */}
+                                <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                                    <feature.icon className="h-8 w-8 text-white" />
+                                </div>
+
+                                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                                <p className="text-slate-400 leading-relaxed">{feature.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* ═══════════════════════════════════════════════════════════════════════
+                🛒 FEATURED PRODUCTS
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 overflow-hidden">
+                <div className="absolute inset-0 bg-black" />
+
+                <div className="relative z-10 max-w-7xl mx-auto px-4">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
                         <div>
-                            <h2 className="text-3xl font-bold text-slate-900">Trending Now</h2>
-                            <p className="mt-2 text-gray-600">Our most popular essentials this week.</p>
+                            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-sm font-bold tracking-wider mb-4">
+                                TENDANCES
+                            </span>
+                            <h2 className="text-4xl md:text-5xl font-black text-white">
+                                Nos Best-Sellers
+                            </h2>
                         </div>
-                        <Link to="/shop" className="hidden sm:flex items-center text-brand-600 font-semibold hover:text-brand-700 transition-colors">
-                            View All <ArrowRight className="ml-2 h-5 w-5" />
+                        <Link
+                            to="/shop"
+                            className="hidden md:inline-flex items-center text-brand-400 font-semibold hover:text-brand-300 transition-colors group mt-4 md:mt-0"
+                        >
+                            Voir Tout
+                            <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
 
+                    {/* Products Grid */}
                     {loading ? (
                         <div className="flex justify-center py-20">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+                            <div className="relative w-16 h-16">
+                                <div className="absolute inset-0 rounded-full border-4 border-brand-500/20" />
+                                <div className="absolute inset-0 rounded-full border-4 border-transparent border-t-brand-500 animate-spin" />
+                            </div>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                            {featuredProducts.map((product) => (
-                                <Link key={product.id} to={`/product/${product.id}`} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
-                                    <div className="aspect-w-1 aspect-h-1 w-full bg-gray-200 relative overflow-hidden">
-                                        <img
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            loading="lazy"
-                                            className="h-64 w-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                                        />
-                                        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-gray-900 shadow-sm">
-                                            {product.price} MAD
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {featuredProducts.length === 0 ? (
+                                <div className="col-span-full text-center py-16">
+                                    <Sparkles className="w-12 h-12 text-brand-500/50 mx-auto mb-4" />
+                                    <p className="text-slate-400">Découvrez notre boutique</p>
+                                    <Link to="/shop" className="inline-flex items-center text-brand-400 font-medium mt-4 hover:text-brand-300">
+                                        Explorer les produits <ArrowRight className="ml-2 h-4 w-4" />
+                                    </Link>
+                                </div>
+                            ) : (
+                                featuredProducts.map((product) => (
+                                    <Link
+                                        key={product.id}
+                                        to={`/product/${product.id}`}
+                                        className="group relative bg-slate-900/50 rounded-3xl overflow-hidden border border-white/5 hover:border-brand-500/30 transition-all duration-500"
+                                    >
+                                        {/* Image */}
+                                        <div className="relative aspect-square overflow-hidden">
+                                            <img
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                loading="lazy"
+                                                onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400?text=Product'; }}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+
+                                            {/* Price Badge */}
+                                            <div className="absolute top-4 right-4 px-3 py-1.5 bg-black/60 backdrop-blur-sm rounded-full border border-white/10">
+                                                <span className="text-lg font-bold text-white">{product.price}</span>
+                                                <span className="text-sm text-slate-400 ml-1">MAD</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="p-6 flex flex-col flex-1">
-                                        <p className="text-xs font-medium text-brand-600 mb-2 uppercase tracking-wide">{product.category}</p>
-                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-brand-600 transition-colors mb-2">
-                                            {product.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-500 line-clamp-2 mb-4 flex-1">{product.description}</p>
-                                        <div className="flex items-center text-sm font-medium text-brand-600 group-hover:translate-x-1 transition-transform">
-                                            View Details <ArrowRight className="ml-1 h-4 w-4" />
+
+                                        {/* Content */}
+                                        <div className="p-6">
+                                            <span className="text-xs font-bold text-brand-400 uppercase tracking-wider">{product.category}</span>
+                                            <h3 className="text-lg font-bold text-white mt-2 mb-2 group-hover:text-brand-400 transition-colors">
+                                                {product.name}
+                                            </h3>
+                                            <p className="text-sm text-slate-400 line-clamp-2 mb-4">{product.description}</p>
+
+                                            <div className="flex items-center text-brand-400 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                                                Voir Détails <ArrowRight className="ml-2 h-4 w-4" />
+                                            </div>
                                         </div>
-                                    </div>
-                                </Link>
-                            ))}
+                                    </Link>
+                                ))
+                            )}
                         </div>
                     )}
 
-                    <div className="mt-12 text-center sm:hidden">
-                        <Link to="/shop" className="inline-flex items-center text-brand-600 font-semibold hover:text-brand-500">
-                            View All Products <ArrowRight className="ml-2 h-5 w-5" />
+                    {/* Mobile CTA */}
+                    <div className="mt-12 text-center md:hidden">
+                        <Link to="/shop" className="inline-flex items-center text-brand-400 font-semibold">
+                            Voir Tous les Produits <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                     </div>
                 </div>
             </div>
 
-            {/* Trust Banner */}
-            <div className="bg-slate-900 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-center items-center gap-8 text-center md:text-left">
-                    <div>
-                        <h2 className="text-2xl font-bold text-white mb-2">Not sure what you need?</h2>
-                        <p className="text-slate-300">Our AI assistant is here to help you discreetly find the perfect product.</p>
-                    </div>
-                    <div className="flex items-center gap-2 px-6 py-3 bg-white/10 rounded-full border border-white/20 text-white backdrop-blur-sm hover:bg-white/20 transition-colors cursor-pointer">
-                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                        <span className="font-medium">AI Expert Online</span>
-                    </div>
+            {/* ═══════════════════════════════════════════════════════════════════════
+                🚀 FINAL CTA
+            ═══════════════════════════════════════════════════════════════════════ */}
+            <div className="relative py-32 overflow-hidden">
+                {/* Background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-brand-600 via-pink-600 to-purple-600 animate-gradient_shift" style={{ backgroundSize: '400% 400%' }} />
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRjMC0yIDItNCAyLTRzMiAyIDIgNC0yIDQtMiA0LTItMi0yLTR6Ii8+PC9nPjwvZz48L3N2Zz4=')] opacity-30" />
+
+                <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
+                    <h2 className="text-4xl md:text-6xl font-black text-white mb-6">
+                        Prêt à Explorer ?
+                    </h2>
+                    <p className="text-xl text-white/80 mb-10 max-w-2xl mx-auto">
+                        Rejoignez des milliers de marocains qui nous font confiance pour leur bien-être intime.
+                    </p>
+                    <Link
+                        to="/shop"
+                        className="inline-flex items-center px-12 py-5 bg-white text-brand-600 rounded-full font-bold text-xl hover:bg-white/90 transition-all duration-300 shadow-2xl hover:scale-105"
+                    >
+                        Commencer vos Achats
+                        <ArrowRight className="ml-3 h-6 w-6" />
+                    </Link>
                 </div>
             </div>
         </div>

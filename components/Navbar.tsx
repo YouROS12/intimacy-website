@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShoppingCart, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -8,8 +8,12 @@ import { UserRole } from '../types';
 const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { items, setIsOpen } = useCart();
+
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const isActive = (path: string) => location.pathname === path;
   const [searchQuery, setSearchQuery] = useState('');
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -38,11 +42,10 @@ const Navbar: React.FC = () => {
               <span className="font-serif text-xl font-bold text-slate-800 tracking-wide">Intimacy<span className="text-brand-600">Wellness</span></span>
             </Link>
             <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-              <Link to="/" className="text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium">Home</Link>
-              <Link to="/shop" className="text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium">Shop</Link>
-              <Link to="/blog" className="text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium">Blog</Link>
-              <Link to="/education" className="text-brand-600 hover:text-brand-800 px-3 py-2 text-sm font-bold bg-brand-50 rounded-full">Éducation</Link>
-              <Link to="/about" className="text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium">About & Discrete</Link>
+              <Link to="/" className={`px-3 py-2 text-sm font-medium ${isActive('/') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Accueil</Link>
+              <Link to="/shop" className={`px-3 py-2 text-sm font-medium ${isActive('/shop') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Boutique</Link>
+              <Link to="/education" className={`px-3 py-2 text-sm font-medium ${isActive('/education') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Centre d'Expertise</Link>
+              <Link to="/about" className={`px-3 py-2 text-sm font-medium ${isActive('/about') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>À propos</Link>
             </div>
           </div>
 
@@ -51,7 +54,7 @@ const Navbar: React.FC = () => {
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
-                placeholder="Search products..."
+                placeholder="Rechercher..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 pr-4 py-2 border border-slate-200 rounded-full text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 w-48 lg:w-64 transition-all"
@@ -83,12 +86,12 @@ const Navbar: React.FC = () => {
                   <div className="pt-2">
                     <div className="bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
                       <div className="py-1">
-                        <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">My Account</Link>
+                        <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon Compte</Link>
                         {user.role === UserRole.ADMIN && (
                           <Link to="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Dashboard</Link>
                         )}
                         <button onClick={handleLogout} className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                          <LogOut className="mr-2 h-4 w-4" /> Sign out
+                          <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                         </button>
                       </div>
                     </div>
@@ -96,7 +99,7 @@ const Navbar: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <Link to="/login" className="text-slate-600 hover:text-brand-600 text-sm font-medium">Sign In</Link>
+              <Link to="/login" className="text-slate-600 hover:text-brand-600 text-sm font-medium">Connexion</Link>
             )}
           </div>
 
@@ -127,23 +130,22 @@ const Navbar: React.FC = () => {
             </form>
           </div>
           <div className="pt-2 pb-3 space-y-1">
-            <Link to="/" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Home</Link>
-            <Link to="/shop" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Shop</Link>
-            <Link to="/blog" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Blog</Link>
-            <Link to="/education" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-brand-600 hover:bg-brand-50 hover:border-brand-500 hover:text-brand-700 bg-brand-50/50">Éducation Sexuelle</Link>
+            <Link to="/" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Accueil</Link>
+            <Link to="/shop" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/shop') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Boutique</Link>
+            <Link to="/education" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/education') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Éducation Sexuelle</Link>
             <button onClick={() => setIsOpen(true)} className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">
-              Cart ({totalItems})
+              Panier ({totalItems})
             </button>
             {user ? (
               <>
-                <Link to="/profile" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">My Account</Link>
+                <Link to="/profile" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Mon Compte</Link>
                 {user.role === UserRole.ADMIN && (
                   <Link to="/admin" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Admin</Link>
                 )}
-                <button onClick={handleLogout} className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Logout</button>
+                <button onClick={handleLogout} className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Déconnexion</button>
               </>
             ) : (
-              <Link to="/login" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Sign In</Link>
+              <Link to="/login" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Connexion</Link>
             )}
           </div>
         </div>

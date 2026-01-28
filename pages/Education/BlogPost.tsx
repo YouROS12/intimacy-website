@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar, User, Clock, Share2, Loader2 } from 'lucide-react';
 import SeoHead from '../../components/SeoHead';
 import { getPostBySlug } from '../../services/api';
+import BlogRenderer from '../../components/blog/BlogRenderer';
 
 const BlogPost: React.FC = () => {
     const { slug } = useParams<{ slug: string }>();
@@ -92,10 +93,7 @@ const BlogPost: React.FC = () => {
 
             {/* Content */}
             <div className="max-w-3xl mx-auto px-4 pb-20">
-                <div
-                    className="prose prose-lg prose-slate max-w-none prose-headings:text-slate-900 prose-p:text-slate-600 prose-p:leading-relaxed prose-a:text-brand-600 font-serif"
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                />
+                <BlogRenderer content={post.content} />
 
                 {/* Footer / CTA */}
                 <div className="mt-20 p-8 bg-brand-50 rounded-3xl border border-brand-100 text-center">

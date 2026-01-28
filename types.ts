@@ -26,11 +26,13 @@ export interface Product {
   description: string;
   price: number;
   category: ProductCategory;
+  brand?: string;
   imageUrl?: string;
   image_url?: string; // Supabase convention
   stock: number;
   features: string[];
   is_featured?: boolean;
+  show_on_homepage?: boolean;
   seo_title?: string;
   seo_description?: string;
   seo_slug?: string;
@@ -45,7 +47,7 @@ export interface Order {
   user_id: string | null; // null for guest orders
   items: CartItem[];
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
   created_at: string;
   shipping_info?: {
     first_name: string;
@@ -60,4 +62,42 @@ export interface Order {
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
+}
+
+// --- JSON Blog Engine Types ---
+
+export type BlogTheme = 'educational_deep_dive' | 'product_showcase' | 'listicle';
+
+export type BlogBlockType = 'hero' | 'text' | 'quote' | 'product_grid' | 'alert' | 'image_group';
+
+export interface BlogBlock {
+  type: BlogBlockType;
+  id?: string;
+  // Hero
+  heading?: string;
+  subheading?: string;
+  image?: string;
+  // Text
+  content?: string; // HTML string for rich text within the block
+  title?: string; // Section headers
+  // Quote
+  author?: string;
+  role?: string;
+  // Product Grid
+  productIds?: string[];
+  // Alert
+  variant?: 'info' | 'warning' | 'tip';
+  // Image Group
+  images?: { url: string; caption?: string }[];
+}
+
+export interface BlogReference {
+  text: string;
+  url?: string;
+}
+
+export interface BlogContent {
+  theme: BlogTheme;
+  blocks: BlogBlock[];
+  references?: BlogReference[]; // For citations
 }

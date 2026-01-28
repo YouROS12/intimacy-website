@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="UTF-8" />
@@ -80,12 +80,49 @@
               "33%": { transform: "translate(30px, -50px) scale(1.1)" },
               "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
               "100%": { transform: "translate(0px, 0px) scale(1)" }
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' }
+            },
+            glow: {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(236, 72, 153, 0.3), 0 0 60px rgba(236, 72, 153, 0.1)' },
+              '50%': { boxShadow: '0 0 40px rgba(236, 72, 153, 0.6), 0 0 100px rgba(236, 72, 153, 0.3)' }
+            },
+            gradient_shift: {
+              '0%': { backgroundPosition: '0% 50%' },
+              '50%': { backgroundPosition: '100% 50%' },
+              '100%': { backgroundPosition: '0% 50%' }
+            },
+            float_slow: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' }
+            },
+            pulse_glow: {
+              '0%, 100%': { opacity: '0.5', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.05)' }
+            },
+            reveal_up: {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' }
+            },
+            text_reveal: {
+              '0%': { opacity: '0', transform: 'translateY(20px) rotateX(-20deg)' },
+              '100%': { opacity: '1', transform: 'translateY(0) rotateX(0)' }
             }
           },
           animation: {
             float: 'float 15s infinite linear',
             heartbeat: 'heartbeat 3s infinite ease-in-out',
             blob: "blob 7s infinite",
+            pulse_slow: "pulse_slow 4s ease-in-out infinite",
+            shimmer: "shimmer 3s ease-in-out infinite",
+            glow: "glow 3s ease-in-out infinite",
+            gradient_shift: "gradient_shift 6s ease infinite",
+            float_slow: "float_slow 6s ease-in-out infinite",
+            pulse_glow: "pulse_glow 4s ease-in-out infinite",
+            reveal_up: "reveal_up 0.8s ease-out forwards",
+            text_reveal: "text_reveal 0.6s ease-out forwards"
           }
         }
       }
