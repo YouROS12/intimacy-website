@@ -174,7 +174,7 @@ const Shop: React.FC = () => {
 
         <div className="pt-12 pb-24 lg:grid lg:grid-cols-4 lg:gap-x-8">
           {/* Desktop Sidebar Filters */}
-          <aside className="hidden lg:block lg:col-span-1 space-y-8 sticky top-24 h-fit">
+          <aside className="hidden lg:block lg:col-span-1 space-y-8 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200">
             <div>
               <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Catégories</h3>
               <ul className="space-y-3 border-b border-gray-200 pb-6">
