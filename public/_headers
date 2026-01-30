@@ -1,0 +1,67 @@
+# ===========================================
+# Cloudflare Pages Security Headers
+# Intimacy Wellness Morocco
+# ===========================================
+
+# Global headers (apply to all pages)
+/*
+  # Prevent clickjacking attacks
+  X-Frame-Options: DENY
+  
+  # Prevent MIME type sniffing
+  X-Content-Type-Options: nosniff
+  
+  # Enable XSS protection (legacy browsers)
+  X-XSS-Protection: 1; mode=block
+  
+  # Referrer policy for privacy
+  Referrer-Policy: strict-origin-when-cross-origin
+  
+  # Permissions policy (disable unused features)
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()
+  
+  # Content Security Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co https://www.google-analytics.com wss://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+
+# Static assets - long cache
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.js
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.css
+  Cache-Control: public, max-age=31536000, immutable
+
+# Images - long cache
+/*.jpg
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.png
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.webp
+  Cache-Control: public, max-age=31536000, immutable
+
+/*.svg
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML pages - short cache (for SPA updates)
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Admin area - no cache, extra security
+/admin/*
+  Cache-Control: no-store, no-cache, must-revalidate
+  X-Robots-Tag: noindex, nofollow
+
+# Checkout - no cache
+/checkout/*
+  Cache-Control: no-store, no-cache, must-revalidate
+
+# Profile - no cache
+/profile/*
+  Cache-Control: no-store, no-cache, must-revalidate
