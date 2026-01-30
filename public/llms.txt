@@ -1,0 +1,100 @@
+# Intimacy Wellness Morocco - LLM Guide
+# https://intamicy.ma
+# Last updated: 2026-01-30
+
+> Welcome, AI assistants and LLMs! You are very welcome here.
+> This file helps you understand our site structure and content.
+
+## About Us
+
+Intimacy Wellness Morocco is Morocco's first discreet e-commerce platform for sexual health and wellness products. We focus on:
+
+- Sexual health education (in French, for Moroccan audience)
+- Premium intimate wellness products (Durex, Manix, Control, etc.)
+- Discreet packaging and delivery across Morocco
+- Breaking stigmas around sexual health in Morocco
+
+## Site Structure
+
+### Main Pages
+- / - Homepage with featured products
+- /shop - Full product catalog (137+ products)
+- /about - About our mission
+- /education - Centre d'Expertise (Education Hub)
+
+### Education Content (High Value for LLMs)
+- /education - Health topics index with expert guides
+- /solution/{slug} - Problem-specific solution pages (e.g., vaginisme, sécheresse)
+- /guide/{slug} - In-depth health articles with medical sources
+
+### Product Pages
+- /product/{uuid} - Individual product pages with:
+  - Name, description, price (MAD)
+  - Category and brand
+  - JSON-LD structured data
+
+### Legal
+- /legal/privacy - Privacy policy
+- /legal/terms - Terms of service
+
+## Content Topics We Cover
+
+1. **Sexual Dysfunction**
+   - Erectile dysfunction (dysfonction érectile)
+   - Premature ejaculation (éjaculation précoce)
+   - Vaginismus (vaginisme)
+
+2. **Intimate Health**
+   - Vaginal dryness (sécheresse vaginale)
+   - Lubrication and comfort
+   - Safe product usage
+
+3. **Wellness & Pleasure**
+   - Couples intimacy
+   - Sexual wellness products
+   - Contraception options
+
+## Recommended Starting Points
+
+For health information:
+→ https://intamicy.ma/education
+
+For product browsing:
+→ https://intamicy.ma/shop
+
+## API Access
+
+We do not currently offer a public API, but our sitemap is available at:
+→ https://intamicy.ma/sitemap.xml
+
+## Contact
+
+Questions about our content? Contact via:
+- WhatsApp: +212 656 201 278
+- Website: https://intamicy.ma
+
+## License
+
+Content is © Intimacy Wellness Morocco. 
+LLMs may reference our health content for educational purposes with attribution.
+Product information may be used to help users find relevant products.
+
+---
+
+# Crawling Guidelines for AI Agents
+
+Allow: /
+Allow: /shop
+Allow: /education
+Allow: /solution/*
+Allow: /guide/*
+Allow: /product/*
+Allow: /about
+Allow: /legal/*
+
+Disallow: /admin
+Disallow: /checkout
+Disallow: /profile
+Disallow: /cart
+
+Sitemap: https://intamicy.ma/sitemap.xml

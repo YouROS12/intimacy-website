@@ -1,8 +1,76 @@
+# ==============================================
+# Intimacy Wellness Morocco - robots.txt
+# https://intamicy.ma
+# ==============================================
+
+# Welcome all crawlers including AI/LLM bots
 User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /profile
 Disallow: /checkout
 Disallow: /checkout/*
+Disallow: /cart
+
+# ==================
+# Search Engine Bots
+# ==================
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+# ==================
+# AI/LLM Crawlers - WELCOME!
+# ==================
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+# Google AI
+User-agent: Google-Extended
+Allow: /
+
+# Meta AI
+User-agent: FacebookBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+# Common Crawl (used by many AI models)
+User-agent: CCBot
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# ==================
+# Sitemaps
+# ==================
 
 Sitemap: https://intamicy.ma/sitemap.xml
+
+# ==================
+# LLM-specific Guide
+# ==================
+# For AI assistants, see our structured guide at:
+# https://intamicy.ma/llms.txt
