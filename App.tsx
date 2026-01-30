@@ -104,6 +104,7 @@ const App: React.FC = () => {
                 <Route path="/about" element={<Layout><About /></Layout>} />
                 <Route path="/legal/privacy" element={<Layout><Legal /></Layout>} />
                 <Route path="/legal/terms" element={<Layout><Legal /></Layout>} />
+                <Route path="/legal/returns" element={<Layout><Legal /></Layout>} />
 
                 <Route path="/checkout" element={<Layout><Checkout /></Layout>} />
                 <Route path="/order-confirmation" element={<Layout><OrderConfirmation /></Layout>} />
