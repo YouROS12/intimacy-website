@@ -1,0 +1,155 @@
+{
+    "common": {
+        "loading": "Chargement...",
+        "error": "Une erreur est survenue",
+        "retry": "Réessayer",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "close": "Fermer",
+        "back": "Retour",
+        "next": "Suivant",
+        "search": "Rechercher",
+        "noResults": "Aucun résultat",
+        "all": "Tout"
+    },
+    "nav": {
+        "home": "Accueil",
+        "shop": "Boutique",
+        "education": "Centre d'Expertise",
+        "about": "À propos",
+        "login": "Connexion",
+        "logout": "Déconnexion",
+        "profile": "Profil",
+        "admin": "Admin",
+        "cart": "Panier"
+    },
+    "home": {
+        "hero": {
+            "title": "Votre Bien-être Intime",
+            "subtitle": "Livraison discrète dans tout le Maroc",
+            "cta": "Découvrir nos produits"
+        },
+        "featured": "Produits Populaires",
+        "categories": "Catégories",
+        "whyUs": {
+            "title": "Pourquoi Nous Choisir",
+            "discreet": "Livraison 100% Discrète",
+            "discreetDesc": "Emballage neutre sans mention du contenu",
+            "authentic": "Produits Authentiques",
+            "authenticDesc": "Marques de confiance : Durex, Manix, Control",
+            "fast": "Livraison Rapide",
+            "fastDesc": "2-5 jours dans tout le Maroc"
+        }
+    },
+    "shop": {
+        "title": "Boutique",
+        "filters": "Filtres",
+        "categories": "Catégories",
+        "brands": "Marques",
+        "priceRange": "Fourchette de prix",
+        "sortBy": "Trier par",
+        "sortOptions": {
+            "priceHighToLow": "Prix: décroissant",
+            "priceLowToHigh": "Prix: croissant",
+            "nameAZ": "Nom: A-Z",
+            "nameZA": "Nom: Z-A"
+        },
+        "clearFilters": "Effacer les filtres",
+        "products": "produits",
+        "loadMore": "Charger plus",
+        "noProducts": "Aucun produit trouvé"
+    },
+    "product": {
+        "addToCart": "Ajouter au panier",
+        "inStock": "En stock",
+        "outOfStock": "Rupture de stock",
+        "description": "Description",
+        "details": "Détails",
+        "related": "Produits similaires",
+        "notFound": "Produit non trouvé",
+        "goBack": "Retour à la boutique"
+    },
+    "cart": {
+        "title": "Votre Panier",
+        "empty": "Votre panier est vide",
+        "continueShopping": "Continuer vos achats",
+        "subtotal": "Sous-total",
+        "shipping": "Livraison",
+        "free": "Gratuite",
+        "total": "Total",
+        "checkout": "Commander",
+        "remove": "Retirer",
+        "quantity": "Quantité"
+    },
+    "checkout": {
+        "title": "Finaliser la commande",
+        "shipping": {
+            "title": "Informations de livraison",
+            "firstName": "Prénom",
+            "lastName": "Nom",
+            "phone": "Téléphone",
+            "address": "Adresse",
+            "city": "Ville",
+            "notes": "Notes de livraison (optionnel)"
+        },
+        "account": {
+            "title": "Créer un compte (optionnel)",
+            "createAccount": "Créer un compte pour suivre ma commande",
+            "email": "Email",
+            "password": "Mot de passe",
+            "confirmPassword": "Confirmer le mot de passe"
+        },
+        "summary": "Récapitulatif",
+        "placeOrder": "Confirmer la commande",
+        "processing": "Traitement en cours...",
+        "cod": "Paiement à la livraison",
+        "codDesc": "Payez en espèces à la réception de votre colis"
+    },
+    "auth": {
+        "login": "Connexion",
+        "signup": "Inscription",
+        "email": "Email",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié ?",
+        "noAccount": "Pas encore de compte ?",
+        "hasAccount": "Déjà un compte ?",
+        "loginButton": "Se connecter",
+        "signupButton": "S'inscrire"
+    },
+    "profile": {
+        "title": "Mon Profil",
+        "orders": "Mes Commandes",
+        "settings": "Paramètres",
+        "orderHistory": "Historique des commandes",
+        "noOrders": "Aucune commande pour le moment"
+    },
+    "footer": {
+        "about": "À propos",
+        "legal": "Mentions légales",
+        "privacy": "Confidentialité",
+        "terms": "CGV",
+        "returns": "Retours",
+        "contact": "Contact",
+        "followUs": "Suivez-nous",
+        "newsletter": "Newsletter",
+        "copyright": "© 2026 Intimacy Wellness Morocco. Tous droits réservés."
+    },
+    "error": {
+        "title": "Une erreur est survenue",
+        "description": "Nous avons rencontré un problème inattendu. Veuillez réessayer.",
+        "reload": "Recharger la page",
+        "404": {
+            "title": "Page non trouvée",
+            "description": "La page que vous recherchez n'existe pas.",
+            "goHome": "Retour à l'accueil"
+        }
+    },
+    "language": {
+        "select": "Langue",
+        "fr": "Français",
+        "en": "English",
+        "ar": "العربية"
+    }
+}

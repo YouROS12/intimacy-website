@@ -1,0 +1,155 @@
+{
+    "common": {
+        "loading": "جاري التحميل...",
+        "error": "حدث خطأ",
+        "retry": "إعادة المحاولة",
+        "save": "حفظ",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "edit": "تعديل",
+        "close": "إغلاق",
+        "back": "رجوع",
+        "next": "التالي",
+        "search": "بحث",
+        "noResults": "لا توجد نتائج",
+        "all": "الكل"
+    },
+    "nav": {
+        "home": "الرئيسية",
+        "shop": "المتجر",
+        "education": "مركز التثقيف",
+        "about": "من نحن",
+        "login": "تسجيل الدخول",
+        "logout": "تسجيل الخروج",
+        "profile": "الملف الشخصي",
+        "admin": "الإدارة",
+        "cart": "السلة"
+    },
+    "home": {
+        "hero": {
+            "title": "صحتك الحميمية",
+            "subtitle": "توصيل سري في جميع أنحاء المغرب",
+            "cta": "اكتشف منتجاتنا"
+        },
+        "featured": "المنتجات الأكثر مبيعاً",
+        "categories": "الفئات",
+        "whyUs": {
+            "title": "لماذا تختارنا",
+            "discreet": "توصيل سري 100%",
+            "discreetDesc": "تغليف محايد بدون ذكر المحتوى",
+            "authentic": "منتجات أصلية",
+            "authenticDesc": "علامات تجارية موثوقة: Durex، Manix، Control",
+            "fast": "توصيل سريع",
+            "fastDesc": "2-5 أيام في جميع أنحاء المغرب"
+        }
+    },
+    "shop": {
+        "title": "المتجر",
+        "filters": "التصفية",
+        "categories": "الفئات",
+        "brands": "العلامات التجارية",
+        "priceRange": "نطاق السعر",
+        "sortBy": "ترتيب حسب",
+        "sortOptions": {
+            "priceHighToLow": "السعر: من الأعلى للأقل",
+            "priceLowToHigh": "السعر: من الأقل للأعلى",
+            "nameAZ": "الاسم: أ-ي",
+            "nameZA": "الاسم: ي-أ"
+        },
+        "clearFilters": "مسح التصفية",
+        "products": "منتجات",
+        "loadMore": "تحميل المزيد",
+        "noProducts": "لم يتم العثور على منتجات"
+    },
+    "product": {
+        "addToCart": "أضف للسلة",
+        "inStock": "متوفر",
+        "outOfStock": "غير متوفر",
+        "description": "الوصف",
+        "details": "التفاصيل",
+        "related": "منتجات مشابهة",
+        "notFound": "المنتج غير موجود",
+        "goBack": "العودة للمتجر"
+    },
+    "cart": {
+        "title": "سلة التسوق",
+        "empty": "سلتك فارغة",
+        "continueShopping": "متابعة التسوق",
+        "subtotal": "المجموع الفرعي",
+        "shipping": "التوصيل",
+        "free": "مجاني",
+        "total": "المجموع",
+        "checkout": "إتمام الشراء",
+        "remove": "إزالة",
+        "quantity": "الكمية"
+    },
+    "checkout": {
+        "title": "إتمام الطلب",
+        "shipping": {
+            "title": "معلومات التوصيل",
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "phone": "الهاتف",
+            "address": "العنوان",
+            "city": "المدينة",
+            "notes": "ملاحظات التوصيل (اختياري)"
+        },
+        "account": {
+            "title": "إنشاء حساب (اختياري)",
+            "createAccount": "إنشاء حساب لتتبع طلبي",
+            "email": "البريد الإلكتروني",
+            "password": "كلمة المرور",
+            "confirmPassword": "تأكيد كلمة المرور"
+        },
+        "summary": "ملخص الطلب",
+        "placeOrder": "تأكيد الطلب",
+        "processing": "جاري المعالجة...",
+        "cod": "الدفع عند الاستلام",
+        "codDesc": "ادفع نقداً عند استلام طلبك"
+    },
+    "auth": {
+        "login": "تسجيل الدخول",
+        "signup": "التسجيل",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "forgotPassword": "نسيت كلمة المرور؟",
+        "noAccount": "ليس لديك حساب؟",
+        "hasAccount": "لديك حساب بالفعل؟",
+        "loginButton": "دخول",
+        "signupButton": "تسجيل"
+    },
+    "profile": {
+        "title": "ملفي الشخصي",
+        "orders": "طلباتي",
+        "settings": "الإعدادات",
+        "orderHistory": "سجل الطلبات",
+        "noOrders": "لا توجد طلبات حتى الآن"
+    },
+    "footer": {
+        "about": "من نحن",
+        "legal": "قانوني",
+        "privacy": "الخصوصية",
+        "terms": "الشروط",
+        "returns": "الإرجاع",
+        "contact": "اتصل بنا",
+        "followUs": "تابعنا",
+        "newsletter": "النشرة البريدية",
+        "copyright": "© 2026 Intimacy Wellness Morocco. جميع الحقوق محفوظة."
+    },
+    "error": {
+        "title": "حدث خطأ",
+        "description": "واجهنا مشكلة غير متوقعة. يرجى المحاولة مرة أخرى.",
+        "reload": "إعادة تحميل الصفحة",
+        "404": {
+            "title": "الصفحة غير موجودة",
+            "description": "الصفحة التي تبحث عنها غير موجودة.",
+            "goHome": "العودة للرئيسية"
+        }
+    },
+    "language": {
+        "select": "اللغة",
+        "fr": "Français",
+        "en": "English",
+        "ar": "العربية"
+    }
+}

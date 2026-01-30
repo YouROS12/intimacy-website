@@ -45,10 +45,10 @@ const ProductDetail: React.FC = () => {
     setTimeout(() => setAddingToCart(false), 500);
   };
 
-  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  if (loading) return <div className="p-10 text-center">Chargement...</div>;
 
   if (!product) {
-    return <div className="p-10 text-center">Product not found <button onClick={() => navigate('/shop')} className="text-blue-500 underline">Go back</button></div>;
+    return <div className="p-10 text-center">Produit non trouvé <button onClick={() => navigate('/shop')} className="text-blue-500 underline">Retour</button></div>;
   }
 
   return (
@@ -134,11 +134,11 @@ const ProductDetail: React.FC = () => {
               >
                 {addingToCart ? (
                   <>
-                    <Check className="h-5 w-5 mr-2" /> Added!
+                    <Check className="h-5 w-5 mr-2" /> Ajouté !
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="h-5 w-5 mr-2" /> Add to Cart
+                    <ShoppingBag className="h-5 w-5 mr-2" /> Ajouter au panier
                   </>
                 )}
               </button>

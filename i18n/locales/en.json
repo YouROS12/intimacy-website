@@ -1,0 +1,155 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "retry": "Retry",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "search": "Search",
+        "noResults": "No results",
+        "all": "All"
+    },
+    "nav": {
+        "home": "Home",
+        "shop": "Shop",
+        "education": "Education Center",
+        "about": "About",
+        "login": "Login",
+        "logout": "Logout",
+        "profile": "Profile",
+        "admin": "Admin",
+        "cart": "Cart"
+    },
+    "home": {
+        "hero": {
+            "title": "Your Intimate Wellness",
+            "subtitle": "Discreet delivery across Morocco",
+            "cta": "Discover our products"
+        },
+        "featured": "Popular Products",
+        "categories": "Categories",
+        "whyUs": {
+            "title": "Why Choose Us",
+            "discreet": "100% Discreet Delivery",
+            "discreetDesc": "Neutral packaging with no content description",
+            "authentic": "Authentic Products",
+            "authenticDesc": "Trusted brands: Durex, Manix, Control",
+            "fast": "Fast Delivery",
+            "fastDesc": "2-5 days across Morocco"
+        }
+    },
+    "shop": {
+        "title": "Shop",
+        "filters": "Filters",
+        "categories": "Categories",
+        "brands": "Brands",
+        "priceRange": "Price range",
+        "sortBy": "Sort by",
+        "sortOptions": {
+            "priceHighToLow": "Price: high to low",
+            "priceLowToHigh": "Price: low to high",
+            "nameAZ": "Name: A-Z",
+            "nameZA": "Name: Z-A"
+        },
+        "clearFilters": "Clear filters",
+        "products": "products",
+        "loadMore": "Load more",
+        "noProducts": "No products found"
+    },
+    "product": {
+        "addToCart": "Add to Cart",
+        "inStock": "In stock",
+        "outOfStock": "Out of stock",
+        "description": "Description",
+        "details": "Details",
+        "related": "Related products",
+        "notFound": "Product not found",
+        "goBack": "Back to shop"
+    },
+    "cart": {
+        "title": "Your Cart",
+        "empty": "Your cart is empty",
+        "continueShopping": "Continue shopping",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "free": "Free",
+        "total": "Total",
+        "checkout": "Checkout",
+        "remove": "Remove",
+        "quantity": "Quantity"
+    },
+    "checkout": {
+        "title": "Checkout",
+        "shipping": {
+            "title": "Shipping Information",
+            "firstName": "First name",
+            "lastName": "Last name",
+            "phone": "Phone",
+            "address": "Address",
+            "city": "City",
+            "notes": "Delivery notes (optional)"
+        },
+        "account": {
+            "title": "Create an account (optional)",
+            "createAccount": "Create an account to track my order",
+            "email": "Email",
+            "password": "Password",
+            "confirmPassword": "Confirm password"
+        },
+        "summary": "Summary",
+        "placeOrder": "Place Order",
+        "processing": "Processing...",
+        "cod": "Cash on Delivery",
+        "codDesc": "Pay cash when you receive your package"
+    },
+    "auth": {
+        "login": "Login",
+        "signup": "Sign up",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "noAccount": "Don't have an account?",
+        "hasAccount": "Already have an account?",
+        "loginButton": "Log in",
+        "signupButton": "Sign up"
+    },
+    "profile": {
+        "title": "My Profile",
+        "orders": "My Orders",
+        "settings": "Settings",
+        "orderHistory": "Order history",
+        "noOrders": "No orders yet"
+    },
+    "footer": {
+        "about": "About",
+        "legal": "Legal",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "returns": "Returns",
+        "contact": "Contact",
+        "followUs": "Follow us",
+        "newsletter": "Newsletter",
+        "copyright": "© 2026 Intimacy Wellness Morocco. All rights reserved."
+    },
+    "error": {
+        "title": "Something went wrong",
+        "description": "We encountered an unexpected error. Please try again.",
+        "reload": "Reload page",
+        "404": {
+            "title": "Page not found",
+            "description": "The page you're looking for doesn't exist.",
+            "goHome": "Go home"
+        }
+    },
+    "language": {
+        "select": "Language",
+        "fr": "Français",
+        "en": "English",
+        "ar": "العربية"
+    }
+}
