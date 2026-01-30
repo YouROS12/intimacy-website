@@ -103,7 +103,22 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          <div className="flex items-center sm:hidden">
+          {/* Mobile: Cart + Menu toggle */}
+          <div className="flex items-center gap-2 sm:hidden">
+            {/* Mobile Cart Icon */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="p-2 text-slate-500 hover:text-brand-600 relative transition-colors"
+            >
+              <ShoppingCart className="h-6 w-6" />
+              {totalItems > 0 && (
+                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-600 rounded-full">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+
+            {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none"

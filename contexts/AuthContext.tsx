@@ -113,8 +113,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await (supabase.auth as any).signOut();
   };
 
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await (supabase.auth as any).updateUser({
+      password: newPassword
+    });
+    if (error) throw error;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isLoading, refreshProfile }}>
+    <AuthContext.Provider value={{ user, login, signup, logout, isLoading, refreshProfile, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );
