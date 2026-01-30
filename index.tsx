@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './i18n'; // Initialize i18n
+// import './i18n'; // Disabled until npm dependencies installed
 import App from './App';
 
 const rootElement = document.getElementById('root');
