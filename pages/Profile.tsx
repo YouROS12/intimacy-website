@@ -6,6 +6,7 @@ import { Calendar, MapPin, Phone, User as UserIcon, Edit2, Save, X, Lock, Eye, E
 import { Navigate } from 'react-router-dom';
 import { validateMoroccanPhone, formatAddress, parseAddress } from '../utils/helpers';
 import { sanitizeInput, sanitizePhone } from '../utils/sanitize';
+import NotificationToggle from '../components/NotificationToggle';
 
 const Profile: React.FC = () => {
     const { user, isLoading, refreshProfile, updatePassword } = useAuth();
@@ -140,6 +141,11 @@ const Profile: React.FC = () => {
         <div className="min-h-screen bg-gray-50 py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1 className="text-3xl font-bold text-gray-900">Mon Compte</h1>
+
+                {/* Notification Toggle */}
+                <div className="mt-6">
+                    <NotificationToggle variant="card" showTest={true} />
+                </div>
 
                 {/* Profile Details Card */}
                 <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg mb-8">
