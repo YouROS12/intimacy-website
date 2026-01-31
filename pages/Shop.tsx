@@ -37,7 +37,7 @@ const Shop: React.FC = () => {
   const brands = ['Tout', ...new Set(products.map(p => p.brand).filter(Boolean))].sort((a, b) => {
     if (a === 'Tout') return -1;
     if (b === 'Tout') return 1;
-    return (a || '').localeCompare(b || '');
+    return String(a).localeCompare(String(b));
   });
 
   // Update URL when filters change (optional, but good for UX)
