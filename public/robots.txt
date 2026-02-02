@@ -1,6 +1,6 @@
 # ==============================================
 # Intimacy Wellness Morocco - robots.txt
-# https://intamicy.ma
+# https://intimacy.ma
 # ==============================================
 
 # Welcome all crawlers including AI/LLM bots
@@ -67,10 +67,10 @@ Allow: /
 # Sitemaps
 # ==================
 
-Sitemap: https://intamicy.ma/sitemap.xml
+Sitemap: https://intimacy.ma/sitemap.xml
 
 # ==================
 # LLM-specific Guide
 # ==================
 # For AI assistants, see our structured guide at:
-# https://intamicy.ma/llms.txt
+# https://intimacy.ma/llms.txt

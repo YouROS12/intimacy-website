@@ -17,7 +17,7 @@ const SUPABASE_KEY = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_tA9-Q
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const BASE_URL = 'https://intamicy.ma';
+const BASE_URL = 'https://intimacy.ma';
 
 async function generateSitemap() {
     console.log('🗺️  Generating Sitemap...');
