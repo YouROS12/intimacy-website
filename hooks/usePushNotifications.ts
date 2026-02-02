@@ -46,7 +46,7 @@ export const usePushNotifications = () => {
                 'Notification' in window;
 
             if (!supported) {
-                setState(prev => ({ ...prev, isSupported: false, isLoading: false }));
+                setState(prev => ({ ...prev, isSupported: false, permission: 'unsupported', isLoading: false }));
                 return;
             }
 
@@ -71,6 +71,7 @@ export const usePushNotifications = () => {
             });
         };
 
+        checkSupport();
     }, []);
 
     // Subscribe to push notifications
