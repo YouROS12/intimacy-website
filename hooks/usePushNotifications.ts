@@ -13,6 +13,20 @@ interface PushSubscriptionState {
     error: string | null;
 }
 
+// Convert VAPID key to Uint8Array (outside hook to avoid recreation)
+const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+        .replace(/-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+};
+
 export const usePushNotifications = () => {
     const { user } = useAuth();
     const [state, setState] = useState<PushSubscriptionState>({
@@ -57,22 +71,7 @@ export const usePushNotifications = () => {
             });
         };
 
-        checkSupport();
     }, []);
-
-    // Convert VAPID key to Uint8Array
-    const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
-        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-        const base64 = (base64String + padding)
-            .replace(/-/g, '+')
-            .replace(/_/g, '/');
-        const rawData = window.atob(base64);
-        const outputArray = new Uint8Array(rawData.length);
-        for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
-        }
-        return outputArray;
-    };
 
     // Subscribe to push notifications
     const subscribe = useCallback(async () => {
