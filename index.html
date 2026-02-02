@@ -167,9 +167,91 @@
 }
 </script>
   <link rel="stylesheet" href="/index.css">
+
+  <!-- JSON-LD Structured Data for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://intamicy.ma/#organization",
+        "name": "Intimacy Wellness Morocco",
+        "alternateName": "Intamicy",
+        "url": "https://intamicy.ma",
+        "logo": "https://intamicy.ma/og-image.png",
+        "description": "Boutique en ligne spécialisée dans le bien-être intime au Maroc. Préservatifs, lubrifiants, et produits de santé sexuelle avec livraison discrète.",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "MA",
+          "addressLocality": "Morocco"
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "availableLanguage": ["French", "Arabic"]
+        },
+        "sameAs": []
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://intamicy.ma/#website",
+        "url": "https://intamicy.ma",
+        "name": "Intimacy Wellness Morocco",
+        "description": "Achetez préservatifs, lubrifiants et produits de bien-être intime au Maroc. Livraison discrète et paiement à la livraison.",
+        "publisher": {"@id": "https://intamicy.ma/#organization"},
+        "inLanguage": "fr-MA",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://intamicy.ma/shop?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://intamicy.ma/#webpage",
+        "url": "https://intamicy.ma",
+        "name": "Intimacy Wellness Maroc - Boutique en Ligne",
+        "isPartOf": {"@id": "https://intamicy.ma/#website"},
+        "about": {"@id": "https://intamicy.ma/#organization"},
+        "description": "Le spécialiste du bien-être intime au Maroc. Large choix de préservatifs, lubrifiants et soins avec livraison discrète.",
+        "inLanguage": "fr-MA"
+      }
+    ]
+  }
+  </script>
 </head>
 
 <body>
+  <!-- Static content for crawlers (hidden when JS loads) -->
+  <noscript>
+    <div style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: system-ui, sans-serif;">
+      <h1>Intimacy Wellness Morocco - Boutique en Ligne</h1>
+      <p>Bienvenue sur Intimacy Wellness, votre boutique en ligne spécialisée dans le bien-être intime au Maroc.</p>
+
+      <h2>Nos Catégories</h2>
+      <ul>
+        <li><a href="/shop?category=Préservatifs">Préservatifs</a> - Large sélection de marques premium</li>
+        <li><a href="/shop?category=Lubrifiants">Lubrifiants</a> - Formules douces et naturelles</li>
+        <li><a href="/shop?category=Bien-être">Bien-être intime</a> - Produits de soin et confort</li>
+      </ul>
+
+      <h2>Pourquoi nous choisir ?</h2>
+      <ul>
+        <li>✓ Livraison discrète dans tout le Maroc</li>
+        <li>✓ Paiement à la livraison (COD)</li>
+        <li>✓ Produits authentiques et certifiés</li>
+        <li>✓ Service client disponible</li>
+      </ul>
+
+      <h2>Éducation Santé Sexuelle</h2>
+      <p>Visitez notre <a href="/education">centre éducatif</a> pour des articles sur la santé sexuelle et le bien-être.
+      </p>
+
+      <p>Contact: <a href="mailto:contact@intamicy.ma">contact@intamicy.ma</a></p>
+    </div>
+  </noscript>
+
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 
