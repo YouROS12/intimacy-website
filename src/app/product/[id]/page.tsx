@@ -24,11 +24,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
         title: `${product.name} | Intimacy Wellness Maroc`,
         description: product.description.substring(0, 160),
-        openGraph: {
-            images: [product.imageUrl],
-            title: product.name,
-            description: product.description.substring(0, 160),
-        },
+        images: product.imageUrl ? [product.imageUrl] : [],
+        title: product.name,
+        description: product.description.substring(0, 160),
+    },
     };
 }
 
