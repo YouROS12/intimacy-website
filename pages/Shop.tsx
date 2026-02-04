@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { getProducts } from '../services/api';
 import { Product, ProductCategory } from '../types';
 import { Filter, Search, ChevronDown, X, SlidersHorizontal } from 'lucide-react';
+import { getProductImage } from '../utils/imageHelpers';
 
 const Shop: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -256,7 +257,7 @@ const Shop: React.FC = () => {
                     <Link key={product.id} to={`/product/${product.id}`} className="group relative bg-white rounded-2xl p-4 hover:shadow-xl transition-all border border-transparent hover:border-gray-100 flex flex-col">
                       <div className="aspect-[4/5] w-full overflow-hidden rounded-xl bg-gray-100 relative">
                         <img
-                          src={product.imageUrl}
+                          src={getProductImage(product.imageUrl)}
                           alt={product.name}
                           loading="lazy"
                           onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400?text=Product'; }}

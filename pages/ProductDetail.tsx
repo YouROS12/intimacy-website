@@ -5,6 +5,7 @@ import { getProductById, getRelatedProducts } from '../services/api';
 import { Product } from '../types';
 import { useCart } from '../contexts/CartContext';
 import SeoHead from '../components/SeoHead';
+import { getProductImage } from '../utils/imageHelpers';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -83,7 +84,7 @@ const ProductDetail: React.FC = () => {
           <div className="flex flex-col">
             <div className="aspect-w-1 aspect-h-1 w-full rounded-lg overflow-hidden">
               <img
-                src={product.imageUrl}
+                src={getProductImage(product.imageUrl)}
                 alt={product.name}
                 className="w-full h-full object-center object-cover"
               />
@@ -155,7 +156,7 @@ const ProductDetail: React.FC = () => {
                 <Link key={rp.id} to={`/product/${rp.id}`} className="group relative">
                   <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-64">
                     <img
-                      src={rp.imageUrl}
+                      src={getProductImage(rp.imageUrl)}
                       alt={rp.name}
                       loading="lazy"
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"

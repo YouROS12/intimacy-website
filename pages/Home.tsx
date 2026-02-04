@@ -5,6 +5,8 @@ import { getHomepageProducts } from '../services/api';
 import { Product } from '../types';
 import LoveAtmosphere from '../components/LoveAtmosphere';
 import SeoHead from '../components/SeoHead';
+import { getProductImage } from '../utils/imageHelpers';
+
 
 const Home: React.FC = () => {
     const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -374,7 +376,7 @@ const Home: React.FC = () => {
                                         {/* Image */}
                                         <div className="relative aspect-square overflow-hidden">
                                             <img
-                                                src={product.imageUrl}
+                                                src={getProductImage(product.imageUrl)}
                                                 alt={product.name}
                                                 loading="lazy"
                                                 onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400?text=Product'; }}
