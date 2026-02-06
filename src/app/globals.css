@@ -2,7 +2,7 @@
 
 @theme {
   /* COLORS: "Wellness Sanctuary" Palette (Stitch) */
-  --color-primary: #bd580f;
+  --color-primary: #853f92;
   --color-background-light: #f8f7f6;
   --color-background-dark: #221810;
   --color-text-main: #1b130d;
@@ -18,7 +18,7 @@
   --color-brand-200: #f6dccc;
   --color-brand-300: #efbea6;
   --color-brand-400: #e69675;
-  --color-brand-500: #bd580f;
+  --color-brand-500: #853f92;
   /* Primary Amber/Burnt Orange */
   --color-brand-600: #cc4d19;
   --color-brand-700: #a53d16;
@@ -74,12 +74,12 @@
   @keyframes glow {
     from {
       opacity: 0.5;
-      box-shadow: 0 0 10px rgba(189, 88, 15, 0.2);
+      box-shadow: 0 0 10px rgba(133, 63, 146, 0.2);
     }
 
     to {
       opacity: 1;
-      box-shadow: 0 0 25px rgba(189, 88, 15, 0.6);
+      box-shadow: 0 0 25px rgba(133, 63, 146, 0.6);
     }
   }
 
