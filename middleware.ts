@@ -1,12 +1,22 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Check if Supabase is configured
+const isSupabaseConfigured = () => {
+    return !!process.env.NEXT_PUBLIC_SUPABASE_URL && !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+};
+
 export async function middleware(request: NextRequest) {
     let response = NextResponse.next({
         request: {
             headers: request.headers,
         },
     })
+
+    // Skip auth check if Supabase is not configured
+    if (!isSupabaseConfigured()) {
+        return response;
+    }
 
     // Refresh session if expired - required for Server Components
     const supabase = createServerClient(
