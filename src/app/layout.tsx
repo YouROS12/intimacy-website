@@ -31,8 +31,6 @@ export default function RootLayout({
     <html lang="fr" className={`${playfair.variable} ${manrope.variable} ${inter.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-      </head>
-      <body className="font-display antialiased text-text-main bg-background-light">
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-9ZBDX7N6LP"
@@ -45,6 +43,8 @@ export default function RootLayout({
             gtag('config', 'G-9ZBDX7N6LP');
           `}
         </Script>
+      </head>
+      <body className="font-display antialiased text-text-main bg-background-light">
         <AuthProvider>
           <CartProvider>
             <div className="min-h-screen bg-[#f8f7f6] flex flex-col">
