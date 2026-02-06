@@ -37,9 +37,15 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
         if (sortBy !== 'featured') params.set('sort', sortBy);
         if (searchQuery) params.set('q', searchQuery);
 
-        // Push to URL without reloading
-        router.replace(`?${params.toString()}`, { scroll: false });
-    }, [selectedCategory, selectedBrand, priceRange, sortBy, searchQuery, router]);
+        // Convert to strings for comparison (sorting keys for consistency)
+        const newQueryString = params.toString();
+        const currentQueryString = searchParams.toString();
+
+        // Only update if actually different to prevent infinite loops
+        if (newQueryString !== currentQueryString) {
+            router.replace(`?${newQueryString}`, { scroll: false });
+        }
+    }, [selectedCategory, selectedBrand, priceRange, sortBy, searchQuery, router, searchParams]);
 
 
     // Extract unique brands
