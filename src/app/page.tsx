@@ -41,12 +41,12 @@ export default async function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
                 <div
                   className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJ1eEa5S3j6n_ZjxFOoOHEKQdqQVxDD5NhtNnFDsrxTtHBLpzBRsvCz9mKsY9XSGhTQ3mRZLHsih4iArY535biqLH-Oagf-fFNw_iz-OLwTug-EtcA_8Y0-w5X1Mu-VwYaIL4LbwaFjYApqNysM0rUsNTteSYZqrXtGp2WWx3BFKUIgjks-1S8lC171Gsob9ciLI5JhE3fwN8K9sgzLkUYPex4sGJu9uBjE-7WjM361EaJr9cIJat8kBMgdDhmeYK_e-pXbtOQQeq_')" }}
+                  style={{ backgroundImage: "url('/durex-hero.png')" }}
                 ></div>
                 {/* Floating Badge */}
                 <div className="absolute bottom-6 left-6 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur p-4 rounded-lg shadow-lg max-w-[200px]">
                   <p className="text-xs font-bold text-primary mb-1">New Arrival</p>
-                  <p className="text-sm font-serif font-medium text-text-main dark:text-white">Midnight Atlas Body Oil</p>
+                  <p className="text-sm font-serif font-medium text-text-main dark:text-white">Durex Performax Mutual Pleasure</p>
                 </div>
               </div>
               {/* Decorative Circle */}
