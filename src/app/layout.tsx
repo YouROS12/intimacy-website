@@ -1,4 +1,4 @@
-
+import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Inter, Playfair_Display, Manrope } from 'next/font/google';
 import './globals.css';
@@ -10,8 +10,6 @@ import Link from 'next/link';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import Footer from '@/components/Footer';
-
-import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
@@ -31,18 +29,6 @@ export default function RootLayout({
     <html lang="fr" className={`${playfair.variable} ${manrope.variable} ${inter.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-        <Script
-          strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-9ZBDX7N6LP"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-9ZBDX7N6LP');
-          `}
-        </Script>
       </head>
       <body className="font-display antialiased text-text-main bg-background-light">
         <AuthProvider>
@@ -60,6 +46,7 @@ export default function RootLayout({
             </div>
           </CartProvider>
         </AuthProvider>
+        <GoogleAnalytics gaId="G-9ZBDX7N6LP" />
       </body>
     </html>
   );
