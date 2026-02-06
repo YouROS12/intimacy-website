@@ -22,7 +22,6 @@ export default function CheckoutPage() {
     // Shipping form data
     const [formData, setFormData] = useState({
         fullName: '',
-        email: '', // Required for all users (order confirmation + potential account linking)
         phone: '',
         city: 'Casablanca',
         address: ''
@@ -40,8 +39,7 @@ export default function CheckoutPage() {
 
     // Validation errors
     const [phoneError, setPhoneError] = useState('');
-    const [formEmailError, setFormEmailError] = useState(''); // Email error for main form
-    const [emailError, setEmailError] = useState(''); // Email error for account creation
+    const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
@@ -82,17 +80,9 @@ export default function CheckoutPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitError('');
-        setFormEmailError('');
         setEmailError('');
         setPasswordError('');
         setConfirmPasswordError('');
-
-        // Validate email (required for all users)
-        if (!validateEmail(formData.email)) {
-            setFormEmailError('Email invalide');
-            window.scrollTo(0, 0);
-            return;
-        }
 
         // Validate phone
         if (!validateMoroccanPhone(formData.phone)) {
@@ -190,9 +180,7 @@ export default function CheckoutPage() {
                     last_name: '',
                     address: sanitizedAddress,
                     city: formData.city,
-                    phone: sanitizedPhone,
-                    // Always save email for order confirmation and potential account linking
-                    guest_email: formData.email
+                    phone: sanitizedPhone
                 }
             });
 
@@ -281,18 +269,6 @@ export default function CheckoutPage() {
                                         className="mt-1 block w-full p-2.5 border border-gray-300 rounded-md focus:ring-primary focus:border-primary shadow-sm"
                                         placeholder="Votre nom complet"
                                     />
-                                </div>
-                                <div className="sm:col-span-6">
-                                    <label className="block text-sm font-medium text-gray-700">Email *</label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={formData.email}
-                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                        className={`mt-1 block w-full p-2.5 border rounded-md focus:ring-primary focus:border-primary shadow-sm ${formEmailError ? 'border-red-300' : 'border-gray-300'}`}
-                                        placeholder="votre@email.com"
-                                    />
-                                    {formEmailError && <p className="mt-1 text-sm text-red-600">{formEmailError}</p>}
                                 </div>
                                 <div className="sm:col-span-3">
                                     <label className="block text-sm font-medium text-gray-700">Téléphone *</label>

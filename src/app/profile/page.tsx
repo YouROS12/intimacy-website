@@ -42,6 +42,12 @@ export default function ProfilePage() {
             return;
         }
 
+        // If user is anonymous, redirect to login to convert to permanent account
+        if (user?.isAnonymous) {
+            router.push('/login?from=profile&message=create-account');
+            return;
+        }
+
         getMoroccanCities().then(setCities);
 
         if (user) {
@@ -367,8 +373,8 @@ export default function ProfilePage() {
                                         </p>
                                     </div>
                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                                'bg-yellow-100 text-yellow-800'
+                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                            'bg-yellow-100 text-yellow-800'
                                         }`}>
                                         {order.status === 'delivered' ? 'Livré' :
                                             order.status === 'cancelled' ? 'Annulé' :

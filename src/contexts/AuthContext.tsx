@@ -53,6 +53,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const fetchProfile = async (id: string, email: string) => {
         try {
+            // Check if user is anonymous from JWT
+            const { data: { session } } = await supabase.auth.getSession();
+            const isAnonymous = session?.user?.is_anonymous || false;
+
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('*')
@@ -65,7 +69,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 name: profile?.full_name || email.split('@')[0],
                 role: (profile?.role || '').toLowerCase() === 'admin' ? UserRole.ADMIN : UserRole.USER,
                 phone: profile?.phone,
-                address: profile?.address
+                address: profile?.address,
+                isAnonymous // Add flag to detect anonymous users
             });
         } catch (e) {
             // If profile fetch fails, user might exist in Auth but not in Profiles table yet
@@ -73,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             console.error("AuthContext: Error fetching profile for user", id, e);
             // FALLBACK: Default to USER role if profile cannot be fetched.
             // This prevents the app from crashing but might restrict access incorrectly if DB is unreachable.
-            setUser({ id, email, name: email.split('@')[0], role: UserRole.USER });
+            setUser({ id, email, name: email.split('@')[0], role: UserRole.USER, isAnonymous: false });
         } finally {
             setIsLoading(false);
         }

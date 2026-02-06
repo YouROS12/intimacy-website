@@ -12,6 +12,7 @@ export interface User {
     role: UserRole;
     phone?: string;
     address?: string;
+    isAnonymous?: boolean; // True if user is signed in anonymously (not yet converted to permanent)
 }
 
 export enum ProductCategory {
