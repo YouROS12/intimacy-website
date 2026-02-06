@@ -1,14 +1,19 @@
+
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Playfair_Display, Manrope } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
+import CartDrawer from '@/components/CartDrawer';
 import Link from 'next/link';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppButton from '@/components/WhatsAppButton';
+import Footer from '@/components/Footer';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
+const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' });
 
 export const metadata: Metadata = {
   title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
@@ -21,31 +26,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
-      <body className={inter.className}>
+    <html lang="fr" className={`${playfair.variable} ${manrope.variable} ${inter.variable}`}>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+      </head>
+      <body className="font-display antialiased text-text-main bg-background-light">
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen bg-white">
+            <div className="min-h-screen bg-[#f8f7f6] flex flex-col">
               <Navbar />
-              {/* CartDrawer component needs migration, skipping visual for MVP start */}
-              <main>{children}</main>
+              <CartDrawer />
+              <main className="flex-grow">{children}</main>
 
-              <footer className="bg-slate-900 text-slate-400 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                  <p>&copy; 2026 Intimacy Wellness Morocco. Tous droits réservés.</p>
-                  <p className="text-sm mt-2">Livraison Discrète | Paiement Sécurisé</p>
-                  <p className="text-xs mt-2 text-slate-600">
-                    Propulsé par <a href="https://vitasana.ma" target="_blank" rel="noopener noreferrer" className="hover:text-slate-400">vitasana.ma</a>
-                  </p>
-                  <div className="mt-4 flex justify-center gap-4 text-xs text-slate-500">
-                    <Link href="/about" className="hover:text-slate-300">À propos</Link>
-                    <span>|</span>
-                    <Link href="/legal/privacy" className="hover:text-slate-300">Politique de Confidentialité</Link>
-                    <span>|</span>
-                    <Link href="/legal/terms" className="hover:text-slate-300">Conditions d'Utilisation</Link>
-                  </div>
-                </div>
-              </footer>
+              <Footer />
 
               {/* Floating Elements */}
               <CookieConsent />

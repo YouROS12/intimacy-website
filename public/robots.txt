@@ -1,0 +1,63 @@
+# ==============================================
+# Intimacy Wellness Morocco - robots.txt
+# https://intimacy.ma
+# ==============================================
+
+# Welcome all crawlers including AI/LLM bots
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /profile
+Disallow: /checkout
+Disallow: /cart
+
+# ==================
+# Search Engine Bots
+# ==================
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+# ==================
+# AI/LLM Crawlers - WELCOME!
+# ==================
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# ==================
+# Sitemaps
+# ==================
+
+Sitemap: https://intimacy.ma/sitemap.xml
+Sitemap: https://intimacy.ma/image_sitemap.xml

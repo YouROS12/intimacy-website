@@ -36,139 +36,170 @@ const Navbar: React.FC = () => {
     };
 
     return (
-        <nav className="bg-white shadow-sm sticky top-0 z-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between h-16">
-                    <div className="flex items-center">
-                        <Link href="/" className="flex-shrink-0 flex items-center gap-2 group">
-                            <ShieldCheck className="h-8 w-8 text-brand-600 group-hover:animate-heartbeat transition-all" />
-                            <span className="font-serif text-xl font-bold text-slate-800 tracking-wide">Intimacy<span className="text-brand-600">Wellness</span></span>
+        <header className="sticky top-0 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-[#f3ece7] dark:border-[#3a2e26] transition-all duration-300">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex items-center justify-between h-20">
+                    {/* Logo (Stitch Style) */}
+                    <div className="flex items-center gap-3">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="text-primary group-hover:scale-110 transition-transform">
+                                <span className="material-symbols-outlined text-3xl">spa</span>
+                            </div>
+                            <h2 className="text-text-main dark:text-white text-xl font-bold tracking-tight font-serif">
+                                Wellness <span className="text-primary">Sanctuary</span>
+                            </h2>
                         </Link>
-                        <div className="hidden sm:ml-8 sm:flex sm:space-x-8">
-                            <Link href="/" className={`px-3 py-2 text-sm font-medium ${isActive('/') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Accueil</Link>
-                            <Link href="/shop" className={`px-3 py-2 text-sm font-medium ${isActive('/shop') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Boutique</Link>
-                            <Link href="/education" className={`px-3 py-2 text-sm font-medium ${isActive('/education') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>Centre d'Expertise</Link>
-                            <Link href="/about" className={`px-3 py-2 text-sm font-medium ${isActive('/about') ? 'text-brand-600' : 'text-slate-600 hover:text-brand-600'}`}>À propos</Link>
-                        </div>
                     </div>
 
-                    <div className="hidden sm:flex items-center gap-4">
-                        {/* Search Bar */}
-                        <form onSubmit={handleSearch} className="relative">
+                    {/* Desktop Nav (Stitch Style) */}
+                    <nav className="hidden md:flex items-center gap-8">
+                        <Link href="/" className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Home</Link>
+                        <Link href="/shop" className={`text-sm font-medium transition-colors ${isActive('/shop') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Shop</Link>
+                        <Link href="/education" className={`text-sm font-medium transition-colors ${isActive('/education') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Wellness Journal</Link>
+                        <Link href="/about" className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>About</Link>
+                    </nav>
+
+                    <div className="hidden sm:flex items-center gap-3">
+                        {/* Search Bar (Adapting functionality to Stitch look) */}
+                        <form onSubmit={handleSearch} className="relative hidden lg:block">
                             <input
                                 type="text"
-                                placeholder="Rechercher..."
+                                placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="pl-9 pr-4 py-2 border border-slate-200 rounded-full text-sm focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 w-48 lg:w-64 transition-all"
+                                className="w-48 pl-4 pr-10 py-2 rounded-full border border-[#e7d9cf] dark:border-gray-700 bg-transparent text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                             />
-                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                            <button type="submit" className="absolute right-2 top-1.5 text-text-muted hover:text-primary">
+                                <Search className="h-4 w-4" />
+                            </button>
                         </form>
 
+                        {/* Search Icon (Mobile/Tablet view trigger could go here, but keeping simple for now) */}
+                        <button className="lg:hidden flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                            <span className="material-symbols-outlined">search</span>
+                        </button>
+
+                        {/* Cart Icon (Stitch Style) */}
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="p-2 text-slate-500 hover:text-brand-600 relative transition-colors"
+                            className="relative flex items-center justify-center size-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
                         >
-                            <ShoppingCart className="h-6 w-6" />
+                            <span className="material-symbols-outlined">shopping_bag</span>
                             {totalItems > 0 && (
-                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-600 rounded-full animate-bounce">
-                                    {totalItems}
-                                </span>
+                                <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-light dark:ring-background-dark animate-pulse"></span>
                             )}
                         </button>
 
+                        {/* User Icon with Dropdown (Stitch Style) */}
                         {user ? (
-                            <div className="relative group h-full flex items-center">
-                                <button className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-brand-600 py-2">
-                                    <UserIcon className="h-5 w-5" />
-                                    <span>{user.name}</span>
-                                </button>
-                                {/* Dropdown Container */}
-                                <div className="absolute right-0 top-full w-48 hidden group-hover:block z-50">
-                                    {/* Invisible bridge to maintain hover state */}
-                                    <div className="pt-2">
-                                        <div className="bg-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5">
-                                            <div className="py-1">
-                                                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon Compte</Link>
-                                                {user.role === UserRole.ADMIN && (
-                                                    <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Admin Dashboard</Link>
-                                                )}
-                                                <button onClick={handleLogout} className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                    <LogOut className="mr-2 h-4 w-4" /> Déconnexion
-                                                </button>
-                                            </div>
+                            <div className="relative group">
+                                <Link href="/profile">
+                                    <button className="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                                        <span className="material-symbols-outlined">person</span>
+                                    </button>
+                                </Link>
+
+                                {/* Dropdown Menu */}
+                                <div className="absolute right-0 top-full w-48 pt-2 hidden group-hover:block transition-all duration-200 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                                    <div className="bg-white dark:bg-[#221810] rounded-xl shadow-xl border border-[#f3ece7] dark:border-[#3a2e26] overflow-hidden">
+                                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
+                                        </div>
+                                        <div className="py-1">
+                                            <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary/5 hover:text-primary transition-colors">
+                                                My Profile
+                                            </Link>
+                                            {user.role === 'admin' && (
+                                                <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary/5 hover:text-primary transition-colors">
+                                                    Admin Dashboard
+                                                </Link>
+                                            )}
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
+                                            >
+                                                <span>Log Out</span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         ) : (
-                            <Link href="/login" className="text-slate-600 hover:text-brand-600 text-sm font-medium">Connexion</Link>
+                            <Link href="/login">
+                                <button className="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                                    <span className="material-symbols-outlined">login</span>
+                                </button>
+                            </Link>
                         )}
                     </div>
 
-                    {/* Mobile: Cart + Menu toggle */}
+                    {/* Mobile: Menu Toggle */}
                     <div className="flex items-center gap-2 sm:hidden">
-                        {/* Mobile Cart Icon */}
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="p-2 text-slate-500 hover:text-brand-600 relative transition-colors"
+                            className="relative flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary"
                         >
-                            <ShoppingCart className="h-6 w-6" />
+                            <span className="material-symbols-outlined">shopping_bag</span>
                             {totalItems > 0 && (
-                                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-brand-600 rounded-full">
-                                    {totalItems}
-                                </span>
+                                <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-light"></span>
                             )}
                         </button>
-
-                        {/* Mobile Menu Toggle */}
                         <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
-                            className="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-slate-500 hover:bg-slate-100 focus:outline-none"
+                            className="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 text-text-main"
                         >
-                            {isMenuOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+                            <span className="material-symbols-outlined">{isMenuOpen ? 'close' : 'menu'}</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            {/* Mobile menu */}
+            {/* Mobile menu (Simplified to match theme) */}
             {isMenuOpen && (
-                <div className="sm:hidden bg-white border-t border-gray-200">
-                    <div className="p-4 border-b border-gray-100">
+                <div className="sm:hidden bg-background-light border-t border-[#f3ece7]">
+                    <div className="p-4 space-y-4">
                         <form onSubmit={handleSearch} className="relative">
                             <input
                                 type="text"
-                                placeholder="Rechercher..."
+                                placeholder="Search..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-brand-500"
+                                className="w-full pl-4 pr-10 py-3 rounded-full border border-[#e7d9cf] bg-white text-sm focus:outline-none focus:border-primary"
                             />
-                            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                            <Search className="absolute right-4 top-3.5 h-4 w-4 text-text-muted" />
                         </form>
-                    </div>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <Link href="/" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Accueil</Link>
-                        <Link href="/shop" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/shop') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Boutique</Link>
-                        <Link href="/education" className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive('/education') ? 'border-brand-500 text-brand-700 bg-brand-50' : 'border-transparent text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700'}`}>Centre d'Expertise</Link>
-                        <button onClick={() => setIsOpen(true)} className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">
-                            Panier ({totalItems})
-                        </button>
-                        {user ? (
-                            <>
-                                <Link href="/profile" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Mon Compte</Link>
-                                {user.role === UserRole.ADMIN && (
-                                    <Link href="/admin" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Admin</Link>
-                                )}
-                                <button onClick={handleLogout} className="w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Déconnexion</button>
-                            </>
-                        ) : (
-                            <Link href="/login" className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-slate-600 hover:bg-slate-50 hover:border-brand-500 hover:text-brand-700">Connexion</Link>
-                        )}
+                        <nav className="flex flex-col gap-2">
+                            <Link href="/" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Home</Link>
+                            <Link href="/shop" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Shop</Link>
+                            <Link href="/education" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Journal</Link>
+                            <Link href="/about" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">About</Link>
+
+                            {user && (
+                                <div className="mt-2 pt-2 border-t border-[#f3ece7]">
+                                    <div className="px-4 py-2 text-sm font-bold text-primary">My Account ({user.name})</div>
+                                    <Link href="/profile" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Profile</Link>
+                                    {user.role === 'admin' && (
+                                        <Link href="/admin" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Admin Dashboard</Link>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            setIsMenuOpen(false);
+                                        }}
+                                        className="w-full text-left px-4 py-2 hover:bg-red-50 rounded-lg text-red-600 font-medium"
+                                    >
+                                        Log Out
+                                    </button>
+                                </div>
+                            )}
+                            {!user && (
+                                <Link href="/login" className="px-4 py-2 mt-2 bg-primary text-white rounded-lg font-medium text-center">Login / Register</Link>
+                            )}
+                        </nav>
                     </div>
                 </div>
             )}
-        </nav>
+        </header>
     );
 };
 

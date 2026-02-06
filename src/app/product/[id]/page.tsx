@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getProductById, getRelatedProducts } from '@/services/api';
 import ProductDetailsClient from '@/components/ProductDetailsClient';
+import { getProductImage } from '@/utils/imageHelpers';
+
 
 interface Props {
     params: Promise<{
@@ -25,7 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${product.name} | Intimacy Wellness Maroc`,
         description: product.description.substring(0, 160),
         openGraph: {
-            images: product.imageUrl ? [product.imageUrl] : [],
+            images: product.imageUrl ? [getProductImage(product.imageUrl) as string] : [],
             title: product.name,
             description: product.description.substring(0, 160),
         },

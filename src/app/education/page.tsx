@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Le hub complet pour votre santé sexuelle : Dossiers médicaux, guides pratiques et articles d'experts.",
 };
 
-export const revalidate = 3600; // Update every hour
+export const dynamic = 'force-dynamic';
 
 export default async function EducationPage() {
     const [guides, posts] = await Promise.all([

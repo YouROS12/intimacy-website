@@ -88,7 +88,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
     };
 
     return (
-        <div className="bg-slate-50 min-h-screen">
+        <div className="bg-cream min-h-screen">
 
             {/* Mobile Filter Dialog (Overlay) */}
             {isMobileFiltersOpen && (
@@ -96,14 +96,14 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                     <div className="fixed inset-0 bg-black/50" onClick={() => setIsMobileFiltersOpen(false)}></div>
                     <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-lg font-medium text-gray-900">Filtres</h2>
+                            <h2 className="text-lg font-serif font-bold text-gray-900">Filtres</h2>
                             <button onClick={() => setIsMobileFiltersOpen(false)} className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400">
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
                         {/* Mobile Filters Form */}
                         <div className="mt-4 px-4 border-t border-gray-200 py-6">
-                            <h3 className="font-medium text-gray-900">Catégories</h3>
+                            <h3 className="font-serif font-medium text-gray-900">Catégories</h3>
                             <ul className="mt-4 space-y-3">
                                 {['Tout', ...Object.values(ProductCategory)].map((cat) => (
                                     <li key={cat}>
@@ -117,7 +117,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                 ))}
                             </ul>
 
-                            <h3 className="font-medium text-gray-900 mt-8">Marques</h3>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">Marques</h3>
                             <ul className="mt-4 space-y-3">
                                 {brands.map((brand) => (
                                     <li key={String(brand)}>
@@ -131,7 +131,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                 ))}
                             </ul>
 
-                            <h3 className="font-medium text-gray-900 mt-8">Prix</h3>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">Prix</h3>
                             <div className="mt-4 flex items-center mb-4 gap-2">
                                 <input type="number" value={priceRange[0]} onChange={(e) => handlePriceChange(e, 'min')} className="w-20 p-2 text-sm border rounded" />
                                 <span>-</span>
@@ -145,7 +145,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
-                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
+                    <h1 className="text-4xl font-serif font-bold tracking-tight text-slate-900">
                         {searchQuery ? `Résultats pour "${searchQuery}"` : 'Boutique'}
                     </h1>
 

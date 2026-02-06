@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ShoppingBag, ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
+import { getProductImage } from '@/utils/imageHelpers';
 
 interface Props {
     product: Product;
@@ -24,7 +25,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
     };
 
     return (
-        <div className="bg-white min-h-screen">
+        <div className="bg-cream min-h-screen">
             {/* Schema.org Microdata */}
             <script type="application/ld+json" dangerouslySetInnerHTML={{
                 __html: JSON.stringify({
@@ -43,56 +44,59 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                 })
             }} />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <button onClick={() => router.back()} className="flex items-center text-gray-500 hover:text-brand-600 mb-6">
-                    <ArrowLeft className="h-4 w-4 mr-1" /> Retour à la boutique
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <button onClick={() => router.back()} className="flex items-center text-slate-500 hover:text-brand-600 mb-8 transition-colors group">
+                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Retour à la boutique
                 </button>
 
-                <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+                <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
                     {/* Image */}
                     <div className="flex flex-col">
-                        <div className="aspect-w-1 aspect-h-1 w-full rounded-lg overflow-hidden relative" style={{ aspectRatio: '1/1' }}>
+                        <div className="aspect-w-1 aspect-h-1 w-full rounded-3xl overflow-hidden relative shadow-2xl shadow-brand-900/10 border border-white/20" style={{ aspectRatio: '1/1' }}>
                             <img
-                                src={product.imageUrl}
+                                src={getProductImage(product.imageUrl)}
                                 alt={product.name}
-                                className="w-full h-full object-center object-cover absolute inset-0"
+                                className="w-full h-full object-center object-cover absolute inset-0 transform hover:scale-105 transition-transform duration-700"
                             />
+                            {/* Overlay Texture */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                         </div>
                     </div>
 
                     {/* Info */}
                     <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-100 text-brand-800 mb-4">
+                        <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-brand-100 text-brand-800 mb-6 border border-brand-200 uppercase tracking-widest">
                             {product.category}
                         </span>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">{product.name}</h1>
+                        <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tight text-slate-900 mb-4">{product.name}</h1>
 
-                        <div className="mt-3">
-                            <h2 className="sr-only">Product information</h2>
-                            <p className="text-3xl text-gray-900">{product.price} MAD</p>
+                        <div className="mt-6 flex items-baseline">
+                            <p className="text-4xl font-bold text-brand-600">{product.price} MAD</p>
                         </div>
 
-                        <div className="mt-6">
-                            <h3 className="sr-only">Description</h3>
-                            <p className="text-base text-gray-700">{product.description}</p>
+                        <div className="mt-8 prose prose-slate">
+                            <p className="text-lg text-slate-600 leading-relaxed font-sans">{product.description}</p>
                         </div>
 
-                        <div className="mt-6">
-                            <h3 className="text-sm font-medium text-gray-900">Points Forts</h3>
-                            <ul role="list" className="mt-4 space-y-2">
+                        <div className="mt-10">
+                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">Points Forts</h3>
+                            <ul role="list" className="space-y-4">
                                 {product.features?.map((feature, idx) => (
-                                    <li key={idx} className="flex items-center text-sm text-gray-500">
-                                        <Check className="h-4 w-4 text-green-500 mr-2" />
+                                    <li key={idx} className="flex items-start text-base text-slate-600">
+                                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center mt-0.5 mr-3">
+                                            <Check className="h-4 w-4 text-green-600" />
+                                        </div>
                                         {feature}
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
-                        <div className="mt-6 flex items-start p-4 bg-blue-50 rounded-md">
-                            <AlertCircle className="h-5 w-5 text-blue-400 mt-0.5 mr-3 flex-shrink-0" />
-                            <p className="text-sm text-blue-700">
-                                <strong>Livraison Discrète:</strong> Cet article est expédié dans un emballage neutre. Aucune description du contenu sur l'étiquette.
+                        <div className="mt-8 flex items-start p-5 bg-white/50 backdrop-blur-sm rounded-2xl border border-brand-100">
+                            <AlertCircle className="h-6 w-6 text-brand-500 mt-0.5 mr-4 flex-shrink-0" />
+                            <p className="text-sm text-slate-600">
+                                <strong className="block text-brand-800 mb-1">Livraison Discrète Garantie</strong>
+                                Votre colis sera expédié dans un emballage totalement neutre sans aucune mention du contenu ou de la marque.
                             </p>
                         </div>
 
@@ -100,15 +104,15 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                             <button
                                 type="button"
                                 onClick={() => handleAddToCart(product)}
-                                className={`max-w-xs flex-1 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-brand-500 sm:w-full transition-colors ${addingToCart ? 'bg-green-600' : 'bg-brand-600 hover:bg-brand-700'}`}
+                                className={`w-full flex-1 border border-transparent rounded-full py-5 px-8 flex items-center justify-center text-lg font-bold text-white focus:outline-none focus:ring-4 focus:ring-brand-500/30 transition-all duration-300 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/40 transform hover:-translate-y-1 ${addingToCart ? 'bg-green-600' : 'bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400'}`}
                             >
                                 {addingToCart ? (
                                     <>
-                                        <Check className="h-5 w-5 mr-2" /> Ajouté !
+                                        <Check className="h-6 w-6 mr-3" /> Ajouté au panier !
                                     </>
                                 ) : (
                                     <>
-                                        <ShoppingBag className="h-5 w-5 mr-2" /> Ajouter au panier
+                                        <ShoppingBag className="h-6 w-6 mr-3" /> Ajouter au panier
                                     </>
                                 )}
                             </button>
@@ -118,27 +122,28 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
 
                 {/* Related Products Section */}
                 {relatedProducts.length > 0 && (
-                    <div className="mt-16 border-t border-gray-200 pt-10">
-                        <h2 className="text-2xl font-bold tracking-tight text-gray-900 mb-6">Vous aimerez peut-être aussi</h2>
-                        <div className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                    <div className="mt-24 border-t border-brand-100 pt-16">
+                        <div className="flex items-center justify-between mb-10">
+                            <h2 className="text-3xl font-serif font-black tracking-tight text-slate-900">Vous aimerez peut-être aussi</h2>
+                        </div>
+                        <div className="grid grid-cols-1 gap-y-12 gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
                             {relatedProducts.map((rp) => (
                                 <Link key={rp.id} href={`/product/${rp.id}`} className="group relative">
-                                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:aspect-none lg:h-80 relative" style={{ aspectRatio: '1/1' }}>
+                                    <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-2xl bg-white shadow-lg border border-white/20 relative" style={{ aspectRatio: '1/1' }}>
                                         <img
-                                            src={rp.imageUrl}
+                                            src={getProductImage(rp.imageUrl)}
                                             alt={rp.name}
-                                            className="h-full w-full object-cover object-center lg:h-full lg:w-full absolute inset-0"
+                                            className="h-full w-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700"
                                         />
+                                        <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
                                     </div>
-                                    <div className="mt-4 flex justify-between">
-                                        <div>
-                                            <h3 className="text-sm text-gray-700">
-                                                <span aria-hidden="true" className="absolute inset-0" />
-                                                {rp.name}
-                                            </h3>
-                                            <p className="mt-1 text-sm text-gray-500">{rp.category}</p>
-                                        </div>
-                                        <p className="text-sm font-medium text-brand-600">{rp.price} MAD</p>
+                                    <div className="mt-6">
+                                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition-colors font-serif">
+                                            <span aria-hidden="true" className="absolute inset-0" />
+                                            {rp.name}
+                                        </h3>
+                                        <p className="mt-1 text-sm text-slate-500 font-medium mb-2">{rp.category}</p>
+                                        <p className="text-lg font-bold text-brand-600">{rp.price} MAD</p>
                                     </div>
                                 </Link>
                             ))}

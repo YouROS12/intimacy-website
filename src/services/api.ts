@@ -222,6 +222,19 @@ export const getAllOrders = async (): Promise<Order[]> => {
     return data as Order[];
 };
 
+export const getOrderById = async (orderId: string): Promise<Order | null> => {
+    if (!isSupabaseConfigured()) return null;
+
+    const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('id', orderId)
+        .single();
+
+    if (error || !data) return null;
+    return data as Order;
+};
+
 export const updateOrderStatus = async (orderId: string, status: string) => {
     if (!isSupabaseConfigured()) throw new Error("Database not configured");
     const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
