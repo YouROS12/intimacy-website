@@ -11,6 +11,8 @@ import CookieConsent from '@/components/CookieConsent';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import Footer from '@/components/Footer';
 
+import Script from 'next/script';
+
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
 const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' });
@@ -31,6 +33,18 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="font-display antialiased text-text-main bg-background-light">
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-9ZBDX7N6LP"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-9ZBDX7N6LP');
+          `}
+        </Script>
         <AuthProvider>
           <CartProvider>
             <div className="min-h-screen bg-[#f8f7f6] flex flex-col">

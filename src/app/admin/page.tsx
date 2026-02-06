@@ -23,60 +23,6 @@ import { getProductImage } from '@/utils/imageHelpers';
 
 import { supabase } from '@/services/supabase';
 
-function AccessDeniedDebug({ user }: { user: any }) {
-    const [debugData, setDebugData] = useState<any>(null);
-    const [error, setError] = useState<any>(null);
-    const router = useRouter();
-    const { logout } = useAuth();
-
-    useEffect(() => {
-        const fetchDebug = async () => {
-            try {
-                const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).single();
-                if (error) setError(error);
-                setDebugData(data);
-            } catch (e) {
-                setError(e);
-            }
-        };
-        fetchDebug();
-    }, [user.id]);
-
-    return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
-            <div className="bg-white p-8 rounded-lg shadow-md max-w-lg w-full text-center">
-                <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">Accès Refusé (Débogage)</h1>
-
-                <div className="bg-gray-50 p-4 rounded text-left text-xs font-mono mb-6 overflow-x-auto whitespace-pre-wrap">
-                    <p className="font-bold text-lg mb-2">Données en direct de la base:</p>
-                    {error ? <span className="text-red-600">{JSON.stringify(error, null, 2)}</span> : JSON.stringify(debugData, null, 2)}
-
-                    <div className="border-t my-4 pt-4">
-                        <p><strong>Auth Context Role:</strong> {user.role}</p>
-                        <p><strong>Email:</strong> {user.email}</p>
-                    </div>
-                </div>
-
-                <div className="flex gap-4 justify-center">
-                    <button
-                        onClick={() => router.push('/')}
-                        className="bg-primary text-white px-6 py-2 rounded font-medium hover:bg-primary/90"
-                    >
-                        Accueil
-                    </button>
-                    <button
-                        onClick={() => { logout(); router.push('/login'); }}
-                        className="text-gray-500 hover:text-gray-700 underline"
-                    >
-                        Déconnexion
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-}
-
 export default function AdminDashboard() {
     const { user, isLoading: authLoading } = useAuth();
     const router = useRouter();
@@ -127,7 +73,21 @@ export default function AdminDashboard() {
 
     if (user && user.role !== 'admin') {
         return (
-            <AccessDeniedDebug user={user} />
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+                <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
+                    <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Accès Refusé</h1>
+                    <p className="text-gray-600 mb-6">
+                        Vous n'avez pas les permissions nécessaires pour accéder à cette page.
+                    </p>
+                    <button
+                        onClick={() => router.push('/')}
+                        className="bg-primary text-white px-6 py-2 rounded font-medium hover:bg-primary/90"
+                    >
+                        Retour à l'accueil
+                    </button>
+                </div>
+            </div>
         );
     }
 
