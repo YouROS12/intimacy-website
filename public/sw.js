@@ -58,6 +58,14 @@ self.addEventListener('fetch', (event) => {
     // Skip API calls - always fetch fresh
     if (url.pathname.startsWith('/api')) return;
 
+    // Skip Auth & Admin pages - always fetch fresh to prevent redirect loops from caching
+    if (url.pathname.startsWith('/admin') ||
+        url.pathname.startsWith('/login') ||
+        url.pathname.startsWith('/profile') ||
+        url.pathname.startsWith('/account')) {
+        return;
+    }
+
     // For HTML pages - Network first, fallback to cache
     if (request.headers.get('accept')?.includes('text/html')) {
         event.respondWith(

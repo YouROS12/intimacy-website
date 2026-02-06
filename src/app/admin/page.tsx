@@ -50,6 +50,9 @@ export default function AdminDashboard() {
 
     // --- Auth Check ---
     useEffect(() => {
+        // Force refresh to ensure we have the latest session data from server (middleware check passed)
+        router.refresh();
+
         if (!authLoading) {
             if (!user) {
                 // Not logged in at all

@@ -71,20 +71,29 @@ export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     // 1. Admin Protection
-    // if (pathname.startsWith('/admin')) {
-    //     if (!user) {
-    //         return NextResponse.redirect(new URL('/login', request.url))
-    //     }
-    //     // Note: Role check ideally happens here via Custom Claims or DB lookup. 
-    //     // For now, we rely on client-side redirect for role, but this ensures at least a user exists.
-    // }
+    if (pathname.startsWith('/admin')) {
+        if (!user) {
+            const url = request.nextUrl.clone();
+            url.pathname = '/login';
+            url.searchParams.set('from', pathname);
+            return NextResponse.redirect(url);
+        }
+        // Note: Role check ideally happens here via Custom Claims or DB lookup. 
+        // For now, we rely on client-side redirect for role, but this ensures at least a user exists.
+    }
 
     // 2. Profile/Account Protection
     if (pathname.startsWith('/profile') || pathname.startsWith('/account')) {
         if (!user) {
-            return NextResponse.redirect(new URL('/login', request.url))
+            const url = request.nextUrl.clone();
+            url.pathname = '/login';
+            url.searchParams.set('from', pathname);
+            return NextResponse.redirect(url);
         }
     }
+
+    // Prevent caching of protected routes logic
+    response.headers.set('x-middleware-cache', 'no-cache');
 
     return response
 }
