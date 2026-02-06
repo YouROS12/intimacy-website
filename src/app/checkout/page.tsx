@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                                         value={formData.fullName}
                                         onChange={e => setFormData({ ...formData, fullName: e.target.value })}
                                         className="mt-1 block w-full p-2.5 border border-gray-300 rounded-md focus:ring-primary focus:border-primary shadow-sm"
-                                        placeholder="Ahmed Benali"
+                                        placeholder="Votre nom complet"
                                     />
                                 </div>
                                 <div className="sm:col-span-3">
@@ -447,11 +447,11 @@ export default function CheckoutPage() {
                                     </div>
                                     <div className="flex items-center justify-between text-sm text-gray-600">
                                         <p>Livraison</p>
-                                        <p className="text-green-600 font-medium">Gratuite</p>
+                                        <p className="text-gray-900 font-medium">35 MAD</p>
                                     </div>
                                     <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                         <p className="text-base font-bold text-gray-900">Total</p>
-                                        <p className="text-xl font-bold text-primary">{total} MAD</p>
+                                        <p className="text-xl font-bold text-primary">{total + 35} MAD</p>
                                     </div>
                                 </div>
 
@@ -463,7 +463,7 @@ export default function CheckoutPage() {
                                     {isProcessing ? (
                                         <>Traitement...</>
                                     ) : (
-                                        <>Confirmer la commande <Truck className="h-5 w-5" /></>
+                                        <>Confirmer la commande ({total + 35} MAD) <Truck className="h-5 w-5" /></>
                                     )}
                                 </button>
 

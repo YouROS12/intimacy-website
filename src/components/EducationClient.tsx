@@ -29,7 +29,7 @@ const EmptyState = ({ type, reset }: { type: string, reset: () => void }) => (
 const EducationClient: React.FC<EducationClientProps> = ({ initialGuides, initialPosts }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const activeTab = searchParams.get('tab') || 'dossiers'; // 'dossiers' (PSEO) or 'articles' (Blog)
+    const activeTab = searchParams.get('tab') || 'articles'; // 'dossiers' (PSEO) or 'articles' (Blog)
 
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
@@ -77,7 +77,7 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides, initia
                     <div className="mt-8 max-w-xl mx-auto relative">
                         <input
                             type="text"
-                            placeholder={activeTab === 'dossiers' ? "Rechercher un dossier (ex: Vaginisme)..." : "Rechercher un article..."}
+                            placeholder={activeTab === 'dossiers' ? "Rechercher un dossier..." : "Rechercher un article..."}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-12 pr-4 py-4 rounded-full text-slate-900 focus:ring-4 focus:ring-brand-500/50 outline-none shadow-xl"

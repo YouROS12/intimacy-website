@@ -179,26 +179,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Newsletter / Footer Top */}
-      <section className="py-16 bg-white dark:bg-[#1a120b] border-t border-[#f3ece7] dark:border-[#3a2e26]">
-        <div className="max-w-[600px] mx-auto px-4 text-center flex flex-col gap-6">
-          <div className="flex justify-center mb-2">
-            <span className="material-symbols-outlined text-primary text-4xl">spa</span>
-          </div>
-          <h2 className="text-2xl font-serif font-bold text-text-main dark:text-white">Join the Sanctuary</h2>
-          <p className="text-text-muted dark:text-gray-400">Subscribe to receive private offers, wellness journals, and new product announcements.</p>
-          <form className="flex flex-col sm:flex-row gap-3 w-full">
-            <input
-              className="flex-1 h-12 rounded-full border border-[#e7d9cf] dark:border-gray-700 bg-background-light dark:bg-background-dark px-6 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white"
-              placeholder="Enter your email"
-              type="email"
-            />
-            <button className="h-12 px-8 rounded-full bg-text-main dark:bg-white text-white dark:text-black font-bold hover:opacity-90 transition-opacity" type="button">
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
+
     </div>
   );
 }

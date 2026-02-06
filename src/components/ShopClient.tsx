@@ -16,7 +16,16 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
     const searchParams = useSearchParams();
 
     // Filter States
-    const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('category') || 'Tout');
+    // Filter States
+    const initialCategories = searchParams.get('category')
+        ? searchParams.get('category')!.split(',')
+        : [];
+
+    // If "Tout" is in URL or list is empty, treat as empty list (which means ALL)
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        initialCategories.filter(c => c !== 'Tout')
+    );
+
     const [selectedBrand, setSelectedBrand] = useState<string>(searchParams.get('brand') || 'Tout');
     const [priceRange, setPriceRange] = useState<[number, number]>([
         Number(searchParams.get('minPrice')) || 0,
@@ -24,28 +33,36 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
     ]);
     const [sortBy, setSortBy] = useState<string>(searchParams.get('sort') || 'featured');
     const [visibleCount, setVisibleCount] = useState<number>(24);
-    const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
+
+    // Derived state for search (Fixes re-search bug)
+    const searchQuery = searchParams.get('q') || '';
+
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
     // Sync URL with state
     useEffect(() => {
         const params = new URLSearchParams();
-        if (selectedCategory !== 'Tout') params.set('category', selectedCategory);
+
+        // Handle Multi-category
+        if (selectedCategories.length > 0) {
+            params.set('category', selectedCategories.join(','));
+        }
+
         if (selectedBrand !== 'Tout') params.set('brand', selectedBrand);
         if (priceRange[0] > 0) params.set('minPrice', priceRange[0].toString());
         if (priceRange[1] < 2000) params.set('maxPrice', priceRange[1].toString());
         if (sortBy !== 'featured') params.set('sort', sortBy);
+
+        // Preserve search query from URL if user is just filtering
         if (searchQuery) params.set('q', searchQuery);
 
-        // Convert to strings for comparison (sorting keys for consistency)
         const newQueryString = params.toString();
         const currentQueryString = searchParams.toString();
 
-        // Only update if actually different to prevent infinite loops
         if (newQueryString !== currentQueryString) {
             router.replace(`?${newQueryString}`, { scroll: false });
         }
-    }, [selectedCategory, selectedBrand, priceRange, sortBy, searchQuery, router, searchParams]);
+    }, [selectedCategories, selectedBrand, priceRange, sortBy, searchQuery, router, searchParams]);
 
 
     // Extract unique brands
@@ -57,7 +74,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
 
     const filteredProducts = initialProducts
         .filter(p => {
-            const matchesCategory = selectedCategory === 'Tout' || p.category === selectedCategory;
+            const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(p.category);
             const matchesBrand = selectedBrand === 'Tout' || p.brand === selectedBrand;
             const matchesSearch = searchQuery === '' ||
                 p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -78,11 +95,12 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
         });
 
     const clearFilters = () => {
-        setSelectedCategory('Tout');
+        setSelectedCategories([]);
         setSelectedBrand('Tout');
         setPriceRange([0, 2000]);
         setSortBy('featured');
-        setSearchQuery('');
+        setVisibleCount(24);
+        router.replace('/shop'); // Clear URL incl. searchQuery
         setVisibleCount(24);
         router.replace('/shop'); // Clear URL
     };
@@ -111,14 +129,24 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         <div className="mt-4 px-4 border-t border-gray-200 py-6">
                             <h3 className="font-serif font-medium text-gray-900">Catégories</h3>
                             <ul className="mt-4 space-y-3">
-                                {['Tout', ...Object.values(ProductCategory)].map((cat) => (
-                                    <li key={cat}>
-                                        <button
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`text-sm ${selectedCategory === cat ? 'text-brand-600 font-bold' : 'text-gray-600'}`}
-                                        >
+                                {Object.values(ProductCategory).map((cat) => (
+                                    <li key={cat} className="flex items-center">
+                                        <input
+                                            id={`mobile-cat-${cat}`}
+                                            type="checkbox"
+                                            checked={selectedCategories.includes(cat)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setSelectedCategories([...selectedCategories, cat]);
+                                                } else {
+                                                    setSelectedCategories(selectedCategories.filter(c => c !== cat));
+                                                }
+                                            }}
+                                            className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                                        />
+                                        <label htmlFor={`mobile-cat-${cat}`} className="ml-3 text-sm text-gray-600 font-medium">
                                             {cat}
-                                        </button>
+                                        </label>
                                     </li>
                                 ))}
                             </ul>
@@ -187,19 +215,28 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         <div>
                             <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Catégories</h3>
                             <ul className="space-y-3 border-b border-gray-200 pb-6">
-                                {['Tout', ...Object.values(ProductCategory)].map((cat) => (
-                                    <li key={cat}>
-                                        <button
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`text-sm flex items-center w-full justify-between group ${selectedCategory === cat ? 'text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-500'
-                                                }`}
-                                        >
-                                            {cat}
-                                            {selectedCategory === cat && <div className="h-1.5 w-1.5 rounded-full bg-brand-500" />}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
+                                <ul className="space-y-3 border-b border-gray-200 pb-6">
+                                    {Object.values(ProductCategory).map((cat) => (
+                                        <li key={cat} className="flex items-center">
+                                            <input
+                                                id={`desktop-cat-${cat}`}
+                                                type="checkbox"
+                                                checked={selectedCategories.includes(cat)}
+                                                onChange={(e) => {
+                                                    if (e.target.checked) {
+                                                        setSelectedCategories([...selectedCategories, cat]);
+                                                    } else {
+                                                        setSelectedCategories(selectedCategories.filter(c => c !== cat));
+                                                    }
+                                                }}
+                                                className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
+                                            />
+                                            <label htmlFor={`desktop-cat-${cat}`} className="ml-3 text-sm text-gray-600 hover:text-brand-500 cursor-pointer flex-1">
+                                                {cat}
+                                            </label>
+                                        </li>
+                                    ))}
+                                </ul>
                         </div>
 
                         <div>
