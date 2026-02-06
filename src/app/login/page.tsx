@@ -27,14 +27,20 @@ function Content() {
     const [fieldErrors, setFieldErrors] = useState<{ phone?: string, password?: string }>({});
     const [loading, setLoading] = useState(false);
 
-    const { login, signup } = useAuth();
+    const { login, signup, convertGuestToPermanent, user } = useAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectPath = searchParams.get('from') || '/';
 
     useEffect(() => {
         getMoroccanCities().then(setCities);
-    }, []);
+
+        // Auto-switch to signup mode if coming from profile (anonymous user conversion)
+        const message = searchParams.get('message');
+        if (message === 'create-account') {
+            setIsLogin(false);
+        }
+    }, [searchParams]);
 
     const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -95,14 +101,28 @@ function Content() {
                 const sanitizedAddress = sanitizeInput(address);
                 const fullAddress = formatAddress(city, sanitizedAddress);
 
-                // --- Database Insertion ---
-                await signup(sanitizedEmail, password, sanitizedName, sanitizedPhone, fullAddress);
-
-                setIsLogin(true);
-                setError("Compte créé avec succès ! Veuillez vérifier votre email avant de vous connecter.");
-                // Clear form
-                setPassword('');
-                setConfirmPassword('');
+                // Check if user is anonymous - use updateUser to convert, otherwise signup
+                if (user?.isAnonymous) {
+                    // Convert anonymous user to permanent
+                    try {
+                        await convertGuestToPermanent(sanitizedEmail, password, sanitizedName, sanitizedPhone, fullAddress);
+                        router.replace(redirectPath); // Redirect immediately, user is already logged in
+                    } catch (conversionError: any) {
+                        // If email already exists, show helpful error
+                        if (conversionError.message?.includes('already') || conversionError.message?.includes('exists')) {
+                            throw new Error("Cet email existe déjà. Veuillez vous connecter avec votre compte existant.");
+                        }
+                        throw conversionError;
+                    }
+                } else {
+                    // Regular signup for new users
+                    await signup(sanitizedEmail, password, sanitizedName, sanitizedPhone, fullAddress);
+                    setIsLogin(true);
+                    setError("Compte créé avec succès ! Veuillez vérifier votre email avant de vous connecter.");
+                    // Clear form
+                    setPassword('');
+                    setConfirmPassword('');
+                }
             }
         } catch (err: any) {
             console.error(err);
