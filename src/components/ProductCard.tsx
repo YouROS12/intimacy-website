@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Product } from '@/types';
 import { getProductImage } from '@/utils/imageHelpers';
 
@@ -13,11 +14,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     return (
         <Link href={`/product/${product.id}`} className="group relative glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full border border-white/20 hover:border-brand-300/50">
             <div className="aspect-[4/5] w-full overflow-hidden relative bg-white/5">
-                <img
+                <Image
                     src={getProductImage(product.imageUrl)}
                     alt={product.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
 
