@@ -241,6 +241,43 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
     if (error) throw error;
 };
 
+/**
+ * Link guest orders to a newly created user account
+ * This is called automatically after signup to claim any orders placed with the same email
+ */
+export const linkGuestOrders = async (userId: string, email: string): Promise<number> => {
+    if (!isSupabaseConfigured()) return 0;
+
+    // Find all orders where shipping_info->guest_email matches the user's email
+    // and user_id is null (guest orders)
+    const { data: orders, error: fetchError } = await supabase
+        .from('orders')
+        .select('id, shipping_info')
+        .is('user_id', null);
+
+    if (fetchError || !orders) return 0;
+
+    // Filter orders that match the email
+    const matchingOrders = orders.filter(order =>
+        order.shipping_info?.guest_email === email
+    );
+
+    if (matchingOrders.length === 0) return 0;
+
+    // Update all matching orders to link them to the user
+    const { error: updateError } = await supabase
+        .from('orders')
+        .update({ user_id: userId })
+        .in('id', matchingOrders.map(o => o.id));
+
+    if (updateError) {
+        console.error('Error linking guest orders:', updateError);
+        return 0;
+    }
+
+    return matchingOrders.length;
+};
+
 // --- Users ---
 
 export const updateUserProfile = async (userId: string, updates: { full_name?: string, phone?: string, address?: string }) => {

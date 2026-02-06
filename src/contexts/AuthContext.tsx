@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '@/types';
 import { supabase, isSupabaseConfigured } from '@/services/supabase';
+import { linkGuestOrders } from '@/services/api';
 
 interface AuthContextType {
     user: User | null;
@@ -106,6 +107,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         if (error) throw error;
+
+        // Automatically link any guest orders with this email to the new account
+        if (data.user) {
+            try {
+                const linkedCount = await linkGuestOrders(data.user.id, email);
+                if (linkedCount > 0) {
+                    console.log(`✅ Linked ${linkedCount} guest order(s) to new account`);
+                }
+            } catch (linkError) {
+                console.error('Failed to link guest orders:', linkError);
+                // Don't throw - signup was successful, order linking is a bonus feature
+            }
+        }
+
         return { user: data.user, session: data.session };
     };
 
