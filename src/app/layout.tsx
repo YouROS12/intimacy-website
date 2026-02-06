@@ -1,6 +1,6 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display, Manrope } from 'next/font/google';
+import { Inter, Cormorant_Garamond, Poppins } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -12,8 +12,16 @@ import WhatsAppButton from '@/components/WhatsAppButton';
 import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' });
-const manrope = Manrope({ subsets: ['latin'], variable: '--font-manrope' });
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-playfair'
+});
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-manrope'
+});
 
 export const metadata: Metadata = {
   title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
@@ -26,14 +34,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className={`${playfair.variable} ${manrope.variable} ${inter.variable}`}>
+    <html lang="fr" className={`${cormorant.variable} ${poppins.variable} ${inter.variable}`}>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="font-display antialiased text-text-main bg-background-light">
         <AuthProvider>
           <CartProvider>
-            <div className="min-h-screen bg-[#f8f7f6] flex flex-col">
+            <div className="min-h-screen bg-[#fbe6ff] flex flex-col">
               <Navbar />
               <CartDrawer />
               <main className="flex-grow">{children}</main>

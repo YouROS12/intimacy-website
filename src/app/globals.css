@@ -1,36 +1,35 @@
 @import "tailwindcss";
 
 @theme {
-  /* COLORS: "Wellness Sanctuary" Palette (Stitch) */
+  /* COLORS: "Purple Sanctuary" Palette */
   --color-primary: #853f92;
-  --color-background-light: #f8f7f6;
-  --color-background-dark: #221810;
-  --color-text-main: #1b130d;
-  --color-text-muted: #9a6c4c;
+  --color-background-light: #fbe6ff;
+  --color-background-dark: #2d1b33;
+  --color-text-main: #1a0a1f;
+  --color-text-muted: #7d4a88;
 
-  /* Font Aliases for Stitch Compatibility */
+  /* Font Aliases */
   --font-display: var(--font-manrope);
   --font-serif: var(--font-playfair);
 
-  /* Legacy / Compatibility (Keep if needed) */
-  --color-brand-50: #fdf8f4;
-  --color-brand-100: #fbeee5;
-  --color-brand-200: #f6dccc;
-  --color-brand-300: #efbea6;
-  --color-brand-400: #e69675;
+  /* Purple Scale */
+  --color-brand-50: #faf5fc;
+  --color-brand-100: #f3e6f8;
+  --color-brand-200: #e8cdf1;
+  --color-brand-300: #d8a9e6;
+  --color-brand-400: #c17cd6;
   --color-brand-500: #853f92;
-  /* Primary Amber/Burnt Orange */
-  --color-brand-600: #cc4d19;
-  --color-brand-700: #a53d16;
-  --color-brand-800: #853316;
-  --color-brand-900: #6b2c15;
-  --color-brand-950: #3a1509;
+  --color-brand-600: #6f2d7a;
+  --color-brand-700: #5a2563;
+  --color-brand-800: #461e4d;
+  --color-brand-900: #331838;
+  --color-brand-950: #1a0a1f;
 
-  /* Custom "Sanctuary" Colors */
-  --color-cream: #f8f7f6;
-  --color-taupe: #97604e;
-  --color-charcoal: #1b110e;
-  --color-deep-brown: #221810;
+  /* Custom Purple Colors */
+  --color-lavender: #fbe6ff;
+  --color-deep-purple: #853f92;
+  --color-dark-purple: #2d1b33;
+  --color-charcoal: #1a0a1f;
 
   /* TYPOGRAPHY */
   --font-sans: var(--font-manrope), sans-serif;
@@ -123,7 +122,7 @@
 
 /* BASE RESETS */
 body {
-  background-color: var(--color-cream);
+  background-color: var(--color-lavender);
   color: var(--color-charcoal);
 }
 
