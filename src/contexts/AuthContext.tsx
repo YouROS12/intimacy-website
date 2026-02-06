@@ -62,13 +62,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 id,
                 email,
                 name: profile?.full_name || email.split('@')[0],
-                role: profile?.role === 'admin' ? UserRole.ADMIN : UserRole.USER,
+                role: (profile?.role || '').toLowerCase() === 'admin' ? UserRole.ADMIN : UserRole.USER,
                 phone: profile?.phone,
                 address: profile?.address
             });
         } catch (e) {
             // If profile fetch fails, user might exist in Auth but not in Profiles table yet
             console.error("Error fetching profile:", e);
+            console.error("AuthContext: Error fetching profile for user", id, e);
+            // FALLBACK: Default to USER role if profile cannot be fetched.
+            // This prevents the app from crashing but might restrict access incorrectly if DB is unreachable.
             setUser({ id, email, name: email.split('@')[0], role: UserRole.USER });
         } finally {
             setIsLoading(false);
