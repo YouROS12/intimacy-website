@@ -1,4 +1,5 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -14,11 +15,11 @@ export const isSupabaseConfigured = () => {
 let supabase: SupabaseClient;
 
 if (isSupabaseConfigured()) {
-    supabase = createClient(supabaseUrl!, supabaseKey!);
+    supabase = createBrowserClient(supabaseUrl!, supabaseKey!);
 } else {
     // Create a dummy client with placeholder URL to prevent build errors
     // This client should never be used - always check isSupabaseConfigured() first
-    supabase = createClient(
+    supabase = createBrowserClient(
         'https://placeholder.supabase.co',
         'placeholder-key'
     );
