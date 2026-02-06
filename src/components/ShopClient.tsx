@@ -128,7 +128,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         {/* Mobile Filters Form */}
                         <div className="mt-4 px-4 border-t border-gray-200 py-6">
                             <h3 className="font-serif font-medium text-gray-900">Catégories</h3>
-                            <ul className="mt-4 space-y-3">                            <ul className="space-y-3 border-b border-gray-200 pb-6">
+                            <ul className="mt-4 space-y-3">
                                 {Object.values(ProductCategory).map((cat) => (
                                     <li key={cat} className="flex items-center">
                                         <input
@@ -151,27 +151,27 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                 ))}
                             </ul>
 
-                                <h3 className="font-serif font-medium text-gray-900 mt-8">Marques</h3>
-                                <ul className="mt-4 space-y-3">
-                                    {brands.map((brand) => (
-                                        <li key={String(brand)}>
-                                            <button
-                                                onClick={() => setSelectedBrand(String(brand))}
-                                                className={`text-sm ${selectedBrand === brand ? 'text-brand-600 font-bold' : 'text-gray-600'}`}
-                                            >
-                                                {brand}
-                                            </button>
-                                        </li>
-                                    ))}
-                                </ul>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">Marques</h3>
+                            <ul className="mt-4 space-y-3">
+                                {brands.map((brand) => (
+                                    <li key={String(brand)}>
+                                        <button
+                                            onClick={() => setSelectedBrand(String(brand))}
+                                            className={`text-sm ${selectedBrand === brand ? 'text-brand-600 font-bold' : 'text-gray-600'}`}
+                                        >
+                                            {brand}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
 
-                                <h3 className="font-serif font-medium text-gray-900 mt-8">Prix</h3>
-                                <div className="mt-4 flex items-center mb-4 gap-2">
-                                    <input type="number" value={priceRange[0]} onChange={(e) => handlePriceChange(e, 'min')} className="w-20 p-2 text-sm border rounded" />
-                                    <span>-</span>
-                                    <input type="number" value={priceRange[1]} onChange={(e) => handlePriceChange(e, 'max')} className="w-20 p-2 text-sm border rounded" />
-                                    <span className="text-xs text-gray-500">MAD</span>
-                                </div>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">Prix</h3>
+                            <div className="mt-4 flex items-center mb-4 gap-2">
+                                <input type="number" value={priceRange[0]} onChange={(e) => handlePriceChange(e, 'min')} className="w-20 p-2 text-sm border rounded" />
+                                <span>-</span>
+                                <input type="number" value={priceRange[1]} onChange={(e) => handlePriceChange(e, 'max')} className="w-20 p-2 text-sm border rounded" />
+                                <span className="text-xs text-gray-500">MAD</span>
+                            </div>
                         </div>
                     </div>
                 </div>
