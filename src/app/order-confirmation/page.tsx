@@ -4,14 +4,16 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getOrderById } from '@/services/api';
 import { Order } from '@/types';
-import { CheckCircle, Package, Phone, ArrowRight, Home } from 'lucide-react';
+import { CheckCircle, Package, Phone, ArrowRight, Home, UserPlus } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 const WHATSAPP_NUMBER = '212656201278';
 
 function OrderConfirmationContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { user } = useAuth();
 
     // Retrieve params from URL (instead of location.state in React Router)
     const orderId = searchParams.get('orderId');
@@ -151,13 +153,28 @@ function OrderConfirmationContent() {
                         Nous contacter sur WhatsApp
                     </a>
 
-                    <Link
-                        href="/profile"
-                        className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-4 px-6 rounded-xl font-bold transition-colors shadow-lg shadow-primary/20"
-                    >
-                        Voir mes commandes
-                        <ArrowRight className="h-5 w-5" />
-                    </Link>
+                    {user ? (
+                        <Link
+                            href="/profile"
+                            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-4 px-6 rounded-xl font-bold transition-colors shadow-lg shadow-primary/20"
+                        >
+                            Voir mes commandes
+                            <ArrowRight className="h-5 w-5" />
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/login"
+                            className="w-full flex flex-col items-center gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white py-4 px-6 rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
+                        >
+                            <span className="flex items-center gap-2">
+                                <UserPlus className="h-5 w-5" />
+                                Créer un compte pour suivre mes commandes
+                            </span>
+                            <span className="text-xs font-normal opacity-90">
+                                Accédez à l'historique et gérez vos livraisons
+                            </span>
+                        </Link>
+                    )}
 
                     <Link
                         href="/"
