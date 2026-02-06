@@ -51,13 +51,56 @@ export default function AdminDashboard() {
     // --- Auth Check ---
     useEffect(() => {
         if (!authLoading) {
-            if (!user || user.role !== 'admin') {
-                router.replace('/login');
+            if (!user) {
+                // Not logged in at all
+                router.replace('/login?from=/admin');
                 return;
             }
-            loadData();
+            // If logged in but not admin, we will show Access Denied state below instead of redirecting
+            // This helps debugging
+            if (user.role === 'admin') {
+                loadData();
+            }
         }
     }, [user, authLoading, router]);
+
+    if (authLoading) return <div className="min-h-screen flex items-center justify-center">Authentification...</div>;
+
+    if (user && user.role !== 'admin') {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 p-4">
+                <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
+                    <AlertTriangle className="h-16 w-16 text-yellow-500 mx-auto mb-4" />
+                    <h1 className="text-2xl font-bold text-gray-900 mb-2">Accès Refusé</h1>
+                    <p className="text-gray-600 mb-6">Vous n'avez pas les droits d'administrateur.</p>
+
+                    <div className="bg-gray-50 p-4 rounded text-left text-sm font-mono mb-6 overflow-x-auto">
+                        <p><strong>Email:</strong> {user.email}</p>
+                        <p><strong>ID:</strong> {user.id}</p>
+                        <p><strong>Role actuel:</strong> {user.role || 'Aucun (compte utilisateur standard)'}</p>
+                    </div>
+
+                    <p className="text-xs text-gray-500 mb-4">
+                        (Si vous êtes le propriétaire, exécutez la commande SQL fournie pour mettre à jour votre rôle.)
+                    </p>
+
+                    <button
+                        onClick={() => router.push('/')}
+                        className="bg-primary text-white px-6 py-2 rounded font-medium hover:bg-primary/90"
+                    >
+                        Retour à l'accueil
+                    </button>
+
+                    <button
+                        onClick={() => { useAuth().logout(); router.push('/login'); }}
+                        className="block w-full mt-4 text-gray-500 hover:text-gray-700 underline"
+                    >
+                        Se déconnecter
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     const loadData = async () => {
         setIsLoading(true);

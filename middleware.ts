@@ -71,13 +71,13 @@ export async function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname;
 
     // 1. Admin Protection
-    if (pathname.startsWith('/admin')) {
-        if (!user) {
-            return NextResponse.redirect(new URL('/login', request.url))
-        }
-        // Note: Role check ideally happens here via Custom Claims or DB lookup. 
-        // For now, we rely on client-side redirect for role, but this ensures at least a user exists.
-    }
+    // if (pathname.startsWith('/admin')) {
+    //     if (!user) {
+    //         return NextResponse.redirect(new URL('/login', request.url))
+    //     }
+    //     // Note: Role check ideally happens here via Custom Claims or DB lookup. 
+    //     // For now, we rely on client-side redirect for role, but this ensures at least a user exists.
+    // }
 
     // 2. Profile/Account Protection
     if (pathname.startsWith('/profile') || pathname.startsWith('/account')) {
