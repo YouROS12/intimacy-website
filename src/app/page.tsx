@@ -1,14 +1,21 @@
+'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { getFeaturedProducts } from '@/services/api';
 import { getProductImage } from '@/utils/imageHelpers';
+import { useI18n } from '@/contexts/I18nContext';
+import { Product } from '@/types';
 
 
-export const revalidate = 3600; // ISR: Revalidate every hour
+export default function Home() {
+  const { t } = useI18n();
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
 
-export default async function Home() {
-  const featuredProducts = await getFeaturedProducts();
+  useEffect(() => {
+    getFeaturedProducts().then(setFeaturedProducts);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -19,20 +26,20 @@ export default async function Home() {
             {/* Text Content */}
             <div className="flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
               <div className="space-y-4">
-                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">Moroccan Heritage</span>
+                <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">{t('home.hero.badge')}</span>
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight text-text-main dark:text-white">
-                  The Art of <br /><span className="text-primary italic">Intimate Care</span>
+                  {t('home.hero.title')} <br /><span className="text-primary italic">{t('home.hero.titleHighlight')}</span>
                 </h1>
                 <p className="text-lg text-text-muted dark:text-gray-400 max-w-md leading-relaxed">
-                  Experience the fusion of Moroccan tradition and modern clinical science. A sanctuary for your most delicate rituals.
+                  {t('home.hero.description')}
                 </p>
               </div>
               <div className="flex flex-wrap gap-4 pt-2">
                 <Link href="/shop" className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary/90 text-white text-base font-bold transition-transform active:scale-95 shadow-lg shadow-primary/25">
-                  Explore the Sanctuary
+                  {t('home.hero.ctaPrimary')}
                 </Link>
                 <Link href="/education" className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-white dark:bg-gray-800 border border-[#e7d9cf] dark:border-gray-700 hover:border-primary text-text-main dark:text-white text-base font-medium transition-colors">
-                  View Journal
+                  {t('home.hero.ctaSecondary')}
                 </Link>
               </div>
             </div>
@@ -50,8 +57,8 @@ export default async function Home() {
                 />
                 {/* Floating Badge */}
                 <div className="absolute bottom-6 left-6 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur p-4 rounded-lg shadow-lg max-w-[200px]">
-                  <p className="text-xs font-bold text-primary mb-1">New Arrival</p>
-                  <p className="text-sm font-serif font-medium text-text-main dark:text-white">Durex Performax Mutual Pleasure</p>
+                  <p className="text-xs font-bold text-primary mb-1">{t('home.hero.newArrival')}</p>
+                  <p className="text-sm font-serif font-medium text-text-main dark:text-white">{t('home.hero.productName')}</p>
                 </div>
               </div>
               {/* Decorative Circle */}

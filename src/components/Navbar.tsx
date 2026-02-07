@@ -56,10 +56,10 @@ const Navbar: React.FC = () => {
 
                     {/* Desktop Nav (Stitch Style) */}
                     <nav className="hidden md:flex items-center gap-8">
-                        <Link href="/" className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Home</Link>
-                        <Link href="/shop" className={`text-sm font-medium transition-colors ${isActive('/shop') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Shop</Link>
-                        <Link href="/education" className={`text-sm font-medium transition-colors ${isActive('/education') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>Wellness Journal</Link>
-                        <Link href="/about" className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>About</Link>
+                        <Link href="/" className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.home')}</Link>
+                        <Link href="/shop" className={`text-sm font-medium transition-colors ${isActive('/shop') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.shop')}</Link>
+                        <Link href="/education" className={`text-sm font-medium transition-colors ${isActive('/education') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.education')}</Link>
+                        <Link href="/about" className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.about')}</Link>
                     </nav>
 
                     <div className="hidden sm:flex items-center gap-3">
@@ -67,7 +67,7 @@ const Navbar: React.FC = () => {
                         <form onSubmit={handleSearch} className="relative hidden lg:block">
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder={t('nav.search')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-48 pl-4 pr-10 py-2 rounded-full border border-[#e7d9cf] dark:border-gray-700 bg-transparent text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
