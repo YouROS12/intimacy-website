@@ -118,6 +118,20 @@
   .glass-card-dark {
     @apply bg-black/20 backdrop-blur-md border border-white/10;
   }
+
+  /* Mobile Optimizations */
+  .tap-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .tap-target-lg {
+    @apply min-h-[48px] min-w-[48px];
+  }
+
+  /* Thumb-zone friendly spacing */
+  .mobile-safe-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
 }
 
 /* BASE RESETS */
@@ -133,4 +147,28 @@ h4,
 h5,
 h6 {
   font-family: var(--font-serif);
+}
+
+/* Fluid Typography for Mobile */
+h1 {
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.25rem, 3vw, 2rem);
+}
+
+/* Base font sizing - mobile first */
+html {
+  font-size: 16px;
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
 }

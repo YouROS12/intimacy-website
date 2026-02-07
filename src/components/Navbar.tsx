@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
                         {/* Cart Icon (Stitch Style) */}
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="relative flex items-center justify-center size-10 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
+                            className="relative flex items-center justify-center size-10 tap-target rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
                         >
                             <span className="material-symbols-outlined">shopping_bag</span>
                             {totalItems > 0 && (
@@ -94,7 +94,7 @@ const Navbar: React.FC = () => {
                         {user ? (
                             <div className="relative group">
                                 <Link href="/profile">
-                                    <button className="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                                    <button className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
                                         <span className="material-symbols-outlined">person</span>
                                     </button>
                                 </Link>

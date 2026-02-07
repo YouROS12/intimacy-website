@@ -27,6 +27,23 @@ const interDisplay = Inter({
 export const metadata: Metadata = {
   title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
   description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
+  viewport: {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 5,
+  },
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fbe6ff' },
+    { media: '(prefers-color-scheme: dark)', color: '#2d1b33' }
+  ],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Intimacy Morocco'
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
