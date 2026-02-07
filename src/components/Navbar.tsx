@@ -50,11 +50,11 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            {/* Urgency Banner - Sticky with navbar */}
-            <div className="sticky top-0 z-50 bg-primary text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
+            {/* Urgency Banner - Sticky at top */}
+            <div className="sticky top-0 z-[60] bg-primary text-white py-2 px-4 text-center text-xs sm:text-sm font-medium">
                 {t('home.urgency_banner')}
             </div>
-            <header className="sticky top-8 sm:top-10 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-[#f3ece7] dark:border-[#3a2e26] transition-all duration-300 overflow-x-hidden">
+            <header className="sticky top-0 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-[#f3ece7] dark:border-[#3a2e26] transition-all duration-300 overflow-x-hidden">
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
                         {/* Logo (Stitch Style) */}

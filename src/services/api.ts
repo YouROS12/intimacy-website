@@ -243,6 +243,7 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
     const now = new Date().toISOString();
 
     // Auto-set timestamp fields based on status
+    // Also clear conflicting timestamps for terminal states
     switch (status) {
         case 'processing':
             updateData.confirmed_at = now;
@@ -251,13 +252,32 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
             updateData.shipped_at = now;
             break;
         case 'delivered':
+            // Delivered is a terminal state - clear cancelled/returned
             updateData.delivered_at = now;
+            updateData.cancelled_at = null;
+            updateData.returned_at = null;
             break;
         case 'cancelled':
+            // Cancelled is a terminal state - clear delivered/returned
             updateData.cancelled_at = now;
+            updateData.delivered_at = null;
+            updateData.returned_at = null;
+            // Also clear shipping timestamps since order never shipped
+            updateData.shipped_at = null;
             break;
         case 'returned':
+            // Returned is a terminal state - clear cancelled/delivered
             updateData.returned_at = now;
+            updateData.cancelled_at = null;
+            // Keep delivered_at since you need to deliver before return
+            break;
+        case 'pending':
+            // Reset to pending - clear all timestamps except created_at
+            updateData.confirmed_at = null;
+            updateData.shipped_at = null;
+            updateData.delivered_at = null;
+            updateData.cancelled_at = null;
+            updateData.returned_at = null;
             break;
     }
 
