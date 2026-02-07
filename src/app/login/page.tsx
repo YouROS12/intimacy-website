@@ -33,6 +33,33 @@ function Content() {
     const redirectPath = searchParams.get('from') || '/';
     const { t } = useI18n();
 
+    // Helper to check if any form data exists
+    const hasFormData = () => {
+        return email.trim() || password.trim() || fullName.trim() || phone.trim() || address.trim();
+    };
+
+    // Handle tab switching with confirmation
+    const handleTabSwitch = (switchToLogin: boolean) => {
+        if (hasFormData()) {
+            const confirmed = window.confirm(
+                switchToLogin
+                    ? 'Vous avez des données non sauvegardées. Voulez-vous vraiment passer à la connexion?'
+                    : 'Vous avez des données non sauvegardées. Voulez-vous vraiment passer à l\'inscription?'
+            );
+            if (!confirmed) return;
+        }
+        setIsLogin(switchToLogin);
+        // Clear form on switch
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setFullName('');
+        setPhone('');
+        setAddress('');
+        setError('');
+        setFieldErrors({});
+    };
+
     useEffect(() => {
         getMoroccanCities().then(setCities);
 
@@ -173,87 +200,22 @@ function Content() {
 
                     <div className="flex border-b border-gray-200 mb-8">
                         <button
+                            type="button"
                             className={`pb-4 w-1/2 text-sm font-bold uppercase tracking-widest transition-colors ${isLogin ? 'border-b-2 border-brand-600 text-brand-600' : 'text-gray-400 hover:text-gray-600'}`}
-                            onClick={() => setIsLogin(true)}
+                            onClick={() => handleTabSwitch(true)}
                         >
                             {t('auth.login')}
                         </button>
                         <button
+                            type="button"
                             className={`pb-4 w-1/2 text-sm font-bold uppercase tracking-widest transition-colors ${!isLogin ? 'border-b-2 border-brand-600 text-brand-600' : 'text-gray-400 hover:text-gray-600'}`}
-                            onClick={() => setIsLogin(false)}
+                            onClick={() => handleTabSwitch(false)}
                         >
                             {t('auth.signup')}
                         </button>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                        {!isLogin && (
-                            <>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.full_name')}</label>
-                                    <div className="relative">
-                                        <UserIcon className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
-                                        <input
-                                            type="text"
-                                            required
-                                            className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
-                                            value={fullName}
-                                            onChange={(e) => setFullName(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.phone')}</label>
-                                    <div className="relative">
-                                        <Phone className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
-                                        <input
-                                            type="tel"
-                                            required
-                                            className={`pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 ${fieldErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
-                                            value={phone}
-                                            onChange={handlePhoneChange}
-                                        />
-                                        {fieldErrors.phone && <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>}
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.city')}</label>
-                                        <div className="relative">
-                                            <Building className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
-                                            <select
-                                                className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 appearance-none"
-                                                value={city}
-                                                onChange={(e) => setCity(e.target.value)}
-                                            >
-                                                {cities.map((c) => (
-                                                    <option key={c} value={c}>
-                                                        {c}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.address')}</label>
-                                    <div className="relative">
-                                        <MapPin className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
-                                        <input
-                                            type="text"
-                                            required
-                                            className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
-                                            value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
                             <input
@@ -278,22 +240,98 @@ function Content() {
                                 />
                                 {fieldErrors.password && <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>}
                             </div>
+                            {isLogin && (
+                                <div className="mt-2 text-right">
+                                    <Link href="/forgot-password" className="text-xs text-brand-600 hover:text-brand-700 hover:underline">
+                                        Mot de passe oublié?
+                                    </Link>
+                                </div>
+                            )}
                         </div>
 
                         {!isLogin && (
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.confirm_password')}</label>
-                                <div className="relative">
-                                    <Lock className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
-                                    <input
-                                        type="password"
-                                        required
-                                        className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                    />
+                            <>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.confirm_password')}</label>
+                                    <div className="relative">
+                                        <Lock className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                        <input
+                                            type="password"
+                                            required
+                                            className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div className="pt-4 border-t border-gray-200">
+                                    <p className="text-xs text-gray-500 mb-3">Informations de livraison</p>
+
+                                    <div className="space-y-4">
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.full_name')}</label>
+                                            <div className="relative">
+                                                <UserIcon className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
+                                                    value={fullName}
+                                                    onChange={(e) => setFullName(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.phone')}</label>
+                                            <div className="relative">
+                                                <Phone className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                                <input
+                                                    type="tel"
+                                                    required
+                                                    className={`pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 ${fieldErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                                    value={phone}
+                                                    onChange={handlePhoneChange}
+                                                />
+                                                {fieldErrors.phone && <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.city')}</label>
+                                            <div className="relative">
+                                                <Building className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                                <select
+                                                    className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 appearance-none"
+                                                    value={city}
+                                                    onChange={(e) => setCity(e.target.value)}
+                                                >
+                                                    {cities.map((c) => (
+                                                        <option key={c} value={c}>
+                                                            {c}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.address')}</label>
+                                            <div className="relative">
+                                                <MapPin className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
+                                                    value={address}
+                                                    onChange={(e) => setAddress(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         )}
 
                         <button

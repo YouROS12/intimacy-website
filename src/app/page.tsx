@@ -2,20 +2,30 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getFeaturedProducts } from '@/services/api';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
 import { Product } from '@/types';
+import { Package, ShieldCheck, CreditCard } from 'lucide-react';
 
 
 export default function Home() {
   const { t } = useI18n();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getFeaturedProducts().then(setFeaturedProducts);
   }, []);
+
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const scrollAmount = 340; // Card width + gap
+      const newScrollLeft = carouselRef.current.scrollLeft + (direction === 'right' ? scrollAmount : -scrollAmount);
+      carouselRef.current.scrollTo({ left: newScrollLeft, behavior: 'smooth' });
+    }
+  };
 
   const organizationJsonLd = {
     '@context': 'https://schema.org',
@@ -38,6 +48,12 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
+
+      {/* Urgency Banner */}
+      <div className="bg-primary text-white py-3 px-4 text-center text-sm font-medium">
+        {t('home.urgency_banner')}
+      </div>
+
       {/* Hero Section */}
       <section className="relative w-full py-12 lg:py-20 bg-background-light dark:bg-background-dark">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,8 +103,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust Badges */}
+      <section className="py-8 bg-white dark:bg-[#1a120b] border-y border-[#f3ece7] dark:border-[#3a2e26]">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+              <div className="flex-shrink-0 size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <CreditCard className="size-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-text-main dark:text-white text-sm">{t('home.trust.cod.title')}</h3>
+                <p className="text-xs text-text-muted dark:text-gray-400">{t('home.trust.cod.description')}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+              <div className="flex-shrink-0 size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <Package className="size-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-text-main dark:text-white text-sm">{t('home.trust.discreet.title')}</h3>
+                <p className="text-xs text-text-muted dark:text-gray-400">{t('home.trust.discreet.description')}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4 p-4 rounded-lg bg-background-light dark:bg-background-dark">
+              <div className="flex-shrink-0 size-12 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <ShieldCheck className="size-6" />
+              </div>
+              <div>
+                <h3 className="font-bold text-text-main dark:text-white text-sm">{t('home.trust.authentic.title')}</h3>
+                <p className="text-xs text-text-muted dark:text-gray-400">{t('home.trust.authentic.description')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Feature Section (Clinical Excellence) */}
-      <section className="py-16 bg-white dark:bg-[#1a120b] border-y border-[#f3ece7] dark:border-[#3a2e26]">
+      <section className="py-16 bg-white dark:bg-[#1a120b] border-b border-[#f3ece7] dark:border-[#3a2e26]">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-12 justify-between items-start md:items-end mb-12">
             <div className="max-w-2xl">
@@ -141,17 +192,26 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-text-main dark:text-white mt-2">Curated Selection</h2>
           </div>
           <div className="flex gap-2">
-            <button className="size-10 rounded-full border border-[#e7d9cf] dark:border-gray-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-white transition-colors">
+            <button
+              onClick={() => scrollCarousel('left')}
+              className="size-10 rounded-full border border-[#e7d9cf] dark:border-gray-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-white transition-colors"
+            >
               <span className="material-symbols-outlined">arrow_back</span>
             </button>
-            <button className="size-10 rounded-full border border-[#e7d9cf] dark:border-gray-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-white transition-colors">
+            <button
+              onClick={() => scrollCarousel('right')}
+              className="size-10 rounded-full border border-[#e7d9cf] dark:border-gray-700 flex items-center justify-center hover:bg-primary hover:border-primary hover:text-white transition-colors"
+            >
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
           </div>
         </div>
 
         {/* Scroll Container -- Populated with Real Data */}
-        <div className="flex overflow-x-auto pb-8 px-4 sm:px-6 lg:px-40 gap-6 no-scrollbar snap-x snap-mandatory">
+        <div
+          ref={carouselRef}
+          className="flex overflow-x-auto pb-8 px-4 sm:px-6 lg:px-40 gap-6 no-scrollbar snap-x snap-mandatory"
+        >
           {featuredProducts.map((product) => (
             <Link href={`/product/${product.id}`} key={product.id} className="flex-none w-[280px] md:w-[320px] snap-center group">
               <div className="flex flex-col h-full bg-white dark:bg-[#1a120b] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
@@ -177,39 +237,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Testimonial / Story Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-[1280px] mx-auto">
-          <div className="relative rounded-2xl overflow-hidden min-h-[500px] flex items-center justify-center text-center p-8 sm:p-16">
-            {/* Background Image with Overlay */}
-            <div className="absolute inset-0 z-0">
-              <div className="absolute inset-0 bg-black/40 z-10"></div>
-              <div
-                className="w-full h-full bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAj6YASFp7lRrI4wBj-HPaES-HUUBvcawOV0ogb-E7LKh9JG0eoPzFfJ98aPVnV5Q9KWXMZnjYTfTWKrGrOxVav4H4D14jYghMznL8UJ7gbW-nacgt-B__EmlDS78NPOg1WwM0VM3oZaBDf063fb1Vzm6WkkhRUvzipkJSjdOjSoBCvNrgQ6n_mgre2sjGBD0cPAVF7moLY9I7gstg5chMZZ0kyBM2b5VovlqwQAcsnGpqmi4ju3wY-X-k-79WBXwcLI6x5AtlV8Lum')" }}
-              ></div>
-            </div>
-            {/* Content */}
-            <div className="relative z-20 max-w-3xl flex flex-col items-center gap-8">
-              <div className="text-primary/90">
-                <span className="material-symbols-outlined text-5xl">format_quote</span>
-              </div>
-              <blockquote className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium leading-tight text-white">
-                "A transcendent experience that redefined self-care for me. The balance of luxury and genuine wellness is unmatched."
-              </blockquote>
-              <div className="flex flex-col items-center gap-2">
-                <cite className="text-white font-bold text-lg not-italic">— Sarah M.</cite>
-                <span className="text-white/70 text-sm">Verified Customer</span>
-              </div>
-              <button className="mt-4 px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 text-white font-bold transition-all">
-                Read More Stories
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
 
     </div>
   );

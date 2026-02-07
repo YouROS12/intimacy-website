@@ -62,6 +62,21 @@
                 "title": "Livraison Discrète",
                 "description": "Votre vie privée est primordiale. Toutes les commandes sont livrées dans un emballage écologique non marqué sans identifiants externes."
             }
+        },
+        "urgency_banner": "🎉 Livraison GRATUITE pour les commandes de 500 MAD et plus !",
+        "trust": {
+            "cod": {
+                "title": "Paiement à la livraison",
+                "description": "Cash on Delivery (COD)"
+            },
+            "discreet": {
+                "title": "Emballage discret",
+                "description": "100% anonyme"
+            },
+            "authentic": {
+                "title": "Produits authentiques",
+                "description": "Garantie 100%"
+            }
         }
     },
     "shop": {
@@ -129,7 +144,9 @@
             "subtotal": "Sous-total",
             "shipping": "Livraison",
             "shipping_free": "Gratuite",
-            "total": "Total"
+            "shipping_free_badge": "GRATUIT 🎉",
+            "total": "Total",
+            "free_shipping_progress": "💡 Plus que {amount} MAD pour la livraison gratuite!"
         },
         "payment": {
             "cod": "Paiement à la livraison",

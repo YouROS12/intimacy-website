@@ -381,11 +381,22 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <dt className="text-sm text-gray-600">{t('checkout.summary.shipping')}</dt>
-                                    <dd className="text-sm font-medium text-gray-900">35 MAD</dd>
+                                    {total >= 500 ? (
+                                        <dd className="text-sm font-medium text-green-600">{t('checkout.summary.shipping_free_badge')}</dd>
+                                    ) : (
+                                        <dd className="text-sm font-medium text-gray-900">35 MAD</dd>
+                                    )}
                                 </div>
+                                {total < 500 && total > 0 && (
+                                    <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
+                                        <span className="text-xs text-blue-700">
+                                            {t('checkout.summary.free_shipping_progress').replace('{amount}', String(500 - total))}
+                                        </span>
+                                    </div>
+                                )}
                                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                     <dt className="text-base font-bold text-gray-900">{t('checkout.summary.total')}</dt>
-                                    <dd className="text-base font-bold text-brand-600">{total + 35} MAD</dd>
+                                    <dd className="text-base font-bold text-brand-600">{total >= 500 ? total : total + 35} MAD</dd>
                                 </div>
                             </dl>
 

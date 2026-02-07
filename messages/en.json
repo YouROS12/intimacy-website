@@ -62,6 +62,21 @@
                 "title": "Discreet Shipping",
                 "description": "Your privacy is paramount. All orders are delivered in unbranded, eco-friendly packaging with no external identifiers."
             }
+        },
+        "urgency_banner": "🎉 FREE Shipping on orders 500 MAD and above!",
+        "trust": {
+            "cod": {
+                "title": "Cash on Delivery",
+                "description": "Pay when you receive"
+            },
+            "discreet": {
+                "title": "Discreet Packaging",
+                "description": "100% anonymous"
+            },
+            "authentic": {
+                "title": "Authentic Products",
+                "description": "100% Guaranteed"
+            }
         }
     },
     "shop": {
@@ -129,7 +144,9 @@
             "subtotal": "Subtotal",
             "shipping": "Shipping",
             "shipping_free": "Free",
-            "total": "Total"
+            "shipping_free_badge": "FREE 🎉",
+            "total": "Total",
+            "free_shipping_progress": "💡 Only {amount} MAD more for free shipping!"
         },
         "payment": {
             "cod": "Cash on Delivery",
