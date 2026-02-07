@@ -8,8 +8,8 @@ export default function OneSignalInit() {
         const initOneSignal = async () => {
             try {
                 await OneSignal.init({
-                    appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || 'ec00d117-6490-449e-af54-04983058f443', // Placeholder or use env
-                    safari_web_id: "web.onesignal.auto.6490449e-af54-0498-3058-f443ec00d117", // Placeholder
+                    appId: process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID || '0f048a11-9040-4dc3-a3d6-d5a349f85ba6',
+                    safari_web_id: "web.onesignal.auto.147da6f8-95e8-4f3e-9e77-8dc52e1c58f0",
                     notifyButton: {
                         enable: true,
                     },
