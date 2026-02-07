@@ -44,8 +44,34 @@ export default async function BlogPostPage({ params }: Props) {
         notFound();
     }
 
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: post.title,
+        image: post.cover_image ? [post.cover_image] : [],
+        datePublished: post.published_at,
+        dateModified: post.updated_at || post.published_at,
+        author: {
+            '@type': 'Person',
+            name: post.author
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'Intimacy Wellness Morocco',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://intimacy.ma/logo.png'
+            }
+        },
+        description: post.excerpt
+    };
+
     return (
         <div className="bg-white min-h-screen">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
 
             {/* Post Header */}
             <div className="max-w-4xl mx-auto px-4 pt-12 pb-8">

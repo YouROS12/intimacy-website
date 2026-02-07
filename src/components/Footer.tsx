@@ -13,6 +13,7 @@ const Footer = () => {
                 <p>&copy; {new Date().getFullYear()} Intimacy. {t('footer.rights')}</p>
                 <div className="flex gap-6">
                     <Link href="/legal/privacy" className="hover:text-primary transition-colors">{t('footer.privacy')}</Link>
+                    <Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link>
                     <Link href="/legal/terms" className="hover:text-primary transition-colors">{t('footer.terms')}</Link>
                     <Link href="/legal/returns" className="hover:text-primary transition-colors">{t('footer.shipping')}</Link>
                 </div>
