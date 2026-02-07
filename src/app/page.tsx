@@ -27,7 +27,7 @@ export default function Home() {
             <div className="flex flex-col gap-6 lg:gap-8 order-2 lg:order-1">
               <div className="space-y-4">
                 <span className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider">{t('home.hero.badge')}</span>
-                <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight text-text-main dark:text-white">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-serif font-medium leading-tight text-text-main dark:text-white">
                   {t('home.hero.title')} <br /><span className="text-primary italic">{t('home.hero.titleHighlight')}</span>
                 </h1>
                 <p className="text-lg text-text-muted dark:text-gray-400 max-w-md leading-relaxed">

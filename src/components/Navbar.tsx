@@ -211,6 +211,30 @@ const Navbar: React.FC = () => {
                             <Link href="/education" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.education')}</Link>
                             <Link href="/about" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.about')}</Link>
 
+                            <div className="px-4 py-2 border-t border-[#f3ece7] mt-2">
+                                <p className="text-xs font-semibold text-text-muted mb-2 uppercase tracking-wider">Language</p>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => setLocale('fr')}
+                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${locale === 'fr' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+                                    >
+                                        🇫🇷 FR
+                                    </button>
+                                    <button
+                                        onClick={() => setLocale('en')}
+                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${locale === 'en' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+                                    >
+                                        🇬🇧 EN
+                                    </button>
+                                    <button
+                                        onClick={() => setLocale('ar')}
+                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${locale === 'ar' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
+                                    >
+                                        🇸🇦 AR
+                                    </button>
+                                </div>
+                            </div>
+
                             {user && (
                                 <div className="mt-2 pt-2 border-t border-[#f3ece7]">
                                     <div className="px-4 py-2 text-sm font-bold text-primary">{user.name}</div>
