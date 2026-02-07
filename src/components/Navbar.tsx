@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { ShoppingBag, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
@@ -38,8 +38,18 @@ const Navbar: React.FC = () => {
         }
     };
 
+    // Prevent body scroll when mobile menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMenuOpen]);
+
     return (
-        <header className="sticky top-0 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-[#f3ece7] dark:border-[#3a2e26] transition-all duration-300">
+        <header className="sticky top-0 z-50 w-full bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-[#f3ece7] dark:border-[#3a2e26] transition-all duration-300 overflow-x-hidden">
             <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-20">
                     {/* Logo (Stitch Style) */}
@@ -109,7 +119,7 @@ const Navbar: React.FC = () => {
                                         onClick={() => { setLocale('ar'); setIsLangMenuOpen(false); }}
                                         className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'ar' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
                                     >
-                                        <span className="text-lg">🇸🇦</span>
+                                        <span className="text-lg">🇲🇦</span>
                                         <span>العربية</span>
                                     </button>
                                 </div>
@@ -206,10 +216,10 @@ const Navbar: React.FC = () => {
                             <Search className="absolute right-4 top-3.5 h-4 w-4 text-text-muted" />
                         </form>
                         <nav className="flex flex-col gap-2">
-                            <Link href="/" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.home')}</Link>
-                            <Link href="/shop" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.shop')}</Link>
-                            <Link href="/education" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.education')}</Link>
-                            <Link href="/about" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.about')}</Link>
+                            <Link href="/" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.home')}</Link>
+                            <Link href="/shop" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.shop')}</Link>
+                            <Link href="/education" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.education')}</Link>
+                            <Link href="/about" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.about')}</Link>
 
                             <div className="px-4 py-2 border-t border-[#f3ece7] mt-2">
                                 <p className="text-xs font-semibold text-text-muted mb-2 uppercase tracking-wider">Language</p>
@@ -230,7 +240,7 @@ const Navbar: React.FC = () => {
                                         onClick={() => setLocale('ar')}
                                         className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${locale === 'ar' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-700'}`}
                                     >
-                                        🇸🇦 AR
+                                        🇲🇦 AR
                                     </button>
                                 </div>
                             </div>
@@ -238,9 +248,9 @@ const Navbar: React.FC = () => {
                             {user && (
                                 <div className="mt-2 pt-2 border-t border-[#f3ece7]">
                                     <div className="px-4 py-2 text-sm font-bold text-primary">{user.name}</div>
-                                    <Link href="/profile" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.profile')}</Link>
+                                    <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.profile')}</Link>
                                     {user.role === 'admin' && (
-                                        <Link href="/admin" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.admin')}</Link>
+                                        <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.admin')}</Link>
                                     )}
                                     <button
                                         onClick={() => {
@@ -254,7 +264,7 @@ const Navbar: React.FC = () => {
                                 </div>
                             )}
                             {!user && (
-                                <Link href="/login" className="px-4 py-2 mt-2 bg-primary text-white rounded-lg font-medium text-center">{t('nav.login')}</Link>
+                                <Link href="/login" onClick={() => setIsMenuOpen(false)} className="px-4 py-2 mt-2 bg-primary text-white rounded-lg font-medium text-center">{t('nav.login')}</Link>
                             )}
                         </nav>
                     </div>

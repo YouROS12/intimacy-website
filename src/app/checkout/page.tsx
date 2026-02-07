@@ -373,6 +373,7 @@ export default function CheckoutPage() {
                                 ))}
                             </ul>
 
+
                             <dl className="space-y-4 border-t border-gray-200 pt-6">
                                 <div className="flex items-center justify-between">
                                     <dt className="text-sm text-gray-600">{t('checkout.summary.subtotal')}</dt>
@@ -380,11 +381,11 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <dt className="text-sm text-gray-600">{t('checkout.summary.shipping')}</dt>
-                                    <dd className="text-sm font-medium text-green-600">{t('checkout.summary.shipping_free')}</dd>
+                                    <dd className="text-sm font-medium text-gray-900">35 MAD</dd>
                                 </div>
                                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                     <dt className="text-base font-bold text-gray-900">{t('checkout.summary.total')}</dt>
-                                    <dd className="text-base font-bold text-brand-600">{total} MAD</dd>
+                                    <dd className="text-base font-bold text-brand-600">{total + 35} MAD</dd>
                                 </div>
                             </dl>
 
