@@ -1,0 +1,73 @@
+{
+    "nav": {
+        "title": "Wellness Sanctuary",
+        "home": "Home",
+        "shop": "Shop",
+        "education": "Wellness Journal",
+        "about": "About",
+        "cart": "Cart",
+        "profile": "Profile",
+        "admin": "Admin Dashboard",
+        "logout": "Logout",
+        "login": "Login",
+        "search": "Search..."
+    },
+    "home": {
+        "hero": {
+            "badge": "Moroccan Heritage",
+            "title": "The Art of",
+            "titleHighlight": "Intimate Care",
+            "description": "Experience the fusion of Moroccan tradition and modern clinical science. A sanctuary for your most delicate rituals.",
+            "ctaPrimary": "Explore the Sanctuary",
+            "ctaSecondary": "View Journal",
+            "newArrival": "New Arrival",
+            "productName": "Durex Performax Mutual Pleasure"
+        },
+        "features": {
+            "title": "Clinical Excellence",
+            "description": "Scientifically formulated. Culturally rooted. We bridge the gap between ancient wisdom and modern dermatology.",
+            "learnMore": "Learn about our process",
+            "dermatologist": {
+                "title": "Dermatologist Tested",
+                "description": "Rigorous clinical testing ensures every formula is safe, pH-balanced, and hypoallergenic for the most sensitive skin."
+            },
+            "organic": {
+                "title": "Organic Ingredients",
+                "description": "Sourced directly from Moroccan cooperatives. 100% natural origins, free from parabens, sulfates, and synthetic fragrances."
+            },
+            "shipping": {
+                "title": "Discreet Shipping",
+                "description": "Your privacy is paramount. All orders are delivered in unbranded, eco-friendly packaging with no external identifiers."
+            }
+        }
+    },
+    "shop": {
+        "title": "Our Collection",
+        "viewProduct": "View product",
+        "addToCart": "Add to cart",
+        "outOfStock": "Out of stock",
+        "inStock": "In stock",
+        "featured": "Featured"
+    },
+    "checkout": {
+        "title": "Checkout",
+        "shipping": "Shipping",
+        "account": "Create Account",
+        "summary": "Summary",
+        "fullName": "Full Name",
+        "phone": "Phone",
+        "address": "Address",
+        "city": "City",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "placeOrder": "Place Order",
+        "total": "Total"
+    },
+    "footer": {
+        "description": "Premier intimate wellness store in Morocco. Fast and discreet delivery.",
+        "company": "Company",
+        "legal": "Legal",
+        "contact": "Contact"
+    }
+}

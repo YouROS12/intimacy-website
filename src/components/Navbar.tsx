@@ -3,18 +3,21 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShoppingCart, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search } from 'lucide-react';
+import { ShoppingCart, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
+import { useI18n } from '@/contexts/I18nContext';
 import { UserRole } from '@/types';
 
 const Navbar: React.FC = () => {
     const { user, logout } = useAuth();
     const { items, setIsOpen } = useCart();
+    const { t, locale, setLocale } = useI18n();
 
     const router = useRouter();
     const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
 
     const isActive = (path: string) => pathname === path;
     const [searchQuery, setSearchQuery] = useState('');
@@ -78,6 +81,42 @@ const Navbar: React.FC = () => {
                         <button className="lg:hidden flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
                             <span className="material-symbols-outlined">search</span>
                         </button>
+
+                        {/* Language Switcher */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                                className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors"
+                            >
+                                <Globe className="h-5 w-5" />
+                            </button>
+
+                            {isLangMenuOpen && (
+                                <div className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
+                                    <button
+                                        onClick={() => { setLocale('fr'); setIsLangMenuOpen(false); }}
+                                        className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'fr' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                    >
+                                        <span className="text-lg">🇫🇷</span>
+                                        <span>Français</span>
+                                    </button>
+                                    <button
+                                        onClick={() => { setLocale('en'); setIsLangMenuOpen(false); }}
+                                        className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'en' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                    >
+                                        <span className="text-lg">🇬🇧</span>
+                                        <span>English</span>
+                                    </button>
+                                    <button
+                                        onClick={() => { setLocale('ar'); setIsLangMenuOpen(false); }}
+                                        className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'ar' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                    >
+                                        <span className="text-lg">🇸🇦</span>
+                                        <span>العربية</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         {/* Cart Icon (Stitch Style) */}
                         <button

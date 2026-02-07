@@ -1,0 +1,73 @@
+{
+    "nav": {
+        "title": "Wellness Sanctuary",
+        "home": "Accueil",
+        "shop": "Boutique",
+        "education": "Journal Bien-être",
+        "about": "À propos",
+        "cart": "Panier",
+        "profile": "Profil",
+        "admin": "Admin Dashboard",
+        "logout": "Déconnexion",
+        "login": "Connexion",
+        "search": "Rechercher..."
+    },
+    "home": {
+        "hero": {
+            "badge": "Héritage Marocain",
+            "title": "L'Art du",
+            "titleHighlight": "Soin Intime",
+            "description": "Découvrez la fusion de la tradition marocaine et de la science clinique moderne. Un sanctuaire pour vos rituels les plus délicats.",
+            "ctaPrimary": "Explorer le Sanctuaire",
+            "ctaSecondary": "Voir le Journal",
+            "newArrival": "Nouvelle Arrivée",
+            "productName": "Durex Performax Mutual Pleasure"
+        },
+        "features": {
+            "title": "Excellence Clinique",
+            "description": "Formulé scientifiquement. Ancré culturellement. Nous faisons le pont entre la sagesse ancestrale et la dermatologie moderne.",
+            "learnMore": "En savoir plus sur notre processus",
+            "dermatologist": {
+                "title": "Testé Dermatologiquement",
+                "description": "Des tests cliniques rigoureux garantissent que chaque formule est sûre, équilibrée en pH et hypoallergénique pour les peaux les plus sensibles."
+            },
+            "organic": {
+                "title": "Ingrédients Biologiques",
+                "description": "Provenant directement des coopératives marocaines. 100% d'origine naturelle, sans parabènes, sulfates et parfums synthétiques."
+            },
+            "shipping": {
+                "title": "Livraison Discrète",
+                "description": "Votre vie privée est primordiale. Toutes les commandes sont livrées dans un emballage écologique non marqué sans identifiants externes."
+            }
+        }
+    },
+    "shop": {
+        "title": "Notre Collection",
+        "viewProduct": "Voir le produit",
+        "addToCart": "Ajouter au panier",
+        "outOfStock": "Rupture de stock",
+        "inStock": "En stock",
+        "featured": "En vedette"
+    },
+    "checkout": {
+        "title": "Caisse",
+        "shipping": "Livraison",
+        "account": "Créer un compte",
+        "summary": "Résumé",
+        "fullName": "Nom Complet",
+        "phone": "Téléphone",
+        "address": "Adresse",
+        "city": "Ville",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "placeOrder": "Passer la commande",
+        "total": "Total"
+    },
+    "footer": {
+        "description": "Premier store bien-être intime au Maroc. Livraison discrète et rapide.",
+        "company": "Entreprise",
+        "legal": "Légal",
+        "contact": "Contact"
+    }
+}

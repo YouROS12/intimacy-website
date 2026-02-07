@@ -5,6 +5,7 @@ import './globals.css';
 import Navbar from '@/components/Navbar';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
+import { I18nProvider } from '@/contexts/I18nContext';
 import CartDrawer from '@/components/CartDrawer';
 import Link from 'next/link';
 import CookieConsent from '@/components/CookieConsent';
@@ -54,21 +55,23 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className="font-display antialiased text-text-main bg-background-light">
-        <AuthProvider>
-          <CartProvider>
-            <div className="min-h-screen bg-[#fbe6ff] flex flex-col">
-              <Navbar />
-              <CartDrawer />
-              <main className="flex-grow">{children}</main>
+        <I18nProvider>
+          <AuthProvider>
+            <CartProvider>
+              <div className="min-h-screen bg-[#fbe6ff] flex flex-col">
+                <Navbar />
+                <CartDrawer />
+                <main className="flex-grow">{children}</main>
 
-              <Footer />
+                <Footer />
 
-              {/* Floating Elements */}
-              <CookieConsent />
-              <WhatsAppButton />
-            </div>
-          </CartProvider>
-        </AuthProvider>
+                {/* Floating Elements */}
+                <CookieConsent />
+                <WhatsAppButton />
+              </div>
+            </CartProvider>
+          </AuthProvider>
+        </I18nProvider>
       </body>
       <GoogleAnalytics gaId="G-9ZBDX7N6LP" />
     </html>
