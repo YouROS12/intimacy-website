@@ -75,7 +75,7 @@ const BlogRenderer: React.FC<BlogRendererProps> = ({ content, products = [] }) =
 
 // --- Block Renderers ---
 
-const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
+const BlockRenderer: React.FC<{ block: BlogBlock; products?: Product[] }> = ({ block, products = [] }) => {
     switch (block.type) {
         case 'hero':
             return (
