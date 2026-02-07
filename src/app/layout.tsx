@@ -43,6 +43,7 @@ export const metadata: Metadata = {
   formatDetection: {
     telephone: false,
   },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
