@@ -1,5 +1,5 @@
 import { GoogleAnalytics } from '@next/third-parties/google';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Lora } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -25,15 +25,16 @@ const interDisplay = Inter({
   variable: '--font-manrope'
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#fbe6ff',
+};
+
 export const metadata: Metadata = {
   title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
   description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-  },
-  themeColor: '#fbe6ff', // Force light theme
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',

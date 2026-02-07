@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, BookOpen, Heart, Activity, Shield, Loader2, Stethoscope, FileText, ArrowRight } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface EducationClientProps {
     initialGuides: any[];
@@ -19,7 +19,8 @@ const CATEGORIES = [
 ];
 
 const EmptyState = ({ type, reset }: { type: string, reset: () => void }) => {
-    const t = useTranslations('education');
+    const { t: tRaw } = useI18n();
+    const t = (key: string) => tRaw(`education.${key}`);
     return (
         <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
             <p className="text-gray-500 text-lg mb-4">{t('empty')}</p>
@@ -34,7 +35,8 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides, initia
     const router = useRouter();
     const searchParams = useSearchParams();
     const activeTab = searchParams.get('tab') || 'articles'; // 'dossiers' (PSEO) or 'articles' (Blog)
-    const t = useTranslations('education');
+    const { t: tRaw } = useI18n();
+    const t = (key: string) => tRaw(`education.${key}`);
 
     const [filter, setFilter] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');

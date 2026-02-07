@@ -142,16 +142,16 @@ export default function CheckoutPage() {
             // Handle Account Creation
             if (!user && wantsAccount) {
                 try {
-                    const { user: newUser, error } = await signup(
+                    const result = await signup(
                         sanitizeEmail(accountData.email),
                         accountData.password,
                         sanitizedFullName,
-                        sanitizedPhone
+                        sanitizedPhone,
+                        `${formData.address}, ${formData.city}`
                     );
 
-                    if (error) throw error;
-                    if (newUser) {
-                        userId = newUser.id;
+                    if (result?.user) {
+                        userId = result.user.id;
                         isNewAccount = true;
                     }
                 } catch (signupError: any) {

@@ -103,23 +103,21 @@ function Content() {
 
                 // Check if converting anonymous user
                 if (user && user.isAnonymous) {
-                    const { error } = await convertGuestToPermanent(
+                    await convertGuestToPermanent(
                         sanitizedEmail,
                         password,
                         sanitizedName,
                         sanitizedPhone,
                         sanitizedAddress // Pass address to update profile
                     );
-                    if (error) throw error;
                 } else {
-                    const { error } = await signup(
+                    await signup(
                         sanitizedEmail,
                         password,
                         sanitizedName,
                         sanitizedPhone,
                         sanitizedAddress // Pass address to update profile
                     );
-                    if (error) throw error;
                     // For new signup, we might want to update address separately if signup doesn't take it,
                     // but useAuth implementation suggests signup takes basic info.
                     // If address update is needed separate, we'd do it here.

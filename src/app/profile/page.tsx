@@ -100,13 +100,11 @@ export default function ProfilePage() {
             const sanitizedPhone = sanitizePhone(editForm.phone);
             const sanitizedAddress = sanitizeInput(editForm.street_address);
 
-            const { error } = await updateUserProfile(user.id, {
-                name: sanitizedName,
+            await updateUserProfile(user.id, {
+                full_name: sanitizedName,
                 phone: sanitizedPhone,
                 address: formatAddress(editForm.city, sanitizedAddress)
             });
-
-            if (error) throw error;
             setIsEditing(false);
             refreshProfile(); // Refresh context
         } catch (error) {
@@ -136,15 +134,12 @@ export default function ProfilePage() {
 
         setIsSavingPassword(true);
         try {
-            const result = await updatePassword(passwordForm.newPassword);
-            if (result.error) {
-                setPasswordErrors({ newPassword: result.error.message });
-            } else {
-                setPasswordSuccess('Mot de passe mis à jour avec succès.');
-                setIsChangingPassword(false);
-                setPasswordForm({ newPassword: '', confirmPassword: '' });
-                setTimeout(() => setPasswordSuccess(''), 3000);
-            }
+            await updatePassword(passwordForm.newPassword);
+            // Success if no error thrown
+            setPasswordSuccess('Mot de passe mis à jour avec succès.');
+            setIsChangingPassword(false);
+            setPasswordForm({ newPassword: '', confirmPassword: '' });
+            setTimeout(() => setPasswordSuccess(''), 3000);
         } catch (err) {
             console.error(err);
             setPasswordErrors({ newPassword: t('auth.errors.general') });
@@ -404,9 +399,9 @@ export default function ProfilePage() {
                                             </div>
                                             <div>
                                                 <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                                        order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                                                'bg-yellow-100 text-yellow-800'
+                                                    order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                            'bg-yellow-100 text-yellow-800'
                                                     }`}>
                                                     {order.status === 'pending' ? 'En Attente' : order.status}
                                                 </span>
@@ -422,7 +417,7 @@ export default function ProfilePage() {
                                                                 <div className="w-full h-full bg-gray-200" />
                                                             </div>
                                                             <div>
-                                                                <p className="text-sm font-medium text-gray-900">{item.product_id}</p>
+                                                                <p className="text-sm font-medium text-gray-900">{item.name}</p>
                                                                 <p className="text-xs text-gray-500">Qté: {item.quantity}</p>
                                                             </div>
                                                         </div>

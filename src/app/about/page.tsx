@@ -1,11 +1,13 @@
+'use client';
 
 import React from 'react';
 import { Shield, Box, Lock, HelpCircle, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { useI18n } from '@/contexts/I18nContext';
 
 export default function AboutPage() {
-    const t = useTranslations('about');
+    const { t: tRaw } = useI18n();
+    const t = (key: string) => tRaw(`about.${key}`);
 
     return (
         <div className="bg-white min-h-screen font-sans text-slate-800">
