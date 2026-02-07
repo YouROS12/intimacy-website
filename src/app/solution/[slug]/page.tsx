@@ -7,11 +7,11 @@ import { Product } from '@/types';
 import { notFound } from 'next/navigation';
 
 type Props = {
-    params: { slug: string };
+    params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = params;
+    const { slug } = await params;
     const pageData = await getPseoPageBySlug(slug);
 
     if (!pageData) {
