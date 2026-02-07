@@ -89,20 +89,15 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="max-w-3xl mx-auto px-4 pb-20">
                 <BlogRenderer content={post.content} />
 
-                {/* Footer / CTA */}
-                <div className="mt-20 p-8 bg-brand-50 rounded-3xl border border-brand-100 text-center">
-                    <h3 className="text-xl font-bold text-slate-900 mb-4">Vous avez aimé cet article ?</h3>
-                    <p className="text-slate-600 mb-6">Inscrivez-vous à notre newsletter pour recevoir nos derniers conseils et offres exclusives.</p>
-                    <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                        <input
-                            type="email"
-                            placeholder="votre@email.com"
-                            className="flex-1 px-4 py-3 rounded-xl border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"
-                        />
-                        <button className="bg-brand-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-brand-700 transition-colors">
-                            S'inscrire
-                        </button>
-                    </div>
+                {/* Back to articles link */}
+                <div className="mt-20 text-center">
+                    <Link
+                        href="/education?tab=articles"
+                        className="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium"
+                    >
+                        <ArrowLeft className="h-4 w-4 mr-2" />
+                        Retour aux articles
+                    </Link>
                 </div>
             </div>
         </div>

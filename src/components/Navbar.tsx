@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShoppingCart, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
+import { ShoppingBag, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -45,9 +45,7 @@ const Navbar: React.FC = () => {
                     {/* Logo (Stitch Style) */}
                     <div className="flex items-center gap-3">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="text-primary group-hover:scale-110 transition-transform">
-                                <span className="material-symbols-outlined text-3xl">spa</span>
-                            </div>
+                            <ShieldCheck className="w-8 h-8" />
                             <h2 className="text-text-main dark:text-white text-xl font-bold tracking-tight font-serif">
                                 <span className="text-primary">Intimacy</span>
                             </h2>
@@ -79,7 +77,7 @@ const Navbar: React.FC = () => {
 
                         {/* Search Icon (Mobile/Tablet view trigger could go here, but keeping simple for now) */}
                         <button className="lg:hidden flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
-                            <span className="material-symbols-outlined">search</span>
+                            <Search className="size-5" />
                         </button>
 
                         {/* Language Switcher */}
@@ -123,7 +121,7 @@ const Navbar: React.FC = () => {
                             onClick={() => setIsOpen(true)}
                             className="relative flex items-center justify-center size-10 tap-target rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
                         >
-                            <span className="material-symbols-outlined">shopping_bag</span>
+                            <ShoppingBag className="size-6" />
                             {totalItems > 0 && (
                                 <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-light dark:ring-background-dark animate-pulse"></span>
                             )}
@@ -134,7 +132,7 @@ const Navbar: React.FC = () => {
                             <div className="relative group">
                                 <Link href="/profile">
                                     <button className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
-                                        <span className="material-symbols-outlined">person</span>
+                                        <UserIcon className="size-6" />
                                     </button>
                                 </Link>
 
@@ -187,7 +185,7 @@ const Navbar: React.FC = () => {
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 text-text-main"
                         >
-                            <span className="material-symbols-outlined">{isMenuOpen ? 'close' : 'menu'}</span>
+                            {isMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
                         </button>
                     </div>
                 </div>
@@ -200,7 +198,7 @@ const Navbar: React.FC = () => {
                         <form onSubmit={handleSearch} className="relative">
                             <input
                                 type="text"
-                                placeholder="Search..."
+                                placeholder={t('nav.search')}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full pl-4 pr-10 py-3 rounded-full border border-[#e7d9cf] bg-white text-sm focus:outline-none focus:border-primary"
@@ -208,17 +206,17 @@ const Navbar: React.FC = () => {
                             <Search className="absolute right-4 top-3.5 h-4 w-4 text-text-muted" />
                         </form>
                         <nav className="flex flex-col gap-2">
-                            <Link href="/" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Home</Link>
-                            <Link href="/shop" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Shop</Link>
-                            <Link href="/education" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Journal</Link>
-                            <Link href="/about" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">About</Link>
+                            <Link href="/" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.home')}</Link>
+                            <Link href="/shop" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.shop')}</Link>
+                            <Link href="/education" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.education')}</Link>
+                            <Link href="/about" className="px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.about')}</Link>
 
                             {user && (
                                 <div className="mt-2 pt-2 border-t border-[#f3ece7]">
-                                    <div className="px-4 py-2 text-sm font-bold text-primary">My Account ({user.name})</div>
-                                    <Link href="/profile" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Profile</Link>
+                                    <div className="px-4 py-2 text-sm font-bold text-primary">{user.name}</div>
+                                    <Link href="/profile" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.profile')}</Link>
                                     {user.role === 'admin' && (
-                                        <Link href="/admin" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">Admin Dashboard</Link>
+                                        <Link href="/admin" className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.admin')}</Link>
                                     )}
                                     <button
                                         onClick={() => {
@@ -227,12 +225,12 @@ const Navbar: React.FC = () => {
                                         }}
                                         className="w-full text-left px-4 py-2 hover:bg-red-50 rounded-lg text-red-600 font-medium"
                                     >
-                                        Log Out
+                                        {t('nav.logout')}
                                     </button>
                                 </div>
                             )}
                             {!user && (
-                                <Link href="/login" className="px-4 py-2 mt-2 bg-primary text-white rounded-lg font-medium text-center">Login / Register</Link>
+                                <Link href="/login" className="px-4 py-2 mt-2 bg-primary text-white rounded-lg font-medium text-center">{t('nav.login')}</Link>
                             )}
                         </nav>
                     </div>

@@ -68,6 +68,10 @@
         "description": "Premier intimate wellness store in Morocco. Fast and discreet delivery.",
         "company": "Company",
         "legal": "Legal",
-        "contact": "Contact"
+        "contact": "Contact",
+        "rights": "All rights reserved.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "shipping": "Shipping & Returns"
     }
 }

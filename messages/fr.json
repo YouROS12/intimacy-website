@@ -68,6 +68,10 @@
         "description": "Premier store bien-être intime au Maroc. Livraison discrète et rapide.",
         "company": "Entreprise",
         "legal": "Légal",
-        "contact": "Contact"
+        "contact": "Contact",
+        "rights": "Tous droits réservés.",
+        "privacy": "Politique de confidentialité",
+        "terms": "Conditions d'utilisation",
+        "shipping": "Livraison & Retours"
     }
 }

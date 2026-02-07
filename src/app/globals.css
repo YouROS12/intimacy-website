@@ -138,6 +138,8 @@
 body {
   background-color: var(--color-lavender);
   color: var(--color-charcoal);
+  overflow-x: hidden;
+  width: 100vw;
 }
 
 h1,
