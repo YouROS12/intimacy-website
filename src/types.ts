@@ -51,6 +51,11 @@ export interface Order {
     total: number;
     status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
     created_at: string;
+    confirmed_at?: string; // When admin confirmed order
+    shipped_at?: string; // When order was shipped
+    delivered_at?: string; // When order was delivered
+    cancelled_at?: string; // When order was cancelled
+    returned_at?: string; // When order was returned
     shipping_info?: {
         first_name: string;
         last_name: string;

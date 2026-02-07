@@ -49,11 +49,6 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      {/* Urgency Banner */}
-      <div className="bg-primary text-white py-3 px-4 text-center text-sm font-medium">
-        {t('home.urgency_banner')}
-      </div>
-
       {/* Hero Section */}
       <section className="relative w-full py-12 lg:py-20 bg-background-light dark:bg-background-dark">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">

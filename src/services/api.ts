@@ -237,7 +237,31 @@ export const getOrderById = async (orderId: string): Promise<Order | null> => {
 
 export const updateOrderStatus = async (orderId: string, status: string) => {
     if (!isSupabaseConfigured()) throw new Error("Database not configured");
-    const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
+
+    // Build update object with status and appropriate timestamp
+    const updateData: any = { status };
+    const now = new Date().toISOString();
+
+    // Auto-set timestamp fields based on status
+    switch (status) {
+        case 'processing':
+            updateData.confirmed_at = now;
+            break;
+        case 'shipped':
+            updateData.shipped_at = now;
+            break;
+        case 'delivered':
+            updateData.delivered_at = now;
+            break;
+        case 'cancelled':
+            updateData.cancelled_at = now;
+            break;
+        case 'returned':
+            updateData.returned_at = now;
+            break;
+    }
+
+    const { error } = await supabase.from('orders').update(updateData).eq('id', orderId);
     if (error) throw error;
 };
 

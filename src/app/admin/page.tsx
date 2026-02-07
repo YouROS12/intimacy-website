@@ -263,9 +263,9 @@ export default function AdminDashboard() {
                 {activeTab === 'orders' && (
                     <div className="bg-white shadow overflow-hidden sm:rounded-lg border border-gray-200">
                         <div className="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Gestion des Commandes</h3>
+                            <h3 className="text-lg leading-6 font-medium text-gray-900">Gestion des Commandes ({filteredOrders.length})</h3>
                             <div className="flex flex-wrap gap-2">
-                                {['all', 'pending', 'shipped', 'delivered', 'returned', 'cancelled'].map((status) => (
+                                {['all', 'pending', 'processing', 'shipped', 'delivered', 'returned', 'cancelled'].map((status) => (
                                     <button
                                         key={status}
                                         onClick={() => filterOrders(status)}
@@ -273,49 +273,21 @@ export default function AdminDashboard() {
                                             }`}
                                     >
                                         {status === 'all' ? 'Tout' : status}
+                                        {status !== 'all' && ` (${orders.filter(o => o.status === status).length})`}
                                     </button>
                                 ))}
                             </div>
                         </div>
-                        {/* Mobile View (Cards) */}
-                        <div className="sm:hidden space-y-4 p-4">
-                            {filteredOrders.map((order) => (
-                                <div key={order.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
-                                    <div className="flex justify-between items-start mb-2">
-                                        <div>
-                                            <span className="text-sm font-medium text-gray-900">#{order.id.slice(0, 8)}</span>
-                                            <p className="text-xs text-gray-500">{new Date(order.created_at || '').toLocaleDateString()}</p>
-                                        </div>
-                                        <span className={`px-2 py-1 text-xs font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                                'bg-yellow-100 text-yellow-800'
-                                            }`}>
-                                            {order.status.toUpperCase()}
-                                        </span>
-                                    </div>
-                                    <div className="mb-3">
-                                        <p className="text-sm font-medium text-gray-900">{order.shipping_info?.first_name} {order.shipping_info?.last_name}</p>
-                                        <p className="text-xs text-gray-500">{order.shipping_info?.phone}</p>
-                                    </div>
-                                    <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                                        <span className="font-bold text-gray-900">{order.total} MAD</span>
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleWhatsApp(order)} className="p-2 text-green-600 bg-green-50 rounded-full"><MessageCircle className="h-4 w-4" /></button>
-                                            <button onClick={() => handleStatusUpdate(order.id, 'shipped')} className="p-2 text-blue-600 bg-blue-50 rounded-full"><Truck className="h-4 w-4" /></button>
-                                            {/* Expand/More actions could go here */}
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
 
-                        {/* Desktop View (Table) */}
-                        <div className="hidden sm:block overflow-x-auto">
+                        {/* Enhanced Desktop Orders Table */}
+                        <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Réf.</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12"></th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commande</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
+                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
                                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
@@ -323,31 +295,196 @@ export default function AdminDashboard() {
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
                                     {filteredOrders.map((order) => (
-                                        <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id.slice(0, 8)}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                <div className="font-medium text-gray-900">{order.shipping_info?.first_name} {order.shipping_info?.last_name}</div>
-                                                <div className="text-xs text-gray-400">{order.shipping_info?.phone}</div>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">{order.total} MAD</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                                    order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-yellow-100 text-yellow-800'
-                                                    }`}>
-                                                    {order.status.toUpperCase()}
-                                                </span>
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 flex gap-2">
-                                                <button onClick={() => handleWhatsApp(order)} className="text-green-600 hover:bg-green-50 p-1 rounded"><MessageCircle className="h-5 w-5" /></button>
-                                                <button onClick={() => handleStatusUpdate(order.id, 'shipped')} className="text-blue-600 hover:bg-blue-50 p-1 rounded"><Truck className="h-5 w-5" /></button>
-                                                <button onClick={() => handleStatusUpdate(order.id, 'delivered')} className="text-green-600 hover:bg-green-50 p-1 rounded"><CheckCircle className="h-5 w-5" /></button>
-                                                <button onClick={() => handleStatusUpdate(order.id, 'cancelled')} className="text-red-600 hover:bg-red-50 p-1 rounded"><XCircle className="h-5 w-5" /></button>
-                                            </td>
-                                        </tr>
+                                        <React.Fragment key={order.id}>
+                                            <tr className="hover:bg-gray-50 transition-colors">
+                                                <td className="px-6 py-4">
+                                                    <button
+                                                        onClick={() => {
+                                                            const el = document.getElementById(`order-details-${order.id}`);
+                                                            if (el) el.classList.toggle('hidden');
+                                                        }}
+                                                        className="text-gray-400 hover:text-gray-600"
+                                                    >
+                                                        <Eye className="h-4 w-4" />
+                                                    </button>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-mono font-medium text-gray-900">#{order.id.slice(0, 8).toUpperCase()}</div>
+                                                    <div className="text-xs text-gray-500">{order.items.length} article(s)</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-medium text-gray-900">{order.shipping_info?.first_name} {order.shipping_info?.last_name}</div>
+                                                    <div className="text-xs text-gray-500">{order.shipping_info?.phone}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm text-gray-900">{new Date(order.created_at).toLocaleDateString('fr-FR')}</div>
+                                                    <div className="text-xs text-gray-500">{new Date(order.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <div className="text-sm font-bold text-primary">{order.total} MAD</div>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <select
+                                                        value={order.status}
+                                                        onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                                                        className={`text-xs font-semibold rounded-full px-3 py-1 border-0 focus:ring-2 focus:ring-primary ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                            order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                                order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
+                                                                    order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                                        order.status === 'returned' ? 'bg-purple-100 text-purple-800' :
+                                                                            'bg-gray-100 text-gray-800'
+                                                            }`}
+                                                    >
+                                                        <option value="pending">Pending</option>
+                                                        <option value="processing">Processing</option>
+                                                        <option value="shipped">Shipped</option>
+                                                        <option value="delivered">Delivered</option>
+                                                        <option value="returned">Returned</option>
+                                                        <option value="cancelled">Cancelled</option>
+                                                    </select>
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <button
+                                                        onClick={() => handleWhatsApp(order)}
+                                                        className="p-2 text-green-600 hover:bg-green-50 rounded-full transition-colors"
+                                                        title="Contact via WhatsApp"
+                                                    >
+                                                        <MessageCircle className="h-5 w-5" />
+                                                    </button>
+                                                </td>
+                                            </tr>
+
+                                            {/* Expandable Order Details Row */}
+                                            <tr id={`order-details-${order.id}`} className="hidden bg-gray-50">
+                                                <td colSpan={7} className="px-6 py-4">
+                                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                        {/* Left: Products */}
+                                                        <div>
+                                                            <h4 className="font-medium text-sm text-gray-900 mb-3 flex items-center gap-2">
+                                                                <Package className="h-4 w-4" />
+                                                                Produits commandés
+                                                            </h4>
+                                                            <div className="space-y-2">
+                                                                {order.items.map((item, idx) => (
+                                                                    <div key={idx} className="flex items-center gap-3 bg-white p-3 rounded-lg border border-gray-200">
+                                                                        <div className="h-12 w-12 rounded bg-gray-100 flex-shrink-0 overflow-hidden">
+                                                                            {item.imageUrl || item.image_url ? (
+                                                                                <img
+                                                                                    src={getProductImage(item.imageUrl || item.image_url || '')}
+                                                                                    alt={item.name}
+                                                                                    className="w-full h-full object-cover"
+                                                                                />
+                                                                            ) : (
+                                                                                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                                                                                    <Package className="h-6 w-6 text-gray-400" />
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        <div className="flex-1 min-w-0">
+                                                                            <p className="text-sm font-medium text-gray-900 truncate">{item.name}</p>
+                                                                            <p className="text-xs text-gray-500">Qté: {item.quantity} × {item.price} MAD</p>
+                                                                        </div>
+                                                                        <div className="text-sm font-bold text-gray-900">
+                                                                            {item.price * item.quantity} MAD
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Right: Shipping & Timeline */}
+                                                        <div className="space-y-4">
+                                                            {/* Shipping Info */}
+                                                            <div>
+                                                                <h4 className="font-medium text-sm text-gray-900 mb-3 flex items-center gap-2">
+                                                                    <Truck className="h-4 w-4" />
+                                                                    Informations de livraison
+                                                                </h4>
+                                                                <div className="bg-white p-3 rounded-lg border border-gray-200 text-sm space-y-1">
+                                                                    <p className="font-medium text-gray-900">{order.shipping_info?.first_name} {order.shipping_info?.last_name}</p>
+                                                                    <p className="text-gray-600">{order.shipping_info?.phone}</p>
+                                                                    <p className="text-gray-600">{order.shipping_info?.address}</p>
+                                                                    <p className="text-gray-600">{order.shipping_info?.city}</p>
+                                                                    {order.shipping_info?.guest_email && (
+                                                                        <p className="text-gray-600 text-xs">Email: {order.shipping_info.guest_email}</p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Order Timeline */}
+                                                            <div>
+                                                                <h4 className="font-medium text-sm text-gray-900 mb-3 flex items-center gap-2">
+                                                                    <Clock className="h-4 w-4" />
+                                                                    Chronologie
+                                                                </h4>
+                                                                <div className="bg-white p-3 rounded-lg border border-gray-200 space-y-2">
+                                                                    <div className="flex items-start gap-2">
+                                                                        <div className="h-2 w-2 rounded-full bg-blue-500 mt-1"></div>
+                                                                        <div className="flex-1">
+                                                                            <p className="text-xs font-medium text-gray-900">Commande créée</p>
+                                                                            <p className="text-xs text-gray-500">{new Date(order.created_at).toLocaleString('fr-FR')}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    {order.confirmed_at && (
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="h-2 w-2 rounded-full bg-yellow-500 mt-1"></div>
+                                                                            <div className="flex-1">
+                                                                                <p className="text-xs font-medium text-gray-900">Confirmée</p>
+                                                                                <p className="text-xs text-gray-500">{new Date(order.confirmed_at).toLocaleString('fr-FR')}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    {order.shipped_at && (
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="h-2 w-2 rounded-full bg-indigo-500 mt-1"></div>
+                                                                            <div className="flex-1">
+                                                                                <p className="text-xs font-medium text-gray-900">Expédiée</p>
+                                                                                <p className="text-xs text-gray-500">{new Date(order.shipped_at).toLocaleString('fr-FR')}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    {order.delivered_at && (
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="h-2 w-2 rounded-full bg-green-500 mt-1"></div>
+                                                                            <div className="flex-1">
+                                                                                <p className="text-xs font-medium text-gray-900">Livrée</p>
+                                                                                <p className="text-xs text-gray-500">{new Date(order.delivered_at).toLocaleString('fr-FR')}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    {order.cancelled_at && (
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="h-2 w-2 rounded-full bg-red-500 mt-1"></div>
+                                                                            <div className="flex-1">
+                                                                                <p className="text-xs font-medium text-gray-900">Annulée</p>
+                                                                                <p className="text-xs text-gray-500">{new Date(order.cancelled_at).toLocaleString('fr-FR')}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                    {order.returned_at && (
+                                                                        <div className="flex items-start gap-2">
+                                                                            <div className="h-2 w-2 rounded-full bg-purple-500 mt-1"></div>
+                                                                            <div className="flex-1">
+                                                                                <p className="text-xs font-medium text-gray-900">Retournée</p>
+                                                                                <p className="text-xs text-gray-500">{new Date(order.returned_at).toLocaleString('fr-FR')}</p>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </React.Fragment>
                                     ))}
                                 </tbody>
                             </table>
+                            {filteredOrders.length === 0 && (
+                                <div className="text-center py-12 text-gray-500">
+                                    Aucune commande trouvée
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

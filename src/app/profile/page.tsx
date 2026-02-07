@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserOrders, updateUserProfile, getMoroccanCities } from '@/services/api';
 import { Order } from '@/types';
-import { Calendar, MapPin, Phone, User as UserIcon, Edit2, Save, X, Lock, Eye, EyeOff } from 'lucide-react';
+import { Calendar, MapPin, Phone, User as UserIcon, Edit2, Save, X, Lock, Eye, EyeOff, Package } from 'lucide-react';
 import { validateMoroccanPhone, formatAddress, parseAddress } from '@/utils/helpers';
 import { sanitizeInput, sanitizePhone } from '@/utils/sanitize';
 import { useI18n } from '@/contexts/I18nContext';
+import { getProductImage } from '@/utils/imageHelpers';
 
 export default function ProfilePage() {
     const { user, isLoading, refreshProfile, updatePassword } = useAuth();
@@ -413,8 +414,17 @@ export default function ProfilePage() {
                                                     <li key={idx} className="py-3 flex justify-between items-center">
                                                         <div className="flex items-center">
                                                             <div className="h-10 w-10 rounded bg-gray-100 flex-shrink-0 mr-4 overflow-hidden">
-                                                                {/* Placeholder if no image in order item */}
-                                                                <div className="w-full h-full bg-gray-200" />
+                                                                {item.imageUrl || item.image_url ? (
+                                                                    <img
+                                                                        src={getProductImage(item.imageUrl || item.image_url || '')}
+                                                                        alt={item.name}
+                                                                        className="w-full h-full object-cover"
+                                                                    />
+                                                                ) : (
+                                                                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                                                                        <Package className="h-5 w-5 text-gray-400" />
+                                                                    </div>
+                                                                )}
                                                             </div>
                                                             <div>
                                                                 <p className="text-sm font-medium text-gray-900">{item.name}</p>
