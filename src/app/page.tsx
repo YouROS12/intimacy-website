@@ -1,5 +1,6 @@
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { getFeaturedProducts } from '@/services/api';
 import { getProductImage } from '@/utils/imageHelpers';
 
@@ -39,10 +40,14 @@ export default async function Home() {
             <div className="relative order-1 lg:order-2">
               <div className="aspect-[4/5] w-full rounded-xl overflow-hidden shadow-2xl relative group">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
-                <div
-                  className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-700 group-hover:scale-105"
-                  style={{ backgroundImage: "url('/durex-hero.png')" }}
-                ></div>
+                <Image
+                  src="/durex-hero.png"
+                  alt="Durex Performax Mutual Pleasure"
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                />
                 {/* Floating Badge */}
                 <div className="absolute bottom-6 left-6 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur p-4 rounded-lg shadow-lg max-w-[200px]">
                   <p className="text-xs font-bold text-primary mb-1">New Arrival</p>
