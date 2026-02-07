@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
             <div className="bg-brand-600 text-white py-2 px-4 text-center text-xs sm:text-sm font-medium relative z-[101]">
                 {t('home.urgency_banner')}
             </div>
-            <header className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-all duration-300 overflow-x-hidden relative z-[100]">
+            <header className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-all duration-300 relative z-[100]">
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
                         {/* Logo (Stitch Style) */}
