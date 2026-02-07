@@ -32,10 +32,7 @@ export const metadata: Metadata = {
     initialScale: 1,
     maximumScale: 5,
   },
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fbe6ff' },
-    { media: '(prefers-color-scheme: dark)', color: '#2d1b33' }
-  ],
+  themeColor: '#fbe6ff', // Force light theme
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
