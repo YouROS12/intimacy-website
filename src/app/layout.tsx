@@ -11,6 +11,7 @@ import Link from 'next/link';
 import CookieConsent from '@/components/CookieConsent';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import Footer from '@/components/Footer';
+import OneSignalInit from '@/components/OneSignalInit';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const lora = Lora({
@@ -70,6 +71,7 @@ export default function RootLayout({
                 {/* Floating Elements */}
                 <CookieConsent />
                 <WhatsAppButton />
+                <OneSignalInit />
               </div>
             </CartProvider>
           </AuthProvider>
