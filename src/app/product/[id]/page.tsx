@@ -34,6 +34,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
 }
 
+export const revalidate = 3600; // Cache for 1 hour
+
 export default async function ProductPage({ params }: Props) {
     const { id } = await params;
     const product = await getProductById(id);
