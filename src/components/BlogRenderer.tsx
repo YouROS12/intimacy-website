@@ -130,7 +130,20 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
             );
 
         case 'product_grid':
-            const products = MOCK_PRODUCTS.filter(p => block.productIds?.includes(p.id));
+            if (!block.productIds || !Array.isArray(block.productIds)) return null;
+            const validIds = block.productIds.filter(id => id && typeof id === 'string'); // Filter empty strings
+            const products = MOCK_PRODUCTS.filter(p => validIds.includes(p.id));
+
+            // If no mock products found, maybe they are real IDs? 
+            // We can't fetch here in a client component easily without a hook.
+            // For now, prevent crash.
+            if (products.length === 0) {
+                // Option: Render just the IDs or a placeholder? 
+                // Better to return null than crash or show empty box if data mismatch.
+                // Actually, if we return null, the block disappears.
+                // If the user wants to see *something*, we'd need to fetch.
+                return null;
+            }
             if (products.length === 0) return null;
 
             return (
