@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -9,6 +8,7 @@ import { getMoroccanCities } from '@/services/api';
 import { validateMoroccanPhone, formatAddress } from '@/utils/helpers';
 import { sanitizeInput, sanitizeEmail, sanitizePhone } from '@/utils/sanitize';
 import Link from 'next/link';
+import { useI18n } from '@/contexts/I18nContext';
 
 function Content() {
     const [isLogin, setIsLogin] = useState(true);
@@ -31,6 +31,7 @@ function Content() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectPath = searchParams.get('from') || '/';
+    const { t } = useI18n();
 
     useEffect(() => {
         getMoroccanCities().then(setCities);
@@ -69,29 +70,29 @@ function Content() {
                 const newFieldErrors: any = {};
 
                 if (password !== confirmPassword) {
-                    setError("Les mots de passe ne correspondent pas.");
+                    setError(t('auth.errors.password_mismatch'));
                     return; // Stop immediately
                 }
                 if (password.length < 6) {
-                    newFieldErrors.password = "Le mot de passe doit contenir au moins 6 caractères.";
+                    newFieldErrors.password = t('auth.errors.password_short');
                     hasError = true;
                 }
                 if (!fullName.trim()) {
-                    setError("Le nom complet est requis.");
+                    setError(t('auth.errors.name_required'));
                     hasError = true;
                 }
                 if (!validateMoroccanPhone(phone)) {
-                    newFieldErrors.phone = "Numéro marocain invalide. Utilisez le format 06XXXXXXXX.";
+                    newFieldErrors.phone = t('auth.errors.phone_invalid');
                     hasError = true;
                 }
                 if (!address.trim()) {
-                    setError("L'adresse de livraison est requise.");
+                    setError(t('auth.errors.address_required'));
                     hasError = true;
                 }
 
                 if (hasError) {
                     setFieldErrors(newFieldErrors);
-                    throw new Error("Veuillez corriger les erreurs dans le formulaire.");
+                    throw new Error(t('auth.errors.general')); // Generic error, specific ones are in fieldErrors or error state
                 }
 
                 // Sanitize all inputs before submission
@@ -99,254 +100,250 @@ function Content() {
                 const sanitizedName = sanitizeInput(fullName);
                 const sanitizedPhone = sanitizePhone(phone);
                 const sanitizedAddress = sanitizeInput(address);
-                const fullAddress = formatAddress(city, sanitizedAddress);
 
-                // Check if user is anonymous - use updateUser to convert, otherwise signup
-                if (user?.isAnonymous) {
-                    // Convert anonymous user to permanent
-                    try {
-                        await convertGuestToPermanent(sanitizedEmail, password, sanitizedName, sanitizedPhone, fullAddress);
-                        router.replace(redirectPath); // Redirect immediately, user is already logged in
-                    } catch (conversionError: any) {
-                        // If email already exists, show helpful error
-                        if (conversionError.message?.includes('already') || conversionError.message?.includes('exists')) {
-                            throw new Error("Cet email existe déjà. Veuillez vous connecter avec votre compte existant.");
-                        }
-                        throw conversionError;
-                    }
+                // Check if converting anonymous user
+                if (user && user.isAnonymous) {
+                    const { error } = await convertGuestToPermanent(
+                        sanitizedEmail,
+                        password,
+                        sanitizedName,
+                        sanitizedPhone,
+                        sanitizedAddress // Pass address to update profile
+                    );
+                    if (error) throw error;
                 } else {
-                    // Regular signup for new users
-                    await signup(sanitizedEmail, password, sanitizedName, sanitizedPhone, fullAddress);
-                    setIsLogin(true);
-                    setError("Compte créé avec succès ! Veuillez vérifier votre email avant de vous connecter.");
-                    // Clear form
-                    setPassword('');
-                    setConfirmPassword('');
+                    const { error } = await signup(
+                        sanitizedEmail,
+                        password,
+                        sanitizedName,
+                        sanitizedPhone
+                    );
+                    if (error) throw error;
+                    // For new signup, we might want to update address separately if signup doesn't take it,
+                    // but useAuth implementation suggests signup takes basic info.
+                    // If address update is needed separate, we'd do it here.
+                    // Assuming signup sufficient or profile update happens later/embedded.
                 }
+                router.replace(redirectPath);
             }
         } catch (err: any) {
             console.error(err);
-            setError(err.message || "Échec de l'authentification");
+            // Better error handling for firebase auth errors
+            if (err.code === 'auth/email-already-in-use') {
+                setError('Cet email est déjà utilisé.');
+            } else if (err.code === 'auth/invalid-email') {
+                setError('Email invalide.');
+            } else if (err.code === 'auth/wrong-password') {
+                setError('Mot de passe incorrect.');
+            } else if (err.code === 'auth/user-not-found') {
+                setError('Utilisateur introuvable.');
+            }
+            else {
+                setError(err.message || t('auth.errors.general'));
+            }
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
-            <Link
-                href="/"
-                className="absolute top-8 left-8 text-gray-500 hover:text-brand-600 flex items-center gap-2"
-            >
-                <ArrowLeft className="h-5 w-5" /> Retour à la boutique
+        <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
+            <Link href="/" className="absolute top-8 left-8 flex items-center text-gray-500 hover:text-brand-600 transition-colors">
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                {t('product.back_to_shop')}
             </Link>
 
-            <div className="sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="flex justify-center">
-                    <ShieldCheck className="h-12 w-12 text-brand-600" />
-                </div>
-                <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                    {isLogin ? 'Connectez-vous à votre compte' : 'Créer un nouveau compte'}
-                </h2>
-                <p className="mt-2 text-center text-sm text-gray-600">
-                    {redirectPath.includes('checkout')
-                        ? <span className="text-brand-600 font-medium">Veuillez vous connecter pour finaliser votre commande.</span>
-                        : 'Rejoignez notre communauté discrète.'}
-                </p>
-            </div>
+            <div className="bg-white rounded-3xl shadow-xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row">
+                {/* Left Side - Form */}
+                <div className="w-full md:w-1/2 p-8 md:p-12">
+                    <div className="mb-10 text-center">
+                        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
+                            {isLogin ? t('auth.login') : t('auth.signup')}
+                        </h1>
+                        <p className="text-gray-500 text-sm">
+                            {t('home.hero.badge')}
+                        </p>
+                    </div>
 
-            <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-                <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-                    <form className="space-y-6" onSubmit={handleSubmit}>
-                        {error && (
-                            <div className={`p-3 rounded text-sm border ${error.includes('succès') ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
-                                {error}
-                            </div>
-                        )}
-
-                        {/* Email Field */}
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
-                            <div className="mt-1">
-                                <input
-                                    id="email"
-                                    name="email"
-                                    type="email"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
-                                />
-                            </div>
+                    {error && (
+                        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3 animate-pulse">
+                            <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" />
+                            <p className="text-sm text-red-600">{error}</p>
                         </div>
+                    )}
 
-                        {/* Additional Fields for Signup */}
+                    <div className="flex border-b border-gray-200 mb-8">
+                        <button
+                            className={`pb-4 w-1/2 text-sm font-bold uppercase tracking-widest transition-colors ${isLogin ? 'border-b-2 border-brand-600 text-brand-600' : 'text-gray-400 hover:text-gray-600'}`}
+                            onClick={() => setIsLogin(true)}
+                        >
+                            {t('auth.login')}
+                        </button>
+                        <button
+                            className={`pb-4 w-1/2 text-sm font-bold uppercase tracking-widest transition-colors ${!isLogin ? 'border-b-2 border-brand-600 text-brand-600' : 'text-gray-400 hover:text-gray-600'}`}
+                            onClick={() => setIsLogin(false)}
+                        >
+                            {t('auth.signup')}
+                        </button>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {!isLogin && (
                             <>
                                 <div>
-                                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Nom Complet</label>
-                                    <div className="mt-1 relative rounded-md shadow-sm">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <UserIcon className="h-4 w-4 text-gray-400" />
-                                        </div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.full_name')}</label>
+                                    <div className="relative">
+                                        <UserIcon className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                                         <input
-                                            id="fullName"
                                             type="text"
                                             required
+                                            className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
-                                            className="focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                            placeholder="Votre Nom"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Téléphone</label>
-                                    <div className="mt-1 relative rounded-md shadow-sm">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Phone className="h-4 w-4 text-gray-400" />
-                                        </div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.phone')}</label>
+                                    <div className="relative">
+                                        <Phone className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                                         <input
-                                            id="phone"
                                             type="tel"
-                                            inputMode="numeric"
-                                            pattern="[0-9]*"
                                             required
+                                            className={`pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 ${fieldErrors.phone ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
                                             value={phone}
                                             onChange={handlePhoneChange}
-                                            className={`focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 sm:text-sm border rounded-md py-2 ${fieldErrors.phone ? 'border-red-300' : 'border-gray-300'}`}
-                                            placeholder="0600000000"
                                         />
+                                        {fieldErrors.phone && <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>}
                                     </div>
-                                    {fieldErrors.phone && <p className="mt-1 text-xs text-red-600">{fieldErrors.phone}</p>}
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label htmlFor="city" className="block text-sm font-medium text-gray-700">Ville</label>
-                                        <div className="mt-1 relative rounded-md shadow-sm">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <Building className="h-4 w-4 text-gray-400" />
-                                            </div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.city')}</label>
+                                        <div className="relative">
+                                            <Building className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                                             <select
-                                                id="city"
+                                                className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 appearance-none"
                                                 value={city}
                                                 onChange={(e) => setCity(e.target.value)}
-                                                className="focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border bg-white"
                                             >
-                                                {cities.map(c => <option key={c} value={c}>{c}</option>)}
+                                                {cities.map((c) => (
+                                                    <option key={c} value={c}>
+                                                        {c}
+                                                    </option>
+                                                ))}
                                             </select>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Adresse</label>
-                                        <div className="mt-1 relative rounded-md shadow-sm">
-                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                <MapPin className="h-4 w-4 text-gray-400" />
-                                            </div>
-                                            <input
-                                                id="address"
-                                                type="text"
-                                                required
-                                                value={address}
-                                                onChange={(e) => setAddress(e.target.value)}
-                                                className="focus:ring-brand-500 focus:border-brand-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 border"
-                                                placeholder="Quartier, Rue..."
-                                            />
-                                        </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.address')}</label>
+                                    <div className="relative">
+                                        <MapPin className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                                        <input
+                                            type="text"
+                                            required
+                                            className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
+                                            value={address}
+                                            onChange={(e) => setAddress(e.target.value)}
+                                        />
                                     </div>
                                 </div>
                             </>
                         )}
 
-                        {/* Password Fields */}
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Mot de passe
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Lock className="h-4 w-4 text-gray-400" />
-                                </div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.email')}</label>
+                            <input
+                                type="email"
+                                required
+                                className="block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.password')}</label>
+                            <div className="relative">
+                                <Lock className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                                 <input
-                                    id="password"
-                                    name="password"
                                     type="password"
                                     required
+                                    className={`pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3 ${fieldErrors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : ''}`}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
                                 />
+                                {fieldErrors.password && <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>}
                             </div>
-                            {fieldErrors.password && <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>}
                         </div>
 
                         {!isLogin && (
                             <div>
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                                    Confirmer le mot de passe
-                                </label>
-                                <div className="mt-1 relative rounded-md shadow-sm">
-                                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock className="h-4 w-4 text-gray-400" />
-                                    </div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">{t('auth.confirm_password')}</label>
+                                <div className="relative">
+                                    <Lock className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
                                     <input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
                                         type="password"
                                         required
+                                        className="pl-10 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm py-3"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className={`appearance-none block w-full pl-10 px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-brand-500 focus:border-brand-500 sm:text-sm ${confirmPassword && password !== confirmPassword ? 'border-red-300' : 'border-gray-300'
-                                            }`}
                                     />
                                 </div>
-                                {confirmPassword && password !== confirmPassword && (
-                                    <p className="mt-1 text-xs text-red-600">Les mots de passe ne correspondent pas</p>
-                                )}
                             </div>
                         )}
 
-                        <div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:opacity-50"
-                            >
-                                {loading ? 'Traitement...' : (isLogin ? 'Se connecter' : 'Créer un compte')}
-                            </button>
-                        </div>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-full shadow-sm text-sm font-bold text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all transform hover:-translate-y-0.5 hover:shadow-lg mt-6"
+                        >
+                            {loading ? t('auth.loading') : (isLogin ? t('auth.submit_login') : t('auth.submit_signup'))}
+                        </button>
                     </form>
-
-                    <div className="mt-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-300" />
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="px-2 bg-white text-gray-500">
-                                    {isLogin ? 'Nouveau client ?' : 'Déjà client ?'}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="mt-6">
-                            <button
-                                onClick={() => {
-                                    setIsLogin(!isLogin);
-                                    setError('');
-                                    setFieldErrors({});
-                                }}
-                                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none"
-                            >
-                                {isLogin ? 'Créer un compte' : 'Retour à la connexion'}
-                            </button>
-                        </div>
-                    </div>
                 </div>
+
+                {/* Right Side - Benefits */}
+                <div className="hidden md:flex w-1/2 bg-gray-50 flex-col justify-center p-12 border-l border-gray-100">
+                    <h3 className="text-xl font-serif font-bold text-gray-900 mb-6">{t('auth.benefits.title')}</h3>
+                    <ul className="space-y-6">
+                        <li className="flex items-start">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mr-4">
+                                <ShieldCheck className="h-5 w-5 text-brand-600" />
+                            </div>
+                            <div>
+                                <p className="text-gray-900 font-medium">{t('auth.benefits.delivery')}</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mr-4">
+                                <Building className="h-5 w-5 text-brand-600" />
+                            </div>
+                            <div>
+                                <p className="text-gray-900 font-medium">{t('auth.benefits.payment')}</p>
+                            </div>
+                        </li>
+                        <li className="flex items-start">
+                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-brand-100 flex items-center justify-center mr-4">
+                                <Phone className="h-5 w-5 text-brand-600" />
+                            </div>
+                            <div>
+                                <p className="text-gray-900 font-medium">{t('auth.benefits.support')}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div className="mt-8 text-center text-xs text-gray-400">
+                <p>
+                    <Link href="#" className="hover:text-gray-600 underline">{t('footer.privacy')}</Link> • <Link href="#" className="hover:text-gray-600 underline">{t('footer.terms')}</Link>
+                </p>
+                <p className="mt-2 text-gray-300">© 2024 Intimacy Wellness. {t('footer.rights')}</p>
             </div>
         </div>
     );
@@ -354,7 +351,9 @@ function Content() {
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>}>
             <Content />
         </Suspense>
     );

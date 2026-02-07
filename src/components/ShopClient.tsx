@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Filter, Search, ChevronDown, X, SlidersHorizontal, Check } from 'lucide-react';
 import { Product, ProductCategory } from '@/types';
 import ProductCard from './ProductCard';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface ShopClientProps {
     initialProducts: Product[];
@@ -14,8 +15,8 @@ interface ShopClientProps {
 const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { t } = useI18n();
 
-    // Filter States
     // Filter States
     const initialCategories = searchParams.get('category')
         ? searchParams.get('category')!.split(',')
@@ -101,14 +102,21 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
         setSortBy('featured');
         setVisibleCount(24);
         router.replace('/shop'); // Clear URL incl. searchQuery
-        setVisibleCount(24);
-        router.replace('/shop'); // Clear URL
     };
 
     const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'min' | 'max') => {
         const val = parseInt(e.target.value) || 0;
         if (type === 'min') setPriceRange([val, priceRange[1]]);
         else setPriceRange([priceRange[0], val]);
+    };
+
+    const getCategoryLabel = (cat: string) => {
+        // @ts-ignore
+        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
+    };
+
+    const getBrandLabel = (brand: string) => {
+        return brand === 'Tout' ? t('shop.filters.all') : brand;
     };
 
     return (
@@ -120,14 +128,14 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                     <div className="fixed inset-0 bg-black/50" onClick={() => setIsMobileFiltersOpen(false)}></div>
                     <div className="relative ml-auto flex h-full w-full max-w-xs flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl">
                         <div className="flex items-center justify-between px-4">
-                            <h2 className="text-lg font-serif font-bold text-gray-900">Filtres</h2>
+                            <h2 className="text-lg font-serif font-bold text-gray-900">{t('shop.filters.title')}</h2>
                             <button onClick={() => setIsMobileFiltersOpen(false)} className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400">
                                 <X className="h-6 w-6" />
                             </button>
                         </div>
                         {/* Mobile Filters Form */}
                         <div className="mt-4 px-4 border-t border-gray-200 py-6">
-                            <h3 className="font-serif font-medium text-gray-900">Catégories</h3>
+                            <h3 className="font-serif font-medium text-gray-900">{t('shop.filters.categories')}</h3>
                             <ul className="mt-4 space-y-3">
                                 {Object.values(ProductCategory).map((cat) => (
                                     <li key={cat} className="flex items-center">
@@ -145,13 +153,13 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                                         />
                                         <label htmlFor={`mobile-cat-${cat}`} className="ml-3 text-sm text-gray-600 font-medium">
-                                            {cat}
+                                            {getCategoryLabel(cat)}
                                         </label>
                                     </li>
                                 ))}
                             </ul>
 
-                            <h3 className="font-serif font-medium text-gray-900 mt-8">Marques</h3>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">{t('shop.filters.brands')}</h3>
                             <ul className="mt-4 space-y-3">
                                 {brands.map((brand) => (
                                     <li key={String(brand)}>
@@ -159,13 +167,13 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             onClick={() => setSelectedBrand(String(brand))}
                                             className={`text-sm ${selectedBrand === brand ? 'text-brand-600 font-bold' : 'text-gray-600'}`}
                                         >
-                                            {brand}
+                                            {getBrandLabel(String(brand))}
                                         </button>
                                     </li>
                                 ))}
                             </ul>
 
-                            <h3 className="font-serif font-medium text-gray-900 mt-8">Prix</h3>
+                            <h3 className="font-serif font-medium text-gray-900 mt-8">{t('shop.filters.price')}</h3>
                             <div className="mt-4 flex items-center mb-4 gap-2">
                                 <input type="number" value={priceRange[0]} onChange={(e) => handlePriceChange(e, 'min')} className="w-20 p-2 text-sm border rounded" />
                                 <span>-</span>
@@ -180,7 +188,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
                     <h1 className="text-4xl font-serif font-bold tracking-tight text-slate-900">
-                        {searchQuery ? `Résultats pour "${searchQuery}"` : 'Boutique'}
+                        {searchQuery ? `${t('shop.results_for')} "${searchQuery}"` : t('shop.title')}
                     </h1>
 
                     <div className="flex items-center">
@@ -191,10 +199,10 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                 onChange={(e) => setSortBy(e.target.value)}
                                 className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900 border-none bg-transparent focus:ring-0 cursor-pointer"
                             >
-                                <option value="featured">Trier par : En vedette</option>
-                                <option value="price-asc">Prix : Croissant</option>
-                                <option value="price-desc">Prix : Décroissant</option>
-                                <option value="newest">Nouveautés</option>
+                                <option value="featured">{t('shop.sort.featured')}</option>
+                                <option value="price-asc">{t('shop.sort.price_asc')}</option>
+                                <option value="price-desc">{t('shop.sort.price_desc')}</option>
+                                <option value="newest">{t('shop.sort.newest')}</option>
                             </select>
                         </div>
 
@@ -203,7 +211,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                             className="-m-2 p-2 text-gray-400 hover:text-gray-500 lg:hidden"
                             onClick={() => setIsMobileFiltersOpen(true)}
                         >
-                            <span className="sr-only">Filtres</span>
+                            <span className="sr-only">{t('shop.filters.title')}</span>
                             <SlidersHorizontal className="h-5 w-5" />
                         </button>
                     </div>
@@ -213,7 +221,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                     {/* Desktop Sidebar Filters */}
                     <aside className="hidden lg:block lg:col-span-1 space-y-8 sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200">
                         <div>
-                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Catégories</h3>
+                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">{t('shop.filters.categories')}</h3>
                             <ul className="space-y-3 border-b border-gray-200 pb-6">
                                 {Object.values(ProductCategory).map((cat) => (
                                     <li key={cat} className="flex items-center">
@@ -231,7 +239,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                                         />
                                         <label htmlFor={`desktop-cat-${cat}`} className="ml-3 text-sm text-gray-600 hover:text-brand-500 cursor-pointer flex-1">
-                                            {cat}
+                                            {getCategoryLabel(cat)}
                                         </label>
                                     </li>
                                 ))}
@@ -239,7 +247,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Marques</h3>
+                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">{t('shop.filters.brands')}</h3>
                             <div className="max-h-60 overflow-y-auto pr-2 border-b border-gray-200 pb-6 scrollbar-thin scrollbar-thumb-gray-200">
                                 <ul className="space-y-3">
                                     {brands.map((brand) => (
@@ -249,7 +257,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                                 className={`text-sm flex items-center w-full justify-between group ${selectedBrand === brand ? 'text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-500'
                                                     }`}
                                             >
-                                                {brand}
+                                                {getBrandLabel(String(brand))}
                                                 {selectedBrand === brand && <div className="h-1.5 w-1.5 rounded-full bg-brand-500" />}
                                             </button>
                                         </li>
@@ -259,7 +267,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         </div>
 
                         <div>
-                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">Prix</h3>
+                            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4">{t('shop.filters.price')}</h3>
                             <div className="flex items-center gap-2 mb-4">
                                 <div className="relative">
                                     <span className="absolute left-3 top-2 text-xs text-gray-400">Min</span>
@@ -274,7 +282,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                     />
                                 </div>
                             </div>
-                            <button onClick={() => setPriceRange([0, 2000])} className="text-xs text-brand-600 hover:underline">Réinitialiser</button>
+                            <button onClick={() => setPriceRange([0, 2000])} className="text-xs text-brand-600 hover:underline">{t('shop.filters.reset')}</button>
                         </div>
                     </aside>
 
@@ -294,7 +302,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             onClick={() => setVisibleCount(prev => prev + 24)}
                                             className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-brand-600 hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all"
                                         >
-                                            Voir Plus de Produits ({filteredProducts.length - visibleCount} restants)
+                                            {t('shop.view_more')} ({filteredProducts.length - visibleCount} restants)
                                         </button>
                                     </div>
                                 )}
@@ -302,12 +310,12 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                         ) : (
                             <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
                                 <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                                <h3 className="text-lg font-medium text-gray-900">Aucun résultat trouvé</h3>
+                                <h3 className="text-lg font-medium text-gray-900">{t('shop.no_results.title')}</h3>
                                 <p className="text-gray-500 mt-2 max-w-sm mx-auto">
-                                    Nous n'avons trouvé aucun produit correspondant à vos filtres. Essayez d'ajuster la fourchette de prix ou la catégorie.
+                                    {t('shop.no_results.description')}
                                 </p>
                                 <button onClick={clearFilters} className="mt-6 text-brand-600 font-bold hover:underline">
-                                    Effacer les filtres
+                                    {t('shop.no_results.clear_filters')}
                                 </button>
                             </div>
                         )}
@@ -319,8 +327,11 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
 };
 
 export default function ShopClient(props: ShopClientProps) {
+    const { t } = useI18n(); // Ensure t is available here for loading state if needed, but loading text is usually minimal.
+    // Actually t is invalid here if I don't use it.
+
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
             <ShopClientContent {...props} />
         </Suspense>
     );

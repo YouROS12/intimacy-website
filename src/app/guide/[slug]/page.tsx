@@ -5,13 +5,14 @@ import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
 import { getPostBySlug } from '@/services/api';
 import BlogRenderer from '@/components/BlogRenderer';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 
 type Props = {
     params: { slug: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = params;
+    const { slug } = await params;
     const post = await getPostBySlug(slug);
 
     if (!post) {
@@ -37,6 +38,7 @@ export const revalidate = 3600; // Update every hour
 export default async function BlogPostPage({ params }: Props) {
     const { slug } = await params;
     const post = await getPostBySlug(slug);
+    const t = await getTranslations('education');
 
     if (!post) {
         notFound();
@@ -48,7 +50,7 @@ export default async function BlogPostPage({ params }: Props) {
             {/* Post Header */}
             <div className="max-w-4xl mx-auto px-4 pt-12 pb-8">
                 <Link href="/education?tab=articles" className="text-slate-500 hover:text-brand-600 flex items-center mb-8 text-sm group">
-                    <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" /> Retour aux articles
+                    <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" /> {t('back_to_articles')}
                 </Link>
 
                 <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
@@ -66,7 +68,7 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                     <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-2" />
-                        <span>5 min de lecture</span>
+                        <span>5 {t('read_time')}</span>
                     </div>
                     <button className="ml-auto p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-brand-600">
                         <Share2 className="h-5 w-5" />
@@ -96,7 +98,7 @@ export default async function BlogPostPage({ params }: Props) {
                         className="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium"
                     >
                         <ArrowLeft className="h-4 w-4 mr-2" />
-                        Retour aux articles
+                        {t('back_to_articles')}
                     </Link>
                 </div>
             </div>

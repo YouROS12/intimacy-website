@@ -12,6 +12,29 @@
         "login": "Login",
         "search": "Search..."
     },
+    "cart": {
+        "title": "Shopping Cart",
+        "empty": {
+            "title": "Your cart is empty.",
+            "action": "Start shopping"
+        },
+        "remove": "Remove",
+        "checkout": "Checkout",
+        "continue": "Continue shopping",
+        "subtotal": "Subtotal",
+        "shipping_note": "Shipping and taxes calculated at checkout."
+    },
+    "product": {
+        "back_to_shop": "Back to Shop",
+        "highlights": "Highlights",
+        "discrete_shipping": {
+            "title": "Discrete Shipping Guaranteed",
+            "description": "Your package will be shipped in completely neutral packaging with no mention of content or brand."
+        },
+        "add_to_cart": "Add to Cart",
+        "added": "Added to Cart!",
+        "related": "You might also like"
+    },
     "home": {
         "hero": {
             "badge": "Moroccan Heritage",
@@ -47,22 +70,73 @@
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
         "inStock": "In stock",
-        "featured": "Featured"
+        "featured": "Featured",
+        "filters": {
+            "title": "Filters",
+            "categories": "Categories",
+            "brands": "Brands",
+            "price": "Price",
+            "all": "All",
+            "reset": "Reset"
+        },
+        "sort": {
+            "featured": "Featured",
+            "price_asc": "Price: Low to High",
+            "price_desc": "Price: High to Low",
+            "newest": "Newest"
+        },
+        "results_for": "Results for",
+        "view_more": "View More Products",
+        "no_results": {
+            "title": "No results found",
+            "description": "We couldn't find any products matching your filters. Try adjusting the price range or category.",
+            "clear_filters": "Clear filters"
+        },
+        "categories": {
+            "Lubricant": "Lubricants",
+            "Condoms": "Condoms",
+            "Delay Spray/Cream": "Delay Spray/Cream",
+            "Wellness Kit": "Wellness Kit"
+        }
     },
     "checkout": {
         "title": "Checkout",
-        "shipping": "Shipping",
-        "account": "Create Account",
-        "summary": "Summary",
-        "fullName": "Full Name",
-        "phone": "Phone",
-        "address": "Address",
-        "city": "City",
-        "email": "Email",
-        "password": "Password",
-        "confirmPassword": "Confirm Password",
-        "placeOrder": "Place Order",
-        "total": "Total"
+        "empty_cart": "Your cart is empty",
+        "empty_action": "Return to Shop",
+        "add_items_to_start": "Add items to start.",
+        "contact_support": "Contact WhatsApp Support",
+        "order_failure": "Order Failed",
+        "please_screenshot": "Please take a screenshot and send it to us on WhatsApp.",
+        "logged_in_as": "Logged in as",
+        "prefilled": "Pre-filled information",
+        "shipping_info": "Shipping Information",
+        "labels": {
+            "full_name": "Full Name",
+            "phone": "Phone",
+            "city": "City",
+            "address": "Address",
+            "email": "Email (Optional for receipt)",
+            "password": "Password",
+            "confirm_password": "Confirm Password"
+        },
+        "account": {
+            "create": "Create an account to track my order",
+            "benefits": "Allows you to track your order and earn loyalty points.",
+            "login_prompt": "Already have an account? Login"
+        },
+        "summary": {
+            "title": "Order Summary",
+            "subtotal": "Subtotal",
+            "shipping": "Shipping",
+            "shipping_free": "Free",
+            "total": "Total"
+        },
+        "payment": {
+            "cod": "Cash on Delivery",
+            "cod_desc": "Pay in cash when you receive your order."
+        },
+        "cta": "Confirm Order",
+        "processing": "Processing..."
     },
     "footer": {
         "description": "Premier intimate wellness store in Morocco. Fast and discreet delivery.",
@@ -72,6 +146,143 @@
         "rights": "All rights reserved.",
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",
-        "shipping": "Shipping & Returns"
-    }
-}
+        "shipping": "Shipping & Returns""auth": {
+            "login": "Login",
+            "signup": "Sign Up",
+            "email": "Email",
+            "password": "Password",
+            "confirm_password": "Confirm Password",
+            "full_name": "Full Name",
+            "phone": "Phone",
+            "city": "City",
+            "address": "Delivery Address",
+            "submit_login": "LOGIN",
+            "submit_signup": "SIGN UP",
+            "loading": "Loading...",
+            "errors": {
+                "password_mismatch": "Passwords do not match.",
+                "password_short": "Password must be at least 6 characters.",
+                "name_required": "Full name is required.",
+                "phone_invalid": "Invalid Moroccan phone number (06...)",
+                "address_required": "Delivery address is required.",
+                "general": "An error occurred."
+            },
+            "benefits": {
+                "title": "Why create an account?",
+                "delivery": "Order tracking and fast delivery",
+                "payment": "Secure Cash on Delivery",
+                "support": "Dedicated 24/7 support"
+            }
+        },
+        "profile": {
+            "title": "My Profile",
+            "orders": "My Orders",
+            "account_details": "Account Details",
+            "security": "Security",
+            "edit": "Edit",
+            "save": "Save",
+            "cancel": "Cancel",
+            "change_password": "Change Password",
+            "new_password": "New Password",
+            "confirm_new_password": "Confirm New Password",
+            "empty_orders": "No orders yet.",
+            "logout": "Logout"
+        },
+        "confirmation": {
+            "title": "Thank you for your order!",
+            "message": "Your order has been placed successfully. We will call you soon to confirm delivery.",
+            "email_check": "Check your email",
+            "account_created": "Your account has been created! Please check your email to activate it.",
+            "order_number": "Order Number",
+            "total": "Total Amount",
+            "continue_shopping": "Continue Shopping",
+            "track_order": "Track Order"
+        },
+        "about": {
+            "hero": {
+                "title": "Wellness, Privacy & <span class='text-brand-400'>Trust</span>.",
+                "subtitle": "We are Morocco's premier destination for intimate wellness products. We believe sexual health should be accessible, safe, and judgment-free."
+            },
+            "features": {
+                "private": {
+                    "title": "100% Private",
+                    "description": "Your data is encrypted. We never sell your information. Your order history is strictly personal."
+                },
+                "discreet": {
+                    "title": "Discreet Delivery",
+                    "description": "Delivered in standard opaque packaging. The label is generic. Even the courier doesn't know the contents."
+                },
+                "authentic": {
+                    "title": "Authentic Brands",
+                    "description": "Authorized retailer for Durex, Manix, and other top global brands. No counterfeits, ever."
+                }
+            },
+            "process": {
+                "title": "How our discreet delivery works",
+                "subtitle": "We understand your privacy is priority #1. Here is exactly what happens with your order.",
+                "step1": {
+                    "title": "Neutral Packaging",
+                    "description": "Your items are packed in a standard box or opaque pouch. No 'Intimacy Wellness' logo, no external imagery."
+                },
+                "step2": {
+                    "title": "Generic Label",
+                    "description": "The sender is displayed as 'IW Logistics' or a generic logistics name. Contents are declared as 'Personal Care' or 'Accessories'."
+                },
+                "step3": {
+                    "title": "Private Delivery",
+                    "description": "The courier hands you the sealed package. We support Cash on Delivery (COD) so you can pay discreetly upon receipt."
+                }
+            },
+            "faq": {
+                "title": "Frequently Asked Questions",
+                "q1": {
+                    "question": "Can the courier see what's inside?",
+                    "answer": "Absolutely not. The package is sealed before leaving our warehouse. The courier has no information about the contents."
+                },
+                "q2": {
+                    "question": "What appears on my bank statement?",
+                    "answer": "If you pay online (coming soon), it will appear as 'IW Store'. However, we primarily use Cash on Delivery (COD), so no bank trail."
+                },
+                "q3": {
+                    "question": "Do you sell to minors?",
+                    "answer": "No. We sell strictly to adults 18+. By using our site, you confirm you are of legal age."
+                }
+            },
+            "guarantee": {
+                "title": "Our Quality Guarantee",
+                "items": {
+                    "original": "Original Products",
+                    "dates": "Long Expiry Dates",
+                    "clinical": "Clinically Tested"
+                }
+            },
+            "cta": {
+                "title": "Ready to order with confidence?",
+                "button": "Shop Now"
+            }
+        },
+        "education": {
+            "hero": {
+                "badge": "Expertise Center",
+                "title": "Understand & Act",
+                "subtitle": "Clear answers, validated by AI and our experts."
+            },
+            "search": {
+                "guide_placeholder": "Search a guide...",
+                "article_placeholder": "Search an article..."
+            },
+            "tabs": {
+                "guides": "Guides",
+                "articles": "Articles"
+            },
+            "categories": {
+                "wellness": "Wellness",
+                "performance": "Performance",
+                "health": "Health",
+                "education": "Education"
+            },
+            "empty": "No results found.",
+            "reset": "Reset search",
+            "back_to_articles": "Back to articles",
+            "read_time": "min read"
+        }

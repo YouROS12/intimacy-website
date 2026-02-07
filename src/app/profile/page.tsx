@@ -8,10 +8,12 @@ import { Order } from '@/types';
 import { Calendar, MapPin, Phone, User as UserIcon, Edit2, Save, X, Lock, Eye, EyeOff } from 'lucide-react';
 import { validateMoroccanPhone, formatAddress, parseAddress } from '@/utils/helpers';
 import { sanitizeInput, sanitizePhone } from '@/utils/sanitize';
+import { useI18n } from '@/contexts/I18nContext';
 
 export default function ProfilePage() {
     const { user, isLoading, refreshProfile, updatePassword } = useAuth();
     const router = useRouter();
+    const { t } = useI18n();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -76,15 +78,15 @@ export default function ProfilePage() {
         let hasError = false;
 
         if (!editForm.full_name.trim()) {
-            newErrors.name = "Le nom est requis";
+            newErrors.name = t('auth.errors.name_required');
             hasError = true;
         }
         if (!validateMoroccanPhone(editForm.phone)) {
-            newErrors.phone = "Format invalide. Utilisez 06XXXXXXXX";
+            newErrors.phone = t('auth.errors.phone_invalid');
             hasError = true;
         }
         if (!editForm.street_address.trim()) {
-            newErrors.address = "L'adresse est requise";
+            newErrors.address = t('auth.errors.address_required');
             hasError = true;
         }
 
@@ -98,35 +100,34 @@ export default function ProfilePage() {
             const sanitizedPhone = sanitizePhone(editForm.phone);
             const sanitizedAddress = sanitizeInput(editForm.street_address);
 
-            // Use helper to format address for storage
-            const fullAddress = formatAddress(editForm.city, sanitizedAddress);
-
-            await updateUserProfile(user.id, {
-                full_name: sanitizedName,
+            const { error } = await updateUserProfile(user.id, {
+                name: sanitizedName,
                 phone: sanitizedPhone,
-                address: fullAddress
+                address: formatAddress(editForm.city, sanitizedAddress)
             });
-            await refreshProfile();
+
+            if (error) throw error;
             setIsEditing(false);
-        } catch (error: any) {
-            alert("Échec de la mise à jour : " + error.message);
+            refreshProfile(); // Refresh context
+        } catch (error) {
+            console.error('Failed to update profile:', error);
+            alert(t('auth.errors.general'));
         } finally {
             setIsSaving(false);
         }
     };
 
     const handlePasswordChange = async () => {
-        setPasswordErrors({});
-        setPasswordSuccess('');
+        // Validation
+        const newErrors: any = {};
         let hasError = false;
-        const newErrors: { newPassword?: string, confirmPassword?: string } = {};
 
-        if (!passwordForm.newPassword || passwordForm.newPassword.length < 6) {
-            newErrors.newPassword = "Minimum 6 caractères";
+        if (passwordForm.newPassword.length < 6) {
+            newErrors.newPassword = t('auth.errors.password_short');
             hasError = true;
         }
         if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-            newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
+            newErrors.confirmPassword = t('auth.errors.password_mismatch');
             hasError = true;
         }
 
@@ -135,272 +136,309 @@ export default function ProfilePage() {
 
         setIsSavingPassword(true);
         try {
-            await updatePassword(passwordForm.newPassword);
-            setPasswordSuccess("Mot de passe modifié avec succès !");
-            setPasswordForm({ newPassword: '', confirmPassword: '' });
-            setIsChangingPassword(false);
-            setTimeout(() => setPasswordSuccess(''), 5000);
-        } catch (error: any) {
-            setPasswordErrors({ newPassword: error.message || "Erreur lors du changement" });
+            const result = await updatePassword(passwordForm.newPassword);
+            if (result.error) {
+                setPasswordErrors({ newPassword: result.error.message });
+            } else {
+                setPasswordSuccess('Mot de passe mis à jour avec succès.');
+                setIsChangingPassword(false);
+                setPasswordForm({ newPassword: '', confirmPassword: '' });
+                setTimeout(() => setPasswordSuccess(''), 3000);
+            }
+        } catch (err) {
+            console.error(err);
+            setPasswordErrors({ newPassword: t('auth.errors.general') });
         } finally {
             setIsSavingPassword(false);
         }
     };
 
-    if (isLoading || !user) return <div className="min-h-screen flex items-center justify-center">Chargement...</div>;
+
+    if (isLoading || !user) return <div className="min-h-screen pt-24 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12">
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl font-bold text-gray-900 font-serif">Mon Compte</h1>
+                <h1 className="text-3xl font-serif font-bold text-gray-900 mb-8">{t('profile.title')}</h1>
 
-                {/* Profile Details Card */}
-                <div className="mt-6 bg-white shadow overflow-hidden sm:rounded-lg mb-8 border border-gray-100">
-                    <div className="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900">Informations Personnelles</h3>
-                        {!isEditing ? (
-                            <button
-                                onClick={() => setIsEditing(true)}
-                                className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
-                            >
-                                <Edit2 className="h-4 w-4 mr-2" /> Modifier
-                            </button>
-                        ) : (
-                            <div className="flex gap-2">
-                                <button
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setErrors({});
-                                    }}
-                                    className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
-                                >
-                                    <X className="h-4 w-4 mr-2" /> Annuler
-                                </button>
-                                <button
-                                    onClick={handleSaveProfile}
-                                    disabled={isSaving}
-                                    className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none disabled:opacity-50 transition-colors"
-                                >
-                                    <Save className="h-4 w-4 mr-2" /> {isSaving ? '...' : 'Enregistrer'}
-                                </button>
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Left Column: Profile Info */}
+                    <div className="w-full lg:w-1/3 space-y-8">
+                        {/* User Details Card */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <div className="flex justify-between items-start mb-6">
+                                <h2 className="text-lg font-medium text-gray-900">{t('profile.account_details')}</h2>
+                                {!isEditing && (
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="text-brand-600 hover:text-brand-700 text-sm font-medium flex items-center"
+                                    >
+                                        <Edit2 className="h-4 w-4 mr-1" /> {t('profile.edit')}
+                                    </button>
+                                )}
                             </div>
-                        )}
-                    </div>
-                    <div className="px-4 py-5 sm:p-6">
-                        {!isEditing ? (
-                            <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                                        <UserIcon className="h-4 w-4 text-primary/70" /> Nom Complet
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-gray-900">{user.name || 'N/A'}</dd>
-                                </div>
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                                    <dd className="mt-1 text-sm text-gray-900">{user.email}</dd>
-                                </div>
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                                        <Phone className="h-4 w-4 text-primary/70" /> Téléphone
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-gray-900">{user.phone || 'N/A'}</dd>
-                                </div>
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-gray-500 flex items-center gap-2">
-                                        <MapPin className="h-4 w-4 text-primary/70" /> Adresse de Livraison
-                                    </dt>
-                                    <dd className="mt-1 text-sm text-gray-900">{user.address || 'N/A'}</dd>
-                                </div>
-                            </dl>
-                        ) : (
-                            <div className="grid grid-cols-1 gap-6">
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Nom Complet</label>
-                                    <input
-                                        type="text"
-                                        value={editForm.full_name}
-                                        onChange={e => setEditForm({ ...editForm, full_name: e.target.value })}
-                                        className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${errors.name ? 'border-red-300' : 'border-gray-300'}`}
-                                    />
-                                    {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Téléphone</label>
-                                    <input
-                                        type="text"
-                                        value={editForm.phone}
-                                        onChange={e => {
-                                            const val = e.target.value;
-                                            if (/^\d*$/.test(val)) setEditForm({ ...editForm, phone: val });
-                                        }}
-                                        className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${errors.phone ? 'border-red-300' : 'border-gray-300'}`}
-                                    />
-                                    {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
-                                </div>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Ville</label>
-                                        <select
-                                            value={editForm.city}
-                                            onChange={e => setEditForm({ ...editForm, city: e.target.value })}
-                                            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm bg-white"
-                                        >
-                                            {cities.map(c => <option key={c} value={c}>{c}</option>)}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Adresse (Rue, Quartier)</label>
-                                        <input
-                                            type="text"
-                                            value={editForm.street_address}
-                                            onChange={e => setEditForm({ ...editForm, street_address: e.target.value })}
-                                            className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${errors.address ? 'border-red-300' : 'border-gray-300'}`}
-                                        />
-                                        {errors.address && <p className="text-xs text-red-600 mt-1">{errors.address}</p>}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
 
-                {/* Password Change Card */}
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8 border border-gray-100">
-                    <div className="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center bg-gray-50/50">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center gap-2">
-                            <Lock className="h-5 w-5 text-primary/70" /> Sécurité
-                        </h3>
-                        {!isChangingPassword && (
-                            <button
-                                onClick={() => setIsChangingPassword(true)}
-                                className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
-                            >
-                                Changer le mot de passe
-                            </button>
-                        )}
-                    </div>
-
-                    {passwordSuccess && (
-                        <div className="px-4 py-3 bg-green-50 border-b border-green-200">
-                            <p className="text-sm text-green-700">{passwordSuccess}</p>
-                        </div>
-                    )}
-
-                    {isChangingPassword && (
-                        <div className="px-4 py-5 sm:p-6">
-                            <div className="grid grid-cols-1 gap-4 max-w-md">
+                            <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
-                                    <div className="relative mt-1">
-                                        <input
-                                            type={showNewPassword ? "text" : "password"}
-                                            value={passwordForm.newPassword}
-                                            onChange={e => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-                                            className={`block w-full border rounded-md shadow-sm py-2 px-3 pr-10 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${passwordErrors.newPassword ? 'border-red-300' : 'border-gray-300'}`}
-                                            placeholder="Minimum 6 caractères"
-                                        />
+                                    <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-1">{t('auth.full_name')}</label>
+                                    {isEditing ? (
+                                        <div className="relative">
+                                            <UserIcon className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+                                            <input
+                                                type="text"
+                                                value={editForm.full_name}
+                                                onChange={(e) => setEditForm(prev => ({ ...prev, full_name: e.target.value }))}
+                                                className={`pl-10 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm ${errors.name ? 'border-red-300' : ''}`}
+                                            />
+                                            {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center text-gray-900">
+                                            <UserIcon className="h-5 w-5 text-gray-400 mr-3" />
+                                            {user.name}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-1">{t('auth.phone')}</label>
+                                    {isEditing ? (
+                                        <div className="relative">
+                                            <Phone className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+                                            <input
+                                                type="tel"
+                                                value={editForm.phone}
+                                                onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
+                                                className={`pl-10 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm ${errors.phone ? 'border-red-300' : ''}`}
+                                            />
+                                            {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center text-gray-900">
+                                            <Phone className="h-5 w-5 text-gray-400 mr-3" />
+                                            {user.phone || '-'}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-1">{t('auth.city')}</label>
+                                    {isEditing ? (
+                                        <div className="relative">
+                                            <MapPin className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+                                            <select
+                                                value={editForm.city}
+                                                onChange={(e) => setEditForm(prev => ({ ...prev, city: e.target.value }))}
+                                                className="pl-10 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm"
+                                            >
+                                                {cities.map((city) => (
+                                                    <option key={city} value={city}>{city}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center text-gray-900">
+                                            <MapPin className="h-5 w-5 text-gray-400 mr-3" />
+                                            {parseAddress(user.address).city}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-400 uppercase tracking-widest mb-1">{t('auth.address')}</label>
+                                    {isEditing ? (
+                                        <div className="relative">
+                                            <MapPin className="absolute top-2.5 left-3 h-5 w-5 text-gray-400" />
+                                            <textarea
+                                                rows={2}
+                                                value={editForm.street_address}
+                                                onChange={(e) => setEditForm(prev => ({ ...prev, street_address: e.target.value }))}
+                                                className={`pl-10 block w-full border-gray-300 rounded-md shadow-sm focus:ring-brand-500 focus:border-brand-500 sm:text-sm ${errors.address ? 'border-red-300' : ''}`}
+                                            />
+                                            {errors.address && <p className="mt-1 text-xs text-red-600">{errors.address}</p>}
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center text-gray-900 pl-8">
+                                            {parseAddress(user.address).street}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {isEditing && (
+                                    <div className="flex gap-3 pt-4">
                                         <button
-                                            type="button"
-                                            onClick={() => setShowNewPassword(!showNewPassword)}
-                                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                                            onClick={handleSaveProfile}
+                                            disabled={isSaving}
+                                            className="flex-1 bg-brand-600 text-white px-4 py-2 rounded-md text-sm font-bold shadow hover:bg-brand-700 transition-colors flex justify-center items-center"
                                         >
-                                            {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            {isSaving ? t('auth.loading') : (
+                                                <>
+                                                    <Save className="h-4 w-4 mr-2" /> {t('profile.save')}
+                                                </>
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsEditing(false);
+                                                setErrors({});
+                                                // Reset form
+                                                const { city, street } = parseAddress(user.address);
+                                                setEditForm({
+                                                    full_name: user.name || '',
+                                                    phone: user.phone || '',
+                                                    city: city,
+                                                    street_address: street
+                                                });
+                                            }}
+                                            className="flex-1 bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors flex justify-center items-center"
+                                        >
+                                            <X className="h-4 w-4 mr-2" /> {t('profile.cancel')}
                                         </button>
                                     </div>
-                                    {passwordErrors.newPassword && <p className="text-xs text-red-600 mt-1">{passwordErrors.newPassword}</p>}
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
-                                    <input
-                                        type="password"
-                                        value={passwordForm.confirmPassword}
-                                        onChange={e => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-                                        className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm ${passwordErrors.confirmPassword ? 'border-red-300' : 'border-gray-300'}`}
-                                        placeholder="Répétez le mot de passe"
-                                    />
-                                    {passwordErrors.confirmPassword && <p className="text-xs text-red-600 mt-1">{passwordErrors.confirmPassword}</p>}
-                                </div>
-                                <div className="flex gap-2 pt-2">
-                                    <button
-                                        onClick={() => {
-                                            setIsChangingPassword(false);
-                                            setPasswordForm({ newPassword: '', confirmPassword: '' });
-                                            setPasswordErrors({});
-                                        }}
-                                        className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none transition-colors"
-                                    >
-                                        <X className="h-4 w-4 mr-2" /> Annuler
-                                    </button>
-                                    <button
-                                        onClick={handlePasswordChange}
-                                        disabled={isSavingPassword}
-                                        className="inline-flex items-center px-3 py-1.5 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90 focus:outline-none disabled:opacity-50 transition-colors"
-                                    >
-                                        <Save className="h-4 w-4 mr-2" /> {isSavingPassword ? '...' : 'Enregistrer'}
-                                    </button>
-                                </div>
+                                )}
                             </div>
                         </div>
-                    )}
-                </div>
 
-                <h2 className="text-2xl font-bold text-gray-900 mb-4 font-serif">Historique des Commandes</h2>
-                {loadingOrders ? (
-                    <div className="text-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                        <p className="mt-2 text-gray-500">Chargement de l'historique...</p>
-                    </div>
-                ) : orders.length === 0 ? (
-                    <div className="text-center py-12 bg-white rounded-lg shadow border border-gray-100">
-                        <p className="text-gray-500 mb-4">Vous n'avez pas encore passé de commande.</p>
-                        <button
-                            onClick={() => router.push('/shop')}
-                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 transition-colors"
-                        >
-                            Découvrir la boutique
-                        </button>
-                    </div>
-                ) : (
-                    <div className="space-y-6">
-                        {orders.map((order) => (
-                            <div key={order.id} className="bg-white shadow sm:rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
-                                <div className="px-4 py-5 sm:px-6 bg-gray-50/50 flex flex-wrap gap-2 justify-between items-center">
+                        {/* Security Card */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <h2 className="text-lg font-medium text-gray-900 mb-6">{t('profile.security')}</h2>
+
+                            {passwordSuccess && (
+                                <div className="mb-4 bg-green-50 text-green-700 text-sm p-3 rounded-md">
+                                    {passwordSuccess}
+                                </div>
+                            )}
+
+                            {!isChangingPassword ? (
+                                <button
+                                    onClick={() => setIsChangingPassword(true)}
+                                    className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-brand-300 hover:bg-brand-50 transition-all group"
+                                >
+                                    <div className="flex items-center">
+                                        <div className="p-2 bg-gray-100 rounded-lg group-hover:bg-white transition-colors">
+                                            <Lock className="h-5 w-5 text-gray-600 group-hover:text-brand-600" />
+                                        </div>
+                                        <span className="ml-3 font-medium text-gray-900">{t('profile.change_password')}</span>
+                                    </div>
+                                    <Edit2 className="h-4 w-4 text-gray-400 group-hover:text-brand-500" />
+                                </button>
+                            ) : (
+                                <div className="space-y-4 bg-gray-50 p-4 rounded-xl">
                                     <div>
-                                        <h3 className="text-lg leading-6 font-medium text-gray-900">Commande #{order.id.slice(0, 8)}</h3>
-                                        <p className="mt-1 max-w-2xl text-sm text-gray-500 flex items-center">
-                                            <Calendar className="h-4 w-4 mr-1" />
-                                            {new Date(order.created_at).toLocaleDateString('fr-FR')}
-                                        </p>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">{t('profile.new_password')}</label>
+                                        <div className="relative">
+                                            <input
+                                                type={showNewPassword ? "text" : "password"}
+                                                value={passwordForm.newPassword}
+                                                onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                                                className="block w-full border-gray-300 rounded-md text-sm focus:ring-brand-500 focus:border-brand-500"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowNewPassword(!showNewPassword)}
+                                                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                            >
+                                                {showNewPassword ? <EyeOff className="h-4 w-4 text-gray-400" /> : <Eye className="h-4 w-4 text-gray-400" />}
+                                            </button>
+                                        </div>
+                                        {passwordErrors.newPassword && <p className="text-xs text-red-600 mt-1">{passwordErrors.newPassword}</p>}
                                     </div>
-                                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                                            'bg-yellow-100 text-yellow-800'
-                                        }`}>
-                                        {order.status === 'delivered' ? 'Livré' :
-                                            order.status === 'cancelled' ? 'Annulé' :
-                                                order.status === 'shipped' ? 'Expédié' : 'En traitement'}
-                                    </span>
-                                </div>
-                                <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
-                                    <ul className="divide-y divide-gray-200">
-                                        {order.items.map((item, idx) => (
-                                            <li key={idx} className="py-2 flex flex-wrap justify-between items-center gap-2">
-                                                <div className="flex items-center min-w-0 flex-1">
-                                                    <span className="text-gray-500 text-sm mr-2 whitespace-nowrap">{item.quantity}x</span>
-                                                    <span className="text-gray-900 font-medium truncate">{item.name}</span>
-                                                </div>
-                                                <span className="text-gray-600 whitespace-nowrap">{(item.price * item.quantity).toFixed(2)} MAD</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                    <div className="mt-4 pt-4 border-t border-gray-200 flex justify-end">
-                                        <span className="text-lg font-bold text-primary">Total: {order.total} MAD</span>
+                                    <div>
+                                        <label className="block text-xs font-medium text-gray-500 mb-1">{t('profile.confirm_new_password')}</label>
+                                        <input
+                                            type="password"
+                                            value={passwordForm.confirmPassword}
+                                            onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                                            className="block w-full border-gray-300 rounded-md text-sm focus:ring-brand-500 focus:border-brand-500"
+                                        />
+                                        {passwordErrors.confirmPassword && <p className="text-xs text-red-600 mt-1">{passwordErrors.confirmPassword}</p>}
+                                    </div>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={handlePasswordChange}
+                                            disabled={isSavingPassword}
+                                            className="flex-1 bg-brand-600 text-white text-xs font-bold py-2 rounded hover:bg-brand-700"
+                                        >
+                                            {isSavingPassword ? '...' : t('profile.save')}
+                                        </button>
+                                        <button
+                                            onClick={() => setIsChangingPassword(false)}
+                                            className="flex-1 bg-white border border-gray-300 text-gray-700 text-xs font-bold py-2 rounded hover:bg-gray-50"
+                                        >
+                                            {t('profile.cancel')}
+                                        </button>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            )}
+                        </div>
                     </div>
-                )}
+
+                    {/* Right Column: Orders */}
+                    <div className="w-full lg:w-2/3">
+                        <h2 className="text-xl font-serif font-bold text-gray-900 mb-6">{t('profile.orders')}</h2>
+                        {loadingOrders ? (
+                            <div className="flex justify-center py-12"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>
+                        ) : orders.length === 0 ? (
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
+                                <p className="text-gray-500">{t('profile.empty_orders')}</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                {orders.map((order) => (
+                                    <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
+                                        <div className="bg-gray-50 px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4">
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Commande</p>
+                                                <p className="font-mono font-medium text-gray-900">#{order.id.slice(0, 8).toUpperCase()}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Date</p>
+                                                <div className="flex items-center text-gray-900 text-sm">
+                                                    <Calendar className="h-4 w-4 mr-2 text-gray-400" />
+                                                    {new Date(order.created_at).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">{t('checkout.total')}</p>
+                                                <p className="font-bold text-brand-600">{order.total} MAD</p>
+                                            </div>
+                                            <div>
+                                                <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
+                                                        order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
+                                                            order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                                                                'bg-yellow-100 text-yellow-800'
+                                                    }`}>
+                                                    {order.status === 'pending' ? 'En Attente' : order.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div className="px-6 py-4">
+                                            <ul className="divide-y divide-gray-100">
+                                                {order.items.map((item, idx) => (
+                                                    <li key={idx} className="py-3 flex justify-between items-center">
+                                                        <div className="flex items-center">
+                                                            <div className="h-10 w-10 rounded bg-gray-100 flex-shrink-0 mr-4 overflow-hidden">
+                                                                {/* Placeholder if no image in order item */}
+                                                                <div className="w-full h-full bg-gray-200" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="text-sm font-medium text-gray-900">{item.product_id}</p>
+                                                                <p className="text-xs text-gray-500">Qté: {item.quantity}</p>
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-sm font-medium text-gray-900">
+                                                            {item.price * item.quantity} MAD
+                                                        </span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     );

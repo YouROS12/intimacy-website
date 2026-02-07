@@ -5,12 +5,20 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Product } from '@/types';
 import { getProductImage } from '@/utils/imageHelpers';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface ProductCardProps {
     product: Product;
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+    const { t } = useI18n();
+
+    const getCategoryLabel = (cat: string) => {
+        // @ts-ignore
+        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
+    };
+
     return (
         <Link href={`/product/${product.id}`} className="group relative glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full border border-white/20 hover:border-brand-300/50">
             <div className="aspect-[4/5] w-full overflow-hidden relative bg-white/5">
@@ -30,7 +38,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
 
             <div className="p-5 flex-1 flex flex-col relative z-10">
-                <span className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{product.category}</span>
+                <span className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{getCategoryLabel(product.category)}</span>
                 <h3 className="font-serif text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-2 leading-tight">
                     {product.name}
                 </h3>
@@ -38,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                     {product.description}
                 </p>
                 <div className="mt-auto pt-4 border-t border-brand-100/50 flex items-center justify-between text-brand-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
-                    Voir le produit <span>→</span>
+                    {t('shop.viewProduct')} <span>→</span>
                 </div>
             </div>
         </Link>

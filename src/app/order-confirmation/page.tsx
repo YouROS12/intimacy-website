@@ -7,6 +7,7 @@ import { Order } from '@/types';
 import { CheckCircle, Package, Phone, ArrowRight, Home, UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { useI18n } from '@/contexts/I18nContext';
 
 const WHATSAPP_NUMBER = '212656201278';
 
@@ -14,8 +15,9 @@ function OrderConfirmationContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { user } = useAuth();
+    const { t } = useI18n();
 
-    // Retrieve params from URL (instead of location.state in React Router)
+    // Retrieve params from URL
     const orderId = searchParams.get('orderId');
     const email = searchParams.get('email');
     const isNewAccount = searchParams.get('newAccount') === 'true';
@@ -29,8 +31,6 @@ function OrderConfirmationContent() {
             return;
         }
 
-        // Fetch simpler order display info if needed, or just use IDs.
-        // For accurate pricing/items, we should probably fetch the order.
         getOrderById(orderId).then(data => {
             setOrder(data);
             setLoading(false);
@@ -51,13 +51,13 @@ function OrderConfirmationContent() {
     }
 
     if (!order) {
-        return <div className="p-8 text-center">Ordre introuvable.</div>;
+        return <div className="p-8 text-center">{t('auth.errors.general')}</div>;
     }
 
     const orderNumber = order.id.slice(0, 8).toUpperCase();
-    const total = order.total;
-    const itemCount = order.items.length;
 
+    // We can translate the WhatsApp message too if we want, but keeping it French/Arabic default is fine.
+    // Let's use French as base for WA.
     const whatsappMessage = encodeURIComponent(
         `Bonjour! Je viens de passer la commande #${orderNumber}. Je souhaite confirmer ma commande.`
     );
@@ -75,21 +75,21 @@ function OrderConfirmationContent() {
 
                 {/* Main Message */}
                 <h1 className="text-3xl font-bold text-gray-900 mb-4 font-serif">
-                    Merci pour votre commande !
+                    {t('confirmation.title')}
                 </h1>
                 <p className="text-gray-600 mb-8">
-                    Votre commande a été passée avec succès. Nous vous appellerons bientôt pour confirmer la livraison.
+                    {t('confirmation.message')}
                 </p>
 
                 {/* Email Verification Banner */}
                 {isNewAccount && email && (
                     <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8 text-left">
-                        <h3 className="font-bold text-blue-900 text-lg mb-2">Vérifiez votre email</h3>
+                        <h3 className="font-bold text-blue-900 text-lg mb-2">{t('confirmation.email_check')}</h3>
                         <p className="text-blue-800 mb-4">
-                            Votre compte a été créé ! Veuillez vérifier votre email <strong>{email}</strong> pour activer votre compte.
+                            {t('confirmation.account_created')} <strong>{email}</strong>
                         </p>
                         <div className="text-sm text-blue-600 bg-blue-100 p-3 rounded-lg">
-                            <strong>Note:</strong> Votre commande est déjà validée ! Pas besoin de vérifier l&apos;email pour recevoir votre colis.
+                            <strong>Note:</strong> {t('confirmation.message')}
                         </div>
                     </div>
                 )}
@@ -97,48 +97,13 @@ function OrderConfirmationContent() {
                 {/* Order Details Card */}
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-                        <span className="text-sm text-gray-500">Numéro de commande</span>
-                        <span className="text-lg font-bold text-primary">#{orderNumber}</span>
+                        <span className="text-sm text-gray-500">{t('confirmation.order_number')}</span>
+                        <span className="font-mono font-bold text-gray-900 text-lg">#{orderNumber}</span>
                     </div>
-
-                    <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-                        <span className="text-sm text-gray-500">Articles</span>
-                        <span className="font-medium">{itemCount} article{itemCount > 1 ? 's' : ''}</span>
-                    </div>
-
-                    <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
-                        <span className="text-sm text-gray-500">Total</span>
-                        <span className="text-xl font-bold text-gray-900">{total} MAD</span>
-                    </div>
-
                     <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Paiement</span>
-                        <span className="text-sm font-medium text-green-600 bg-green-50 px-3 py-1 rounded-full">
-                            À la livraison
-                        </span>
+                        <span className="text-sm text-gray-500">{t('confirmation.total')}</span>
+                        <span className="font-bold text-brand-600 text-xl">{order.total} MAD</span>
                     </div>
-                </div>
-
-                {/* What's Next */}
-                <div className="bg-blue-50 rounded-xl p-6 mb-8 text-left border border-blue-100">
-                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        <Package className="h-5 w-5 text-blue-600" />
-                        Que va-t-il se passer ?
-                    </h3>
-                    <ol className="space-y-3 text-sm text-gray-600">
-                        <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
-                            <span>Nous vous appellerons sous 24h pour confirmer la commande.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
-                            <span>Votre colis sera préparé avec un <strong>emballage discret</strong>.</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <span className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
-                            <span>Paiement à la livraison en espèces.</span>
-                        </li>
-                    </ol>
                 </div>
 
                 {/* Actions */}
@@ -147,48 +112,19 @@ function OrderConfirmationContent() {
                         href={whatsappUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#128C7E] text-white py-4 px-6 rounded-xl font-bold transition-colors shadow-lg shadow-green-500/20"
+                        className="w-full flex justify-center items-center px-6 py-4 border border-transparent rounded-xl shadow-lg text-base font-bold text-white bg-green-600 hover:bg-green-700 transition-all transform hover:-translate-y-0.5"
                     >
-                        <Phone className="h-5 w-5" />
-                        Nous contacter sur WhatsApp
+                        <Phone className="h-5 w-5 mr-2" />
+                        {t('confirmation.track_order')} (WhatsApp)
                     </a>
 
-                    {user ? (
-                        <Link
-                            href="/profile"
-                            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white py-4 px-6 rounded-xl font-bold transition-colors shadow-lg shadow-primary/20"
-                        >
-                            Voir mes commandes
-                            <ArrowRight className="h-5 w-5" />
-                        </Link>
-                    ) : (
-                        <Link
-                            href="/login"
-                            className="w-full flex flex-col items-center gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white py-4 px-6 rounded-xl font-bold transition-all shadow-lg shadow-primary/20"
-                        >
-                            <span className="flex items-center gap-2">
-                                <UserPlus className="h-5 w-5" />
-                                Créer un compte pour suivre mes commandes
-                            </span>
-                            <span className="text-xs font-normal opacity-90">
-                                Accédez à l'historique et gérez vos livraisons
-                            </span>
-                        </Link>
-                    )}
-
                     <Link
-                        href="/"
-                        className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 py-3 transition-colors"
+                        href="/shop"
+                        className="block w-full px-6 py-4 border border-gray-200 rounded-xl text-base font-bold text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                     >
-                        <Home className="h-4 w-4" />
-                        Retour à l&apos;accueil
+                        {t('confirmation.continue_shopping')}
                     </Link>
                 </div>
-
-                {/* Trust Badge */}
-                <p className="mt-8 text-xs text-gray-400">
-                    Questions ? Appelez-nous au +212 656 201 278
-                </p>
             </div>
         </div>
     );
@@ -196,7 +132,7 @@ function OrderConfirmationContent() {
 
 export default function OrderConfirmationPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Chargement...</div>}>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
             <OrderConfirmationContent />
         </Suspense>
     );

@@ -7,6 +7,7 @@ import { ShoppingBag, ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
+import { useI18n } from '@/contexts/I18nContext';
 
 interface Props {
     product: Product;
@@ -16,12 +17,18 @@ interface Props {
 const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => {
     const router = useRouter();
     const { addToCart } = useCart();
+    const { t } = useI18n();
     const [addingToCart, setAddingToCart] = useState(false);
 
     const handleAddToCart = (p: Product) => {
         setAddingToCart(true);
         addToCart(p);
         setTimeout(() => setAddingToCart(false), 500);
+    };
+
+    const getCategoryLabel = (cat: string) => {
+        // @ts-ignore
+        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
     };
 
     return (
@@ -46,7 +53,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <button onClick={() => router.back()} className="flex items-center text-slate-500 hover:text-brand-600 mb-8 transition-colors group">
-                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Retour à la boutique
+                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> {t('product.back_to_shop')}
                 </button>
 
                 <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
@@ -66,7 +73,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                     {/* Info */}
                     <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
                         <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-brand-100 text-brand-800 mb-6 border border-brand-200 uppercase tracking-widest">
-                            {product.category}
+                            {getCategoryLabel(product.category)}
                         </span>
                         <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tight text-slate-900 mb-4">{product.name}</h1>
 
@@ -79,7 +86,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                         </div>
 
                         <div className="mt-10">
-                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">Points Forts</h3>
+                            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-widest mb-4">{t('product.highlights')}</h3>
                             <ul role="list" className="space-y-4">
                                 {product.features?.map((feature, idx) => (
                                     <li key={idx} className="flex items-start text-base text-slate-600">
@@ -95,8 +102,8 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                         <div className="mt-8 flex items-start p-5 bg-white/50 backdrop-blur-sm rounded-2xl border border-brand-100">
                             <AlertCircle className="h-6 w-6 text-brand-500 mt-0.5 mr-4 flex-shrink-0" />
                             <p className="text-sm text-slate-600">
-                                <strong className="block text-brand-800 mb-1">Livraison Discrète Garantie</strong>
-                                Votre colis sera expédié dans un emballage totalement neutre sans aucune mention du contenu ou de la marque.
+                                <strong className="block text-brand-800 mb-1">{t('product.discrete_shipping.title')}</strong>
+                                {t('product.discrete_shipping.description')}
                             </p>
                         </div>
 
@@ -108,11 +115,11 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                             >
                                 {addingToCart ? (
                                     <>
-                                        <Check className="h-6 w-6 mr-3" /> Ajouté au panier !
+                                        <Check className="h-6 w-6 mr-3" /> {t('product.added')}
                                     </>
                                 ) : (
                                     <>
-                                        <ShoppingBag className="h-6 w-6 mr-3" /> Ajouter au panier
+                                        <ShoppingBag className="h-6 w-6 mr-3" /> {t('product.add_to_cart')}
                                     </>
                                 )}
                             </button>
@@ -124,7 +131,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                 {relatedProducts.length > 0 && (
                     <div className="mt-24 border-t border-brand-100 pt-16">
                         <div className="flex items-center justify-between mb-10">
-                            <h2 className="text-3xl font-serif font-black tracking-tight text-slate-900">Vous aimerez peut-être aussi</h2>
+                            <h2 className="text-3xl font-serif font-black tracking-tight text-slate-900">{t('product.related')}</h2>
                         </div>
                         <div className="grid grid-cols-1 gap-y-12 gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
                             {relatedProducts.map((rp) => (
@@ -142,7 +149,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                                             <span aria-hidden="true" className="absolute inset-0" />
                                             {rp.name}
                                         </h3>
-                                        <p className="mt-1 text-sm text-slate-500 font-medium mb-2">{rp.category}</p>
+                                        <p className="mt-1 text-sm text-slate-500 font-medium mb-2">{getCategoryLabel(rp.category)}</p>
                                         <p className="text-lg font-bold text-brand-600">{rp.price} MAD</p>
                                     </div>
                                 </Link>
