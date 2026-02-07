@@ -116,7 +116,8 @@ function Content() {
                         sanitizedEmail,
                         password,
                         sanitizedName,
-                        sanitizedPhone
+                        sanitizedPhone,
+                        sanitizedAddress // Pass address to update profile
                     );
                     if (error) throw error;
                     // For new signup, we might want to update address separately if signup doesn't take it,

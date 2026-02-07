@@ -16,7 +16,7 @@ export default function CheckoutPage() {
     const { items, total, clearCart } = useCart();
     const { user, signup, signInAnonymously, convertGuestToPermanent } = useAuth();
     const router = useRouter();
-    const { t, language } = useI18n();
+    const { t, locale } = useI18n();
     const [isProcessing, setIsProcessing] = useState(false);
     const [cities, setCities] = useState<string[]>(["Casablanca"]);
     const [submitError, setSubmitError] = useState('');

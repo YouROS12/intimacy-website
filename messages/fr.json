@@ -146,143 +146,146 @@
         "rights": "Tous droits réservés.",
         "privacy": "Politique de confidentialité",
         "terms": "Conditions d'utilisation",
-        "shipping": "Livraison & Retours""auth": {
-            "login": "Se connecter",
-            "signup": "Créer un compte",
-            "email": "Email",
-            "password": "Mot de passe",
-            "confirm_password": "Confirmer le mot de passe",
-            "full_name": "Nom complet",
-            "phone": "Téléphone",
-            "city": "Ville",
-            "address": "Adresse de livraison",
-            "submit_login": "SE CONNECTER",
-            "submit_signup": "S'INSCRIRE",
-            "loading": "Chargement...",
-            "errors": {
-                "password_mismatch": "Les mots de passe ne correspondent pas.",
-                "password_short": "Le mot de passe doit contenir au moins 6 caractères.",
-                "name_required": "Le nom complet est requis.",
-                "phone_invalid": "Numéro marocain invalide (06...)",
-                "address_required": "L'adresse de livraison est requise.",
-                "general": "Une erreur est survenue."
-            },
-            "benefits": {
-                "title": "Pourquoi créer un compte ?",
-                "delivery": "Suivi de commande et livraison rapide",
-                "payment": "Paiement à la livraison sécurisé",
-                "support": "Service client dédié 24/7"
-            }
+        "shipping": "Livraison & Retours"
+    },
+    "auth": {
+        "login": "Se connecter",
+        "signup": "Créer un compte",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirm_password": "Confirmer le mot de passe",
+        "full_name": "Nom complet",
+        "phone": "Téléphone",
+        "city": "Ville",
+        "address": "Adresse de livraison",
+        "submit_login": "SE CONNECTER",
+        "submit_signup": "S'INSCRIRE",
+        "loading": "Chargement...",
+        "errors": {
+            "password_mismatch": "Les mots de passe ne correspondent pas.",
+            "password_short": "Le mot de passe doit contenir au moins 6 caractères.",
+            "name_required": "Le nom complet est requis.",
+            "phone_invalid": "Numéro marocain invalide (06...)",
+            "address_required": "L'adresse de livraison est requise.",
+            "general": "Une erreur est survenue."
         },
-        "profile": {
-            "title": "Mon Profil",
-            "orders": "Mes Commandes",
-            "account_details": "Détails du compte",
-            "security": "Sécurité",
-            "edit": "Modifier",
-            "save": "Enregistrer",
-            "cancel": "Annuler",
-            "change_password": "Changer le mot de passe",
-            "new_password": "Nouveau mot de passe",
-            "confirm_new_password": "Confirmer le nouveau mot de passe",
-            "empty_orders": "Aucune commande pour le moment.",
-            "logout": "Se déconnecter"
-        },
-        "confirmation": {
-            "title": "Merci pour votre commande !",
-            "message": "Votre commande a été passée avec succès. Nous vous appellerons bientôt pour confirmer la livraison.",
-            "email_check": "Vérifiez votre email",
-            "account_created": "Votre compte a été créé ! Veuillez vérifier votre email pour l'activer.",
-            "order_number": "Numéro de commande",
-            "total": "Montant total",
-            "continue_shopping": "Continuer vos achats",
-            "track_order": "Suivre ma commande"
-        },
-        "about": {
-            "hero": {
-                "title": "Bien-être, Confidentialité & <span class='text-brand-400'>Confiance</span>.",
-                "subtitle": "Nous sommes la première destination au Maroc pour les produits de bien-être intime. Nous croyons que la santé sexuelle doit être accessible, sûre et sans aucun jugement."
-            },
-            "features": {
-                "private": {
-                    "title": "100% Privé",
-                    "description": "Vos données sont chiffrées. Nous ne vendons jamais vos informations. Votre historique de commande est strictement personnel."
-                },
-                "discreet": {
-                    "title": "Livraison Discrète",
-                    "description": "Livré dans un emballage standard opaque. L'étiquette est générique. Même le livreur ne connaît pas le contenu."
-                },
-                "authentic": {
-                    "title": "Marques Authentiques",
-                    "description": "Revendeur agréé Durex, Manix et autres grandes marques mondiales. Pas de contrefaçons, jamais."
-                }
-            },
-            "process": {
-                "title": "Comment marche notre livraison discrète",
-                "subtitle": "Nous comprenons que votre vie privée est la priorité n°1. Voici exactement ce qui se passe lors de votre commande.",
-                "step1": {
-                    "title": "Emballage Neutre",
-                    "description": "Vos articles sont emballés dans un carton standard ou une pochette opaque. Aucun logo 'Intimacy Wellness', aucune image extérieure."
-                },
-                "step2": {
-                    "title": "Étiquette Générique",
-                    "description": "L'expéditeur affiché est 'IW Logistics' ou un nom de logistique générique. Le contenu est déclaré comme 'Soins Personnels' ou 'Accessoires'."
-                },
-                "step3": {
-                    "title": "Livraison Privée",
-                    "description": "Le livreur vous remet le paquet scellé. Nous supportons le Paiement à la Livraison (COD) pour que vous puissiez payer discrètement à la réception."
-                }
-            },
-            "faq": {
-                "title": "Questions Fréquentes",
-                "q1": {
-                    "question": "Le livreur peut-il voir ce qu'il y a dedans ?",
-                    "answer": "Absolument pas. Le paquet est scellé avant de quitter notre entrepôt. Le livreur n'a aucune information sur le contenu."
-                },
-                "q2": {
-                    "question": "Qu'est-ce qui apparaît sur mon relevé bancaire ?",
-                    "answer": "Si vous payez en ligne (bientôt disponible), cela apparaîtra comme 'IW Store'. Cependant, nous utilisons principalement le Paiement à la Livraison (COD), donc aucune trace bancaire."
-                },
-                "q3": {
-                    "question": "Vendez-vous aux mineurs ?",
-                    "answer": "Non. Nous vendons strictement aux adultes de 18 ans et plus. En utilisant notre site, vous confirmez être majeur."
-                }
-            },
-            "guarantee": {
-                "title": "Notre Garantie Qualité",
-                "items": {
-                    "original": "Produits Originaux",
-                    "dates": "Dates d'Expiration Longues",
-                    "clinical": "Testé Cliniquement"
-                }
-            },
-            "cta": {
-                "title": "Prêt à commander en toute confiance ?",
-                "button": "Voir la Boutique"
-            }
-        },
-        "education": {
-            "hero": {
-                "badge": "Centre d'Expertise",
-                "title": "Comprendre & Assurer",
-                "subtitle": "Des réponses claires, validées par l'IA et nos experts."
-            },
-            "search": {
-                "guide_placeholder": "Rechercher un dossier...",
-                "article_placeholder": "Rechercher un article..."
-            },
-            "tabs": {
-                "guides": "Guides",
-                "articles": "Articles"
-            },
-            "categories": {
-                "wellness": "Bien-être",
-                "performance": "Performance",
-                "health": "Santé",
-                "education": "Éducation"
-            },
-            "empty": "Aucun résultat trouvé.",
-            "reset": "Réinitialiser la recherche",
-            "back_to_articles": "Retour aux articles",
-            "read_time": "min de lecture"
+        "benefits": {
+            "title": "Pourquoi créer un compte ?",
+            "delivery": "Suivi de commande et livraison rapide",
+            "payment": "Paiement à la livraison sécurisé",
+            "support": "Service client dédié 24/7"
         }
+    },
+    "profile": {
+        "title": "Mon Profil",
+        "orders": "Mes Commandes",
+        "account_details": "Détails du compte",
+        "security": "Sécurité",
+        "edit": "Modifier",
+        "save": "Enregistrer",
+        "cancel": "Annuler",
+        "change_password": "Changer le mot de passe",
+        "new_password": "Nouveau mot de passe",
+        "confirm_new_password": "Confirmer le nouveau mot de passe",
+        "empty_orders": "Aucune commande pour le moment.",
+        "logout": "Se déconnecter"
+    },
+    "confirmation": {
+        "title": "Merci pour votre commande !",
+        "message": "Votre commande a été passée avec succès. Nous vous appellerons bientôt pour confirmer la livraison.",
+        "email_check": "Vérifiez votre email",
+        "account_created": "Votre compte a été créé ! Veuillez vérifier votre email pour l'activer.",
+        "order_number": "Numéro de commande",
+        "total": "Montant total",
+        "continue_shopping": "Continuer vos achats",
+        "track_order": "Suivre ma commande"
+    },
+    "about": {
+        "hero": {
+            "title": "Bien-être, Confidentialité & <span class='text-brand-400'>Confiance</span>.",
+            "subtitle": "Nous sommes la première destination au Maroc pour les produits de bien-être intime. Nous croyons que la santé sexuelle doit être accessible, sûre et sans aucun jugement."
+        },
+        "features": {
+            "private": {
+                "title": "100% Privé",
+                "description": "Vos données sont chiffrées. Nous ne vendons jamais vos informations. Votre historique de commande est strictement personnel."
+            },
+            "discreet": {
+                "title": "Livraison Discrète",
+                "description": "Livré dans un emballage standard opaque. L'étiquette est générique. Même le livreur ne connaît pas le contenu."
+            },
+            "authentic": {
+                "title": "Marques Authentiques",
+                "description": "Revendeur agréé Durex, Manix et autres grandes marques mondiales. Pas de contrefaçons, jamais."
+            }
+        },
+        "process": {
+            "title": "Comment marche notre livraison discrète",
+            "subtitle": "Nous comprenons que votre vie privée est la priorité n°1. Voici exactement ce qui se passe lors de votre commande.",
+            "step1": {
+                "title": "Emballage Neutre",
+                "description": "Vos articles sont emballés dans un carton standard ou une pochette opaque. Aucun logo 'Intimacy Wellness', aucune image extérieure."
+            },
+            "step2": {
+                "title": "Étiquette Générique",
+                "description": "L'expéditeur affiché est 'IW Logistics' ou un nom de logistique générique. Le contenu est déclaré comme 'Soins Personnels' ou 'Accessoires'."
+            },
+            "step3": {
+                "title": "Livraison Privée",
+                "description": "Le livreur vous remet le paquet scellé. Nous supportons le Paiement à la Livraison (COD) pour que vous puissiez payer discrètement à la réception."
+            }
+        },
+        "faq": {
+            "title": "Questions Fréquentes",
+            "q1": {
+                "question": "Le livreur peut-il voir ce qu'il y a dedans ?",
+                "answer": "Absolument pas. Le paquet est scellé avant de quitter notre entrepôt. Le livreur n'a aucune information sur le contenu."
+            },
+            "q2": {
+                "question": "Qu'est-ce qui apparaît sur mon relevé bancaire ?",
+                "answer": "Si vous payez en ligne (bientôt disponible), cela apparaîtra comme 'IW Store'. Cependant, nous utilisons principalement le Paiement à la Livraison (COD), donc aucune trace bancaire."
+            },
+            "q3": {
+                "question": "Vendez-vous aux mineurs ?",
+                "answer": "Non. Nous vendons strictement aux adultes de 18 ans et plus. En utilisant notre site, vous confirmez être majeur."
+            }
+        },
+        "guarantee": {
+            "title": "Notre Garantie Qualité",
+            "items": {
+                "original": "Produits Originaux",
+                "dates": "Dates d'Expiration Longues",
+                "clinical": "Testé Cliniquement"
+            }
+        },
+        "cta": {
+            "title": "Prêt à commander en toute confiance ?",
+            "button": "Voir la Boutique"
+        }
+    },
+    "education": {
+        "hero": {
+            "badge": "Centre d'Expertise",
+            "title": "Comprendre & Assurer",
+            "subtitle": "Des réponses claires, validées par l'IA et nos experts."
+        },
+        "search": {
+            "guide_placeholder": "Rechercher un dossier...",
+            "article_placeholder": "Rechercher un article..."
+        },
+        "tabs": {
+            "guides": "Guides",
+            "articles": "Articles"
+        },
+        "categories": {
+            "wellness": "Bien-être",
+            "performance": "Performance",
+            "health": "Santé",
+            "education": "Éducation"
+        },
+        "empty": "Aucun résultat trouvé.",
+        "reset": "Réinitialiser la recherche",
+        "back_to_articles": "Retour aux articles",
+        "read_time": "min de lecture"
+    }
+}
