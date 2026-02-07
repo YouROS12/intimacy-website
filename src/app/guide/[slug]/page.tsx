@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
-import { getPostBySlug } from '@/services/api';
+import { getPostBySlug, getProductsByIds } from '@/services/api';
 import BlogRenderer from '@/components/BlogRenderer';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${post.title} | Intimacy Wellness Maroc`,
         description: post.excerpt,
         alternates: {
-            canonical: `https://intimacywellness.ma/guide/${slug}`,
+            canonical: `https://intimacy.ma/guide/${slug}`,
         },
         openGraph: {
             images: post.cover_image ? [post.cover_image] : []
@@ -43,6 +43,32 @@ export default async function BlogPostPage({ params }: Props) {
             return null;
         });
         const t = await getTranslations('education');
+
+        // Parse content to find product IDs to fetch
+        let productIds: string[] = [];
+        try {
+            const contentObj = typeof post.content === 'string'
+                ? JSON.parse(post.content)
+                : post.content;
+
+            if (contentObj && contentObj.blocks) {
+                contentObj.blocks.forEach((block: any) => {
+                    if (block.type === 'product_grid' && Array.isArray(block.productIds)) {
+                        productIds.push(...block.productIds);
+                    }
+                });
+            }
+        } catch (e) {
+            console.warn("Failed to parse post content for products", e);
+        }
+
+        // Fetch products if we have IDs
+        const associatedProducts = productIds.length > 0
+            ? await getProductsByIds(productIds).catch(e => {
+                console.error("Failed to fetch associated products:", e);
+                return [];
+            })
+            : [];
 
         if (!post) {
             console.log(`Post not found for slug: ${slug}`);
@@ -120,7 +146,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                 {/* Content */}
                 <div className="max-w-3xl mx-auto px-4 pb-20">
-                    <BlogRenderer content={post.content} />
+                    <BlogRenderer content={post.content} products={associatedProducts} />
 
                     {/* Back to articles link */}
                     <div className="mt-20 text-center">

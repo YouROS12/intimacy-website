@@ -1,14 +1,15 @@
 import React from 'react';
-import { BlogContent, BlogBlock } from '@/types';
+import { BlogContent, BlogBlock, Product } from '@/types';
 import { Quote, ShoppingBag, Info, AlertTriangle, Lightbulb, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
-import { MOCK_PRODUCTS } from '@/services/mockData';
+// Removed MOCK_PRODUCTS import to force real data usage
 
 interface BlogRendererProps {
     content: string | BlogContent; // Can be raw HTML (string) or JSON object
+    products?: Product[]; // Real products fetched from DB
 }
 
-const BlogRenderer: React.FC<BlogRendererProps> = ({ content }) => {
+const BlogRenderer: React.FC<BlogRendererProps> = ({ content, products = [] }) => {
     // 1. Safe Parsing Logic
     let data: BlogContent | null = null;
     let rawHtml: string | null = null;
@@ -46,7 +47,7 @@ const BlogRenderer: React.FC<BlogRendererProps> = ({ content }) => {
     return (
         <div className={`blog-theme-${data.theme} max-w-3xl mx-auto space-y-12`}>
             {data.blocks.map((block, idx) => (
-                <BlockRenderer key={idx} block={block} />
+                <BlockRenderer key={idx} block={block} products={products} />
             ))}
 
             {data.references && data.references.length > 0 && (
@@ -132,19 +133,10 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
         case 'product_grid':
             if (!block.productIds || !Array.isArray(block.productIds)) return null;
             const validIds = block.productIds.filter(id => id && typeof id === 'string'); // Filter empty strings
-            const products = MOCK_PRODUCTS.filter(p => validIds.includes(p.id));
 
-            // If no mock products found, maybe they are real IDs? 
-            // We can't fetch here in a client component easily without a hook.
-            // For now, prevent crash.
-            if (products.length === 0) {
-                // Option: Render just the IDs or a placeholder? 
-                // Better to return null than crash or show empty box if data mismatch.
-                // Actually, if we return null, the block disappears.
-                // If the user wants to see *something*, we'd need to fetch.
-                return null;
-            }
-            if (products.length === 0) return null;
+            // Use passed products prop
+            const displayProducts = products.filter(p => validIds.includes(p.id));
+            if (displayProducts.length === 0) return null;
 
             return (
                 <div className="my-10 bg-gradient-to-br from-brand-50 to-white border border-brand-100 rounded-2xl p-8 shadow-sm">
@@ -152,7 +144,7 @@ const BlockRenderer: React.FC<{ block: BlogBlock }> = ({ block }) => {
                         <ShoppingBag className="h-5 w-5" /> {block.title || "Nos Recommandations"}
                     </h3>
                     <div className="grid md:grid-cols-2 gap-6">
-                        {products.map(product => (
+                        {displayProducts.map(product => (
                             <Link key={product.id} href={`/product/${product.id}`} className="flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-xl shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all border border-gray-100 group no-underline">
                                 <div className="h-24 w-24 flex-shrink-0 bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center p-2">
                                     <img src={product.imageUrl} alt={product.name} className="h-full w-auto object-contain group-hover:scale-110 transition-transform duration-300" />

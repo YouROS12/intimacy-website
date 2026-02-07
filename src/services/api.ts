@@ -106,6 +106,28 @@ export const getProductById = async (id: string): Promise<Product | undefined> =
     };
 };
 
+export const getProductsByIds = async (ids: string[]): Promise<Product[]> => {
+    if (!isSupabaseConfigured() || ids.length === 0) return [];
+
+    const uniqueIds = Array.from(new Set(ids)).filter(id => id.length > 20); // Basic UUID check
+    if (uniqueIds.length === 0) return [];
+
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .in('id', uniqueIds);
+
+    if (error || !data) {
+        console.error("Error fetching products by IDs:", error);
+        return [];
+    }
+
+    return data.map((p: any) => ({
+        ...p,
+        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
+    }));
+};
+
 export const addProduct = async (product: Omit<Product, 'id'>) => {
     if (!isSupabaseConfigured()) throw new Error("Database not configured");
 
