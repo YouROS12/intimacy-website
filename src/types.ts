@@ -77,26 +77,57 @@ export type BlogTheme = 'educational_deep_dive' | 'product_showcase' | 'listicle
 
 export type BlogBlockType = 'hero' | 'text' | 'quote' | 'product_grid' | 'alert' | 'image_group';
 
-export interface BlogBlock {
-    type: BlogBlockType;
-    id?: string;
-    // Hero
-    heading?: string;
+// Base interface
+interface BaseBlock {
+    id: string; // Unique ID for React keys
+}
+
+// Specific Block Interfaces
+export interface HeroBlock extends BaseBlock {
+    type: 'hero';
+    heading: string;
     subheading?: string;
     image?: string;
-    // Text
-    content?: string; // HTML string for rich text within the block
-    title?: string; // Section headers
-    // Quote
+}
+
+export interface TextBlock extends BaseBlock {
+    type: 'text';
+    content: string; // HTML string
+    title?: string;
+}
+
+export interface QuoteBlock extends BaseBlock {
+    type: 'quote';
+    content: string;
     author?: string;
     role?: string;
-    // Product Grid
-    productIds?: string[];
-    // Alert
-    variant?: 'info' | 'warning' | 'tip';
-    // Image Group
-    images?: { url: string; caption?: string }[];
 }
+
+export interface ProductGridBlock extends BaseBlock {
+    type: 'product_grid';
+    productIds: string[];
+    title?: string;
+}
+
+export interface AlertBlock extends BaseBlock {
+    type: 'alert';
+    variant: 'info' | 'warning' | 'tip';
+    content: string;
+}
+
+export interface ImageGroupBlock extends BaseBlock {
+    type: 'image_group';
+    images: { url: string; caption?: string }[];
+}
+
+// Discriminated Union
+export type BlogBlock =
+    | HeroBlock
+    | TextBlock
+    | QuoteBlock
+    | ProductGridBlock
+    | AlertBlock
+    | ImageGroupBlock;
 
 export interface BlogReference {
     text: string;
@@ -106,5 +137,5 @@ export interface BlogReference {
 export interface BlogContent {
     theme: BlogTheme;
     blocks: BlogBlock[];
-    references?: BlogReference[]; // For citations
+    references?: BlogReference[];
 }
