@@ -149,26 +149,34 @@ h6 {
   font-family: var(--font-serif);
 }
 
-/* Fluid Typography for Mobile */
+/* Typography - Stable fixed sizes */
 h1 {
-  font-size: clamp(2rem, 5vw, 4rem);
+  font-size: 2.5rem;
 }
 
 h2 {
-  font-size: clamp(1.5rem, 4vw, 3rem);
+  font-size: 2rem;
 }
 
 h3 {
-  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-size: 1.5rem;
 }
 
-/* Base font sizing - mobile first */
+@media (min-width: 768px) {
+  h1 {
+    font-size: 3.5rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+  }
+
+  h3 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Base font sizing */
 html {
   font-size: 16px;
-}
-
-@media (max-width: 640px) {
-  html {
-    font-size: 14px;
-  }
 }

@@ -49,7 +49,7 @@ const Navbar: React.FC = () => {
                                 <span className="material-symbols-outlined text-3xl">spa</span>
                             </div>
                             <h2 className="text-text-main dark:text-white text-xl font-bold tracking-tight font-serif">
-                                Wellness <span className="text-primary">Sanctuary</span>
+                                <span className="text-primary">Intimacy</span>
                             </h2>
                         </Link>
                     </div>
