@@ -44,5 +44,31 @@ export default async function ProductPage({ params }: Props) {
 
     const relatedProducts = await getRelatedProducts(product.category, product.id);
 
-    return <ProductDetailsClient product={product} relatedProducts={relatedProducts} />;
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: product.name,
+        image: product.imageUrl,
+        description: product.description,
+        brand: {
+            '@type': 'Brand',
+            name: product.brand || 'Intimacy Wellness'
+        },
+        offers: {
+            '@type': 'Offer',
+            price: product.price,
+            priceCurrency: 'MAD',
+            availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+        }
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <ProductDetailsClient product={product} relatedProducts={relatedProducts} />
+        </>
+    );
 }

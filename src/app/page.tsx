@@ -17,8 +17,27 @@ export default function Home() {
     getFeaturedProducts().then(setFeaturedProducts);
   }, []);
 
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Intimacy Wellness Morocco',
+    url: 'https://intimacy.ma',
+    logo: 'https://intimacy.ma/logo.png',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: '+212-656-201278',
+      contactType: 'customer service',
+      areaServed: 'MA',
+      availableLanguage: ['en', 'fr', 'ar']
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative w-full py-12 lg:py-20 bg-background-light dark:bg-background-dark">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
