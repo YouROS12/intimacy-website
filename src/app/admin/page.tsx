@@ -12,10 +12,11 @@ import {
     MessageCircle, XCircle
 } from 'lucide-react';
 import {
-    getDashboardStats, getAllOrders, getProducts, deleteProduct, addProduct,
+    getProducts, deleteProduct, addProduct,
     addBulkProducts, updateProduct, updateOrderStatus,
     getWeeklySales, adminGetAllPseoPages, adminUpdatePseoPage
 } from '@/services/api';
+import { getAdminOrders, getAdminDashboardStats } from '@/actions/admin';
 import { Order, Product, ProductCategory } from '@/types';
 import { isSupabaseConfigured } from '@/services/supabase';
 import * as XLSX from 'xlsx';
@@ -95,8 +96,8 @@ export default function AdminDashboard() {
         setIsLoading(true);
         try {
             const [s, o, p, sales, pseo] = await Promise.all([
-                getDashboardStats(),
-                getAllOrders(),
+                getAdminDashboardStats(),
+                getAdminOrders(),
                 getProducts(),
                 getWeeklySales(),
                 adminGetAllPseoPages()

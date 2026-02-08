@@ -82,8 +82,9 @@ export default function Home() {
                   alt="Durex Performax Mutual Pleasure"
                   fill
                   priority
+                  quality={85}
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 />
                 {/* Floating Badge */}
                 <div className="absolute bottom-6 left-6 z-20 bg-white/90 backdrop-blur p-4 rounded-lg shadow-lg max-w-[200px]">
