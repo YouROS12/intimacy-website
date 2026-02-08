@@ -12,27 +12,22 @@ export const dynamic = 'force-dynamic';
 
 export default async function EducationPage() {
     try {
+        console.log("Fetching Education Page Data...");
+        // Fetch data safely
         const [guides, posts] = await Promise.all([
             getAllPseoPages().catch(e => {
-                console.error("Failed to fetch PSEO pages:", e);
+                console.error("PSEO fetch error:", e);
                 return [];
             }),
             getAllPosts().catch(e => {
-                console.error("Failed to fetch posts:", e);
+                console.error("Posts fetch error:", e);
                 return [];
             })
         ]);
 
-        // Serialize data to avoid passing complex objects or undefineds
-        const safeGuides = Array.isArray(guides) ? guides : [];
-        const safePosts = Array.isArray(posts) ? posts : [];
-
-        console.log(`Fetched ${safeGuides.length} guides and ${safePosts.length} posts`);
-
-        return <EducationClient initialGuides={safeGuides} initialPosts={safePosts} />;
+        return <EducationClient initialGuides={guides} initialPosts={posts} />;
     } catch (error) {
         console.error("Critical error in EducationPage:", error);
-        // Return empty state instead of crashing 
         return <EducationClient initialGuides={[]} initialPosts={[]} />;
     }
 }

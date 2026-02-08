@@ -73,69 +73,62 @@ export interface ChatMessage {
 
 // --- JSON Blog Engine Types ---
 
+// Re-export Zod inferred types to ensure Single Source of Truth
+// We import generic types but we don't want to import the run-time schemas here to keep types.ts pure if possible.
+// However, since we need z.infer, we must import the schema or the type.
+// Let's import the TYPES from validation, assuming they are exported.
+import { SafeBlogContent, SafeBlogBlock, SafeBlogBlockType } from './lib/validation';
+
 export type BlogTheme = 'educational_deep_dive' | 'product_showcase' | 'listicle';
 
-export type BlogBlockType = 'hero' | 'text' | 'quote' | 'product_grid' | 'alert' | 'image_group';
+// Alias for backward compatibility
+export type BlogContent = SafeBlogContent;
+export type BlogBlock = SafeBlogBlock;
 
-// Base interface
-interface BaseBlock {
-    id?: string; // Optional (Supabase JSON might not have it)
-}
+// We can keep specific block interfaces if needed for component props, 
+// by extracting then from the Union if possible, or just defining them as aliases to the Specific Zod types.
+// For now, components can accept `SafeBlogBlock` or cast.
 
-// Specific Block Interfaces
-export interface HeroBlock extends BaseBlock {
+// Re-defining these strictly for the Block Components to use
+export interface HeroBlock {
     type: 'hero';
     heading: string;
     subheading?: string;
     image?: string;
+    id?: string;
 }
 
-export interface TextBlock extends BaseBlock {
+export interface TextBlock {
     type: 'text';
-    content: string; // HTML string
+    content: string;
     title?: string;
+    id?: string;
 }
 
-export interface QuoteBlock extends BaseBlock {
+export interface QuoteBlock {
     type: 'quote';
     content: string;
     author?: string;
     role?: string;
+    id?: string;
 }
 
-export interface ProductGridBlock extends BaseBlock {
+export interface ProductGridBlock {
     type: 'product_grid';
     productIds: string[];
     title?: string;
+    id?: string;
 }
 
-export interface AlertBlock extends BaseBlock {
+export interface AlertBlock {
     type: 'alert';
     variant: 'info' | 'warning' | 'tip';
     content: string;
+    id?: string;
 }
 
-export interface ImageGroupBlock extends BaseBlock {
+export interface ImageGroupBlock {
     type: 'image_group';
     images: { url: string; caption?: string }[];
-}
-
-// Discriminated Union
-export type BlogBlock =
-    | HeroBlock
-    | TextBlock
-    | QuoteBlock
-    | ProductGridBlock
-    | AlertBlock
-    | ImageGroupBlock;
-
-export interface BlogReference {
-    text: string;
-    url?: string;
-}
-
-export interface BlogContent {
-    theme: BlogTheme;
-    blocks: BlogBlock[];
-    references?: BlogReference[];
+    id?: string;
 }

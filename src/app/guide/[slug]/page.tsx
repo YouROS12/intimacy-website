@@ -1,54 +1,34 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
-import { getPostBySlug, getProductsByIds } from '@/services/api';
-import BlogRenderer from '@/components/BlogRenderer';
+import { BlogService } from '@/services/blog-service';
+import SafeBlogRenderer from '@/components/SafeBlogRenderer';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { BlogContent, Product } from '@/types';
 
 type Props = {
     params: Promise<{ slug: string }>;
 };
 
-// Helper: Safe JSON Parse (still useful for product extraction)
-function safeParseContent(content: string | object): BlogContent | null {
-    try {
-        if (typeof content === 'string') {
-            const parsed = JSON.parse(content);
-            // Basic validation
-            if (parsed && Array.isArray(parsed.blocks)) {
-                return parsed as BlogContent;
-            }
-        } else if (typeof content === 'object' && content !== null) {
-            // Already an object (Supabase JSONB)
-            return content as BlogContent;
-        }
-    } catch (e) {
-        console.warn("Failed to parse blog content:", e);
-    }
-    return null;
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     try {
         const { slug } = await params;
-        const post = await getPostBySlug(slug);
+        const postData = await BlogService.getPost(slug);
 
-        if (!post) {
+        if (!postData) {
             return {
                 title: 'Article non trouvé | Intimacy.ma',
             };
         }
 
         return {
-            title: `${post.title} | Intimacy.ma`,
-            description: post.excerpt,
+            title: `${postData.original.title} | Intimacy.ma`,
+            description: postData.original.excerpt,
             alternates: {
                 canonical: `https://intimacy.ma/guide/${slug}`,
             },
             openGraph: {
-                images: post.cover_image ? [post.cover_image] : []
+                images: postData.original.cover_image ? [postData.original.cover_image] : []
             }
         };
     } catch (error) {
@@ -62,48 +42,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 3600; // Update every hour
 
 export default async function BlogPostPage({ params }: Props) {
-    let slug = "";
     try {
-        const paramsValue = await params;
-        slug = paramsValue.slug;
+        const { slug } = await params;
 
         console.log(`[BlogPostPage] Rendering post: ${slug}`);
 
-        const post = await getPostBySlug(slug).catch(e => {
-            console.error(`Error fetching post ${slug}:`, e);
-            return null;
-        });
+        const data = await BlogService.getPost(slug);
 
-        if (!post) {
+        if (!data) {
             console.log(`[BlogPostPage] Post not found for slug: ${slug}`);
             notFound();
         }
 
-        console.log(`[BlogPostPage] Post fetched successfully. Validating content...`);
+        const post = data.original;
         const t = await getTranslations('education');
 
-        // 1. Extract Dependencies (Products) for the Product Blocks
-        // We still need to parse just to find IDs, but the Renderer will re-parse for rendering.
-        // This is slightly inefficient but safe.
-        const blogContent: BlogContent | null = safeParseContent(post.content);
-        let relatedProducts: Product[] = [];
-
-        if (blogContent) {
-            try {
-                const allProductIds = blogContent.blocks
-                    .filter(b => b.type === 'product_grid')
-                    .flatMap(b => (b as any).productIds || [])
-                    .filter((id: any) => typeof id === 'string' && id.length > 0);
-
-                if (allProductIds.length > 0) {
-                    relatedProducts = await getProductsByIds(allProductIds);
-                }
-            } catch (err) {
-                console.error("[BlogPostPage] Error extracting product IDs:", err);
-            }
-        }
-
-        // 3. Prepare JSON-LD
+        // JSON-LD
         const jsonLd = {
             '@context': 'https://schema.org',
             '@type': 'Article',
@@ -135,7 +89,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                 {/* Post Header */}
                 <div className="max-w-4xl mx-auto px-4 pt-12 pb-8">
-                    <Link href="/education?tab=articles" className="text-slate-500 hover:text-brand-600 flex items-center mb-8 text-sm group">
+                    <Link href="/education" className="text-slate-500 hover:text-brand-600 flex items-center mb-8 text-sm group">
                         <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" /> {t('back_to_articles')}
                     </Link>
 
@@ -173,18 +127,18 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                 )}
 
-                {/* Content Renderer */}
+                {/* Safe Content Renderer */}
                 <div className="max-w-3xl mx-auto px-4 pb-20">
-                    {/* Pass content directly - BlogRenderer now handles both string/object */}
-                    <BlogRenderer
-                        content={post.content}
-                        products={relatedProducts}
+                    <SafeBlogRenderer
+                        content={data.content}
+                        rawContent={post.content}
+                        products={data.products}
                     />
 
                     {/* Back to articles link */}
                     <div className="mt-20 text-center">
                         <Link
-                            href="/education?tab=articles" // Explicitly pointing to articles tab
+                            href="/education"
                             className="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium px-6 py-3 rounded-full bg-brand-50 hover:bg-brand-100 transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
