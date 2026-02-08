@@ -79,7 +79,7 @@ export type BlogBlockType = 'hero' | 'text' | 'quote' | 'product_grid' | 'alert'
 
 // Base interface
 interface BaseBlock {
-    id: string; // Unique ID for React keys
+    id?: string; // Optional (Supabase JSON might not have it)
 }
 
 // Specific Block Interfaces

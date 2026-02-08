@@ -4,8 +4,11 @@ import { ProductGridBlock as ProductGridBlockType, Product } from '@/types';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 
 export const ProductGridBlock: React.FC<{ block: ProductGridBlockType; products: Product[] }> = ({ block, products }) => {
+    // Defensive: Handle missing productIds safely
+    const ids = block.productIds || [];
+
     // Filter out products that match the IDs in this specific block
-    const blockProducts = products.filter(p => block.productIds.includes(p.id));
+    const blockProducts = products.filter(p => ids.includes(p.id));
 
     if (blockProducts.length === 0) return null;
 

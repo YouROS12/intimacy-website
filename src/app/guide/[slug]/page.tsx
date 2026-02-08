@@ -31,43 +31,57 @@ function safeParseContent(content: string | object): BlogContent | null {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { slug } = await params;
-    const post = await getPostBySlug(slug);
+    try {
+        const { slug } = await params;
+        const post = await getPostBySlug(slug);
 
-    if (!post) {
+        if (!post) {
+            return {
+                title: 'Article non trouvé | Intimacy.ma',
+            };
+        }
+
         return {
-            title: 'Article non trouvé | Intimacy.ma',
+            title: `${post.title} | Intimacy.ma`,
+            description: post.excerpt,
+            alternates: {
+                canonical: `https://intimacy.ma/guide/${slug}`,
+            },
+            openGraph: {
+                images: post.cover_image ? [post.cover_image] : []
+            }
+        };
+    } catch (error) {
+        console.error("Error generating metadata:", error);
+        return {
+            title: 'Intimacy Wellness Maroc',
         };
     }
-
-    return {
-        title: `${post.title} | Intimacy.ma`,
-        description: post.excerpt,
-        alternates: {
-            canonical: `https://intimacy.ma/guide/${slug}`,
-        },
-        openGraph: {
-            images: post.cover_image ? [post.cover_image] : []
-        }
-    };
 }
 
 export const revalidate = 3600; // Update every hour
 
 export default async function BlogPostPage({ params }: Props) {
+    let slug = "";
     try {
-        const { slug } = await params;
+        const paramsValue = await params;
+        slug = paramsValue.slug;
+
+        console.log(`[BlogPostPage] Rendering post: ${slug}`);
+
         const post = await getPostBySlug(slug).catch(e => {
             console.error(`Error fetching post ${slug}:`, e);
             return null;
         });
 
         if (!post) {
-            console.log(`Post not found for slug: ${slug}`);
+            console.log(`[BlogPostPage] Post not found for slug: ${slug}`);
             notFound();
         }
 
+        console.log(`[BlogPostPage] Post fetched successfully. Validating content...`);
         const t = await getTranslations('education');
+
 
         // 1. Parse Content
         const blogContent: BlogContent | null = safeParseContent(post.content);
