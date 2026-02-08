@@ -130,7 +130,17 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
                                     <div className="flex items-center gap-4">
                                         <div className="flex items-center gap-1">
                                             <Calendar className="h-3 w-3" />
-                                            <span>{new Date(item.date).toLocaleDateString()}</span>
+                                            <span>
+                                                {(() => {
+                                                    try {
+                                                        const d = new Date(item.date);
+                                                        if (isNaN(d.getTime())) return 'Date inconnue';
+                                                        return d.toLocaleDateString();
+                                                    } catch (e) {
+                                                        return 'Date inconnue';
+                                                    }
+                                                })()}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
