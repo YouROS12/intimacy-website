@@ -6,11 +6,11 @@ import { getRequestConfig } from 'next-intl/server';
 const locales = ['en', 'fr', 'ar'];
 
 export default getRequestConfig(async ({ locale }) => {
-    // Validate that the incoming `locale` parameter is valid
-    if (!locales.includes(locale as any)) notFound();
+    // If no locale is provided (e.g. non-localized routing), default to 'fr'
+    const requestedLocale = (locale && locales.includes(locale as any)) ? locale : 'fr';
 
     return {
-        locale: locale as any,
-        messages: (await import(`../../messages/${locale}.json`)).default
+        locale: requestedLocale as any,
+        messages: (await import(`../../messages/${requestedLocale}.json`)).default
     };
 });
