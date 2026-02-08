@@ -54,14 +54,14 @@ const Navbar: React.FC = () => {
             <div className="bg-brand-600 text-white py-2 px-4 text-center text-xs sm:text-sm font-medium relative z-[101]">
                 {t('home.urgency_banner')}
             </div>
-            <header className="w-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800 transition-all duration-300 relative z-[100]">
+            <header className="w-full bg-white/95 backdrop-blur-md border-b border-slate-100 transition-all duration-300 relative z-[100]">
                 <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-20">
                         {/* Logo (Stitch Style) */}
                         <div className="flex items-center gap-3">
                             <Link href="/" className="flex items-center gap-2 group">
                                 <ShieldCheck className="w-8 h-8" />
-                                <h2 className="text-text-main dark:text-white text-xl font-bold tracking-tight font-serif">
+                                <h2 className="text-text-main text-xl font-bold tracking-tight font-serif">
                                     <span className="text-primary">Intimacy</span>
                                 </h2>
                             </Link>
@@ -69,10 +69,10 @@ const Navbar: React.FC = () => {
 
                         {/* Desktop Nav (Stitch Style) */}
                         <nav className="hidden md:flex items-center gap-8">
-                            <Link href="/" className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.home')}</Link>
-                            <Link href="/shop" className={`text-sm font-medium transition-colors ${isActive('/shop') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.shop')}</Link>
-                            <Link href="/education" className={`text-sm font-medium transition-colors ${isActive('/education') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.education')}</Link>
-                            <Link href="/about" className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-primary' : 'text-text-main dark:text-gray-200 hover:text-primary'}`}>{t('nav.about')}</Link>
+                            <Link href="/" className={`text-sm font-medium transition-colors ${isActive('/') ? 'text-primary' : 'text-text-main hover:text-primary'}`}>{t('nav.home')}</Link>
+                            <Link href="/shop" className={`text-sm font-medium transition-colors ${isActive('/shop') ? 'text-primary' : 'text-text-main hover:text-primary'}`}>{t('nav.shop')}</Link>
+                            <Link href="/education" className={`text-sm font-medium transition-colors ${isActive('/education') ? 'text-primary' : 'text-text-main hover:text-primary'}`}>{t('nav.education')}</Link>
+                            <Link href="/about" className={`text-sm font-medium transition-colors ${isActive('/about') ? 'text-primary' : 'text-text-main hover:text-primary'}`}>{t('nav.about')}</Link>
                         </nav>
 
                         <div className="hidden sm:flex items-center gap-3">
@@ -83,7 +83,7 @@ const Navbar: React.FC = () => {
                                     placeholder={t('nav.search')}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-48 pl-4 pr-10 py-2 rounded-full border border-[#e7d9cf] dark:border-gray-700 bg-transparent text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+                                    className="w-48 pl-4 pr-10 py-2 rounded-full border border-[#e7d9cf] bg-transparent text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
                                 />
                                 <button type="submit" className="absolute right-2 top-1.5 text-text-muted hover:text-primary">
                                     <Search className="h-4 w-4" />
@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
                             </form>
 
                             {/* Search Icon (Mobile/Tablet view trigger could go here, but keeping simple for now) */}
-                            <button className="lg:hidden flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                            <button className="lg:hidden flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 text-text-main transition-colors">
                                 <Search className="size-5" />
                             </button>
 
@@ -99,30 +99,30 @@ const Navbar: React.FC = () => {
                             <div className="relative">
                                 <button
                                     onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
-                                    className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors"
+                                    className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 text-text-main transition-colors"
                                 >
                                     <Globe className="h-5 w-5" />
                                 </button>
 
                                 {isLangMenuOpen && (
-                                    <div className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-gray-900 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
+                                    <div className="absolute right-0 top-full mt-2 w-40 bg-white rounded-xl shadow-xl border border-gray-200 overflow-hidden z-50">
                                         <button
                                             onClick={() => { setLocale('fr'); setIsLangMenuOpen(false); }}
-                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'fr' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'fr' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700'}`}
                                         >
                                             <span className="text-lg">🇫🇷</span>
                                             <span>Français</span>
                                         </button>
                                         <button
                                             onClick={() => { setLocale('en'); setIsLangMenuOpen(false); }}
-                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'en' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'en' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700'}`}
                                         >
                                             <span className="text-lg">🇬🇧</span>
                                             <span>English</span>
                                         </button>
                                         <button
                                             onClick={() => { setLocale('ar'); setIsLangMenuOpen(false); }}
-                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'ar' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700 dark:text-gray-200'}`}
+                                            className={`w-full px-4 py-3 text-left text-sm hover:bg-primary/10 transition-colors flex items-center gap-2 ${locale === 'ar' ? 'bg-primary/5 text-primary font-medium' : 'text-gray-700'}`}
                                         >
                                             <span className="text-lg">🇲🇦</span>
                                             <span>العربية</span>
@@ -138,7 +138,7 @@ const Navbar: React.FC = () => {
                             >
                                 <ShoppingBag className="size-6" />
                                 {totalItems > 0 && (
-                                    <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-light dark:ring-background-dark animate-pulse"></span>
+                                    <span className="absolute top-2 right-2 size-2 bg-primary rounded-full ring-2 ring-background-light animate-pulse"></span>
                                 )}
                             </button>
 
@@ -146,23 +146,23 @@ const Navbar: React.FC = () => {
                             {user ? (
                                 <div className="relative group">
                                     <Link href="/profile">
-                                        <button className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                                        <button className="flex items-center justify-center size-10 tap-target rounded-full bg-transparent hover:bg-gray-100 text-text-main transition-colors">
                                             <UserIcon className="size-6" />
                                         </button>
                                     </Link>
 
                                     {/* Dropdown Menu */}
                                     <div className="absolute right-0 top-full w-48 pt-2 hidden group-hover:block transition-all duration-200 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                                        <div className="bg-white dark:bg-[#221810] rounded-xl shadow-xl border border-[#f3ece7] dark:border-[#3a2e26] overflow-hidden">
-                                            <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                                                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
+                                        <div className="bg-white rounded-xl shadow-xl border border-[#f3ece7] overflow-hidden">
+                                            <div className="px-4 py-3 border-b border-gray-100">
+                                                <p className="text-sm font-medium text-gray-900 truncate">{user.name}</p>
                                             </div>
                                             <div className="py-1">
-                                                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary/5 hover:text-primary transition-colors">
+                                                <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors">
                                                     My Profile
                                                 </Link>
                                                 {user.role === 'admin' && (
-                                                    <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-primary/5 hover:text-primary transition-colors">
+                                                    <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors">
                                                         Admin Dashboard
                                                     </Link>
                                                 )}
@@ -178,7 +178,7 @@ const Navbar: React.FC = () => {
                                 </div>
                             ) : (
                                 <Link href="/login">
-                                    <button className="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-text-main dark:text-white transition-colors">
+                                    <button className="flex items-center justify-center size-10 rounded-full bg-transparent hover:bg-gray-100 text-text-main transition-colors">
                                         <span className="material-symbols-outlined">login</span>
                                     </button>
                                 </Link>
