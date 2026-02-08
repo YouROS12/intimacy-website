@@ -9,7 +9,13 @@ export interface ValidatedPost {
 }
 
 export const BlogService = {
+    // Debug helper
+    validateContentForDebug(rawContent: any): SafeBlogContent | null {
+        return parseBlogContent(rawContent);
+    },
+
     async getPost(slug: string): Promise<ValidatedPost | null> {
+
         // 1. Fetch Raw Data
         const post = await getPostBySlug(slug);
         if (!post) return null;

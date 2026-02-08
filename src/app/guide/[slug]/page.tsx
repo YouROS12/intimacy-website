@@ -102,9 +102,18 @@ export default async function BlogPostPage({ params }: Props) {
                             <User className="h-4 w-4 mr-2 text-brand-500" />
                             <span className="font-medium text-slate-700">{post.author}</span>
                         </div>
+                        {/* Safe Date Rendering */}
                         <div className="flex items-center">
                             <Calendar className="h-4 w-4 mr-2" />
-                            <span>{new Date(post.published_at).toLocaleDateString()}</span>
+                            <span>
+                                {(() => {
+                                    try {
+                                        return new Date(post.published_at).toLocaleDateString();
+                                    } catch (e) {
+                                        return 'Date inconnue';
+                                    }
+                                })()}
+                            </span>
                         </div>
                         <div className="flex items-center">
                             <Clock className="h-4 w-4 mr-2" />
