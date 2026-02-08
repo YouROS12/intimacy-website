@@ -105,3 +105,69 @@ export async function getAdminDashboardStats() {
         activeUsers: count || 0
     };
 }
+
+export async function updateAdminOrderStatus(orderId: string, status: string) {
+    // 1. Verify Authentication
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() { return cookieStore.getAll(); }
+            }
+        }
+    );
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) throw new Error('Unauthorized');
+
+    // 2. Prepare Update Data
+    const updateData: any = { status };
+    const now = new Date().toISOString();
+
+    // Auto-set timestamps logic (mirrored from client)
+    switch (status) {
+        case 'processing':
+            updateData.confirmed_at = now;
+            break;
+        case 'shipped':
+            updateData.shipped_at = now;
+            break;
+        case 'delivered':
+            updateData.delivered_at = now;
+            updateData.cancelled_at = null;
+            updateData.returned_at = null;
+            break;
+        case 'cancelled':
+            updateData.cancelled_at = now;
+            updateData.delivered_at = null;
+            updateData.returned_at = null;
+            updateData.shipped_at = null;
+            break;
+        case 'returned':
+            updateData.returned_at = now;
+            updateData.cancelled_at = null;
+            break;
+        case 'pending':
+            updateData.confirmed_at = null;
+            updateData.shipped_at = null;
+            updateData.delivered_at = null;
+            updateData.cancelled_at = null;
+            updateData.returned_at = null;
+            break;
+    }
+
+    // 3. Update using Admin Client
+    const { error } = await supabaseAdmin
+        .from('orders')
+        .update(updateData)
+        .eq('id', orderId);
+
+    if (error) {
+        console.error("Admin update failed:", error);
+        throw new Error('Update failed');
+    }
+
+    return { success: true };
+}

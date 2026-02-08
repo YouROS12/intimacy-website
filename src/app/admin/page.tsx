@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 import {
     getProducts, deleteProduct, addProduct,
-    addBulkProducts, updateProduct, updateOrderStatus,
+    addBulkProducts, updateProduct,
     getWeeklySales, adminGetAllPseoPages, adminUpdatePseoPage
 } from '@/services/api';
-import { getAdminOrders, getAdminDashboardStats } from '@/actions/admin';
+import { getAdminOrders, getAdminDashboardStats, updateAdminOrderStatus } from '@/actions/admin';
 import { Order, Product, ProductCategory } from '@/types';
 import { isSupabaseConfigured } from '@/services/supabase';
 import * as XLSX from 'xlsx';
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
 
     const handleStatusUpdate = async (orderId: string, newStatus: string) => {
         try {
-            await updateOrderStatus(orderId, newStatus);
+            await updateAdminOrderStatus(orderId, newStatus);
             await loadData();
         } catch (e: any) {
             alert("Failed to update status: " + e.message);
