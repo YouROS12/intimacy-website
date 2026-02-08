@@ -50,7 +50,7 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section className="relative w-full py-12 lg:py-20 bg-background-light">
+      <section className="relative w-full py-12 lg:py-20 bg-background-light overflow-hidden">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Text Content */}

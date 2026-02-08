@@ -57,7 +57,7 @@ export default function RootLayout({
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
-      <body className="font-display antialiased text-text-main bg-background-light">
+      <body className="font-display antialiased text-text-main bg-background-light overflow-x-hidden">
         <I18nProvider>
           <AuthProvider>
             <CartProvider>
