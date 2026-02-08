@@ -140,6 +140,8 @@ body {
   color: var(--color-charcoal);
   overflow-x: hidden;
   width: 100vw;
+  color-scheme: light;
+  /* Force light mode */
 }
 
 h1,
