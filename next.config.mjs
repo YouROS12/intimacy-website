@@ -29,4 +29,8 @@ const nextConfig = {
     },
 };
 
-export default withPWA(nextConfig);
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
+
+export default withPWA(withNextIntl(nextConfig));
