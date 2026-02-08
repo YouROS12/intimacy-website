@@ -5,13 +5,13 @@ import { getPostBySlug, getProductsByIds } from '@/services/api';
 import BlogRenderer from '@/components/BlogRenderer';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { BlogContent, BlogBlock, Product } from '@/types';
+import { BlogContent, Product } from '@/types';
 
 type Props = {
     params: Promise<{ slug: string }>;
 };
 
-// Helper: Safe JSON Parse
+// Helper: Safe JSON Parse (still useful for product extraction)
 function safeParseContent(content: string | object): BlogContent | null {
     try {
         if (typeof content === 'string') {
@@ -82,21 +82,24 @@ export default async function BlogPostPage({ params }: Props) {
         console.log(`[BlogPostPage] Post fetched successfully. Validating content...`);
         const t = await getTranslations('education');
 
-
-        // 1. Parse Content
+        // 1. Extract Dependencies (Products) for the Product Blocks
+        // We still need to parse just to find IDs, but the Renderer will re-parse for rendering.
+        // This is slightly inefficient but safe.
         const blogContent: BlogContent | null = safeParseContent(post.content);
-
-        // 2. Extract Dependencies (Products)
         let relatedProducts: Product[] = [];
-        if (blogContent) {
-            const allProductIds = blogContent.blocks
-                .filter(b => b.type === 'product_grid')
-                // Type assertion safe here because we filtered by type
-                .flatMap(b => (b as any).productIds || [])
-                .filter((id: any) => typeof id === 'string' && id.length > 0);
 
-            if (allProductIds.length > 0) {
-                relatedProducts = await getProductsByIds(allProductIds);
+        if (blogContent) {
+            try {
+                const allProductIds = blogContent.blocks
+                    .filter(b => b.type === 'product_grid')
+                    .flatMap(b => (b as any).productIds || [])
+                    .filter((id: any) => typeof id === 'string' && id.length > 0);
+
+                if (allProductIds.length > 0) {
+                    relatedProducts = await getProductsByIds(allProductIds);
+                }
+            } catch (err) {
+                console.error("[BlogPostPage] Error extracting product IDs:", err);
             }
         }
 
@@ -132,7 +135,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                 {/* Post Header */}
                 <div className="max-w-4xl mx-auto px-4 pt-12 pb-8">
-                    <Link href="/education" className="text-slate-500 hover:text-brand-600 flex items-center mb-8 text-sm group">
+                    <Link href="/education?tab=articles" className="text-slate-500 hover:text-brand-600 flex items-center mb-8 text-sm group">
                         <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-1" /> {t('back_to_articles')}
                     </Link>
 
@@ -172,24 +175,16 @@ export default async function BlogPostPage({ params }: Props) {
 
                 {/* Content Renderer */}
                 <div className="max-w-3xl mx-auto px-4 pb-20">
-                    {/* Pass strictly typed content and fetched products */}
+                    {/* Pass content directly - BlogRenderer now handles both string/object */}
                     <BlogRenderer
-                        content={blogContent || { theme: 'educational_deep_dive', blocks: [] }}
+                        content={post.content}
                         products={relatedProducts}
                     />
-
-                    {/* Fallback for legacy HTML content if parsing failed but raw content exists */}
-                    {!blogContent && typeof post.content === 'string' && (
-                        <div
-                            className="prose prose-lg prose-slate max-w-none font-serif"
-                            dangerouslySetInnerHTML={{ __html: post.content }}
-                        />
-                    )}
 
                     {/* Back to articles link */}
                     <div className="mt-20 text-center">
                         <Link
-                            href="/education"
+                            href="/education?tab=articles" // Explicitly pointing to articles tab
                             className="inline-flex items-center text-brand-600 hover:text-brand-700 font-medium px-6 py-3 rounded-full bg-brand-50 hover:bg-brand-100 transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4 mr-2" />
