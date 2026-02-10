@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ShoppingBag, ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { Product } from '@/types';
@@ -60,10 +61,13 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                     {/* Image */}
                     <div className="flex flex-col">
                         <div className="aspect-w-1 aspect-h-1 w-full rounded-3xl overflow-hidden relative shadow-2xl shadow-brand-900/10 border border-white/20" style={{ aspectRatio: '1/1' }}>
-                            <img
+                            <Image
                                 src={getProductImage(product.imageUrl)}
                                 alt={product.name}
-                                className="w-full h-full object-center object-cover absolute inset-0 transform hover:scale-105 transition-transform duration-700"
+                                fill
+                                priority
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                className="object-center object-cover transform hover:scale-105 transition-transform duration-700"
                             />
                             {/* Overlay Texture */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
