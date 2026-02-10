@@ -44,10 +44,11 @@ export async function getAdminOrders(): Promise<Order[]> {
         throw new Error('Unauthorized');
     }
 
-    // 2. Add extra check for role in 'profiles' table if needed
-    // But for now, we'll assume only admins can call this (protected by UI and this check)
-    // Ideally: const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    // if (profile?.role !== 'admin') throw new Error('Forbidden');
+    // 2. Add extra check for role in 'profiles' table
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') {
+        throw new Error('Forbidden: Admin access required');
+    }
 
     // 3. Fetch Orders using Admin Client (Bypassing RLS)
     const { data, error } = await supabaseAdmin
@@ -92,6 +93,12 @@ export async function getAdminDashboardStats() {
         throw new Error('Unauthorized');
     }
 
+    // 2. Verify Admin Role
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') {
+        throw new Error('Forbidden');
+    }
+
     // 2. Fetch Stats using Admin Client
     const { data: orders } = await supabaseAdmin.from('orders').select('total');
     const { count } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true });
@@ -121,6 +128,10 @@ export async function updateAdminOrderStatus(orderId: string, status: string) {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error('Unauthorized');
+
+    // 2. Verify Admin Role
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Forbidden');
 
     // 2. Prepare Update Data
     const updateData: any = { status };

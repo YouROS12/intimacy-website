@@ -191,6 +191,22 @@
             "delivery": "Order tracking and fast delivery",
             "payment": "Secure Cash on Delivery",
             "support": "Dedicated 24/7 support"
+        },
+        "forgot_password": {
+            "title": "Reset Password",
+            "subtitle": "Enter your email to receive a reset link.",
+            "submit": "Send Reset Link",
+            "success_title": "Email Sent!",
+            "success_desc": "Check your inbox for instructions.",
+            "back_to_login": "Back to Login",
+            "link_text": "Forgot password?"
+        },
+        "update_password": {
+            "title": "New Password",
+            "subtitle": "Create a new secure password.",
+            "submit": "Update Password",
+            "success_title": "Password Updated!",
+            "success_desc": "You can now login with your new password."
         }
     },
     "profile": {

@@ -14,7 +14,9 @@ interface AuthContextType {
     logout: () => void;
     isLoading: boolean;
     refreshProfile: () => Promise<void>;
+    refreshProfile: () => Promise<void>;
     updatePassword: (newPassword: string) => Promise<void>;
+    resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -164,6 +166,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error) throw error;
     };
 
+    const resetPassword = async (email: string) => {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/update-password',
+        });
+        if (error) throw error;
+    };
+
     return (
         <AuthContext.Provider value={{
             user,
@@ -174,7 +183,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             logout,
             isLoading,
             refreshProfile,
-            updatePassword
+            updatePassword,
+            resetPassword
         }}>
             {children}
         </AuthContext.Provider>

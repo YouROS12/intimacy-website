@@ -191,6 +191,22 @@
             "delivery": "Suivi de commande et livraison rapide",
             "payment": "Paiement à la livraison sécurisé",
             "support": "Service client dédié 24/7"
+        },
+        "forgot_password": {
+            "title": "Réinitialiser le mot de passe",
+            "subtitle": "Entrez votre email pour recevoir un lien de réinitialisation.",
+            "submit": "Envoyer le lien",
+            "success_title": "Email envoyé !",
+            "success_desc": "Vérifiez votre boîte de réception pour les instructions.",
+            "back_to_login": "Retour à la connexion",
+            "link_text": "Mot de passe oublié ?"
+        },
+        "update_password": {
+            "title": "Nouveau mot de passe",
+            "subtitle": "Créez un nouveau mot de passe sécurisé.",
+            "submit": "Mettre à jour",
+            "success_title": "Mot de passe mis à jour !",
+            "success_desc": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe."
         }
     },
     "profile": {

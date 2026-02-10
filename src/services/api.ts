@@ -419,7 +419,7 @@ export const getAllPseoPages = async () => {
       *,
       problem:pseo_problems(name, gender, description)
     `)
-        .eq('status', 'draft') // For now show drafts so user can see progress, or change to 'published' later
+        .eq('status', 'published') // Only show published pages
         .order('created_at', { ascending: false });
 
     if (error || !data) return [];
