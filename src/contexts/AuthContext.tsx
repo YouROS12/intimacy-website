@@ -14,7 +14,6 @@ interface AuthContextType {
     logout: () => void;
     isLoading: boolean;
     refreshProfile: () => Promise<void>;
-    refreshProfile: () => Promise<void>;
     updatePassword: (newPassword: string) => Promise<void>;
     resetPassword: (email: string) => Promise<void>;
 }

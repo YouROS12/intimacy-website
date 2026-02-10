@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 export default function UpdatePasswordPage() {
     const { updatePassword } = useAuth();
-    const { t } = useI18n();
+    const { t, dir } = useI18n();
     const router = useRouter();
 
     const [password, setPassword] = useState('');
@@ -50,7 +50,7 @@ export default function UpdatePasswordPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" dir={t('dir') as any}>
+        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" dir={dir}>
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <Link href="/" className="flex justify-center mb-6">
                     <span className="font-serif text-2xl font-bold text-slate-900">{t('nav.title')}</span>
