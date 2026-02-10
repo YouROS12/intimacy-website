@@ -8,7 +8,7 @@ import { Lock, CheckCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export default function UpdatePasswordPage() {
-    const { updatePassword } = useAuth();
+    const { updatePassword, user, isLoading: authLoading } = useAuth();
     const { t, dir } = useI18n();
     const router = useRouter();
 
@@ -16,6 +16,46 @@ export default function UpdatePasswordPage() {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isVerified, setIsVerified] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
+
+    // Listen for the specific PASSWORD_RECOVERY event or check if we already have a session
+    React.useEffect(() => {
+        // If we already have a user from the context (e.g. redirected from email link which sets session)
+        if (user && !authLoading) {
+            setIsVerified(true);
+            setPageLoading(false);
+            return;
+        }
+
+        // If context is still loading, wait...
+        if (authLoading) return;
+
+        // If no user yet, check Supabase event directly as backup/primary for recovery flow
+        // Dynamic import to avoid SSR issues if any, though useAuth already imports it. 
+        // We use the instance from services/supabase
+        const { supabase } = require('@/services/supabase');
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: any) => {
+            if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+                setIsVerified(true);
+                setPageLoading(false);
+            }
+        });
+
+        // Timeout to stop infinite loading if no session is found
+        const timeout = setTimeout(() => {
+            if (!user && !isVerified) {
+                setPageLoading(false);
+                // Stay unverified -> show error
+            }
+        }, 4000);
+
+        return () => {
+            subscription.unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, [user, authLoading, isVerified]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,6 +88,34 @@ export default function UpdatePasswordPage() {
             setErrorMessage(error.message || t('auth.errors.general'));
         }
     };
+
+    if (pageLoading) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-600"></div>
+                <p className="mt-4 text-slate-600 font-medium">{t('auth.loading')}</p>
+            </div>
+        );
+    }
+
+    if (!isVerified && !user) {
+        return (
+            <div className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
+                <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full text-center">
+                    <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                        <AlertCircle className="h-6 w-6 text-red-600" />
+                    </div>
+                    <h2 className="text-xl font-bold text-slate-900 mb-2">Lien invalide ou expiré</h2>
+                    <p className="text-slate-600 mb-6">
+                        Nous ne parvenons pas à vérifier votre session. Le lien de réinitialisation est peut-être expiré.
+                    </p>
+                    <Link href="/forgot-password" className="text-brand-600 font-medium hover:text-brand-500 underline">
+                        Demander un nouveau lien
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8" dir={dir}>
