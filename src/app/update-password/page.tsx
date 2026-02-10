@@ -44,12 +44,13 @@ export default function UpdatePasswordPage() {
         });
 
         // Timeout to stop infinite loading if no session is found
+        // Increased to 15s to account for slow connections or redirects
         const timeout = setTimeout(() => {
             if (!user && !isVerified) {
                 setPageLoading(false);
                 // Stay unverified -> show error
             }
-        }, 4000);
+        }, 15000);
 
         return () => {
             subscription.unsubscribe();
