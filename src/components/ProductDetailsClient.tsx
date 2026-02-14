@@ -9,6 +9,7 @@ import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
+import { getProductSlug } from '@/utils/slugHelpers';
 
 interface Props {
     product: Product;
@@ -139,7 +140,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                         </div>
                         <div className="grid grid-cols-1 gap-y-12 gap-x-8 sm:grid-cols-2 lg:grid-cols-4">
                             {relatedProducts.map((rp) => (
-                                <Link key={rp.id} href={`/product/${rp.id}`} className="group relative">
+                                <Link key={rp.id} href={`/product/${getProductSlug(rp)}`} className="group relative">
                                     <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-2xl bg-white shadow-lg border border-white/20 relative" style={{ aspectRatio: '1/1' }}>
                                         <img
                                             src={getProductImage(rp.imageUrl)}

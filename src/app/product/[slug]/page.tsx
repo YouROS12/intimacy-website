@@ -1,20 +1,27 @@
 
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getProductById, getRelatedProducts } from '@/services/api';
+import { notFound, redirect } from 'next/navigation';
+import { getProductBySlug, getProductById, getRelatedProducts } from '@/services/api';
 import ProductDetailsClient from '@/components/ProductDetailsClient';
 import { getProductImage } from '@/utils/imageHelpers';
+import { isUuid, getProductSlug } from '@/utils/slugHelpers';
 
 interface Props {
     params: Promise<{
-        id: string;
+        slug: string;
     }>;
 }
 
 // SEO Metadata Generator
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const { id } = await params;
-    const product = await getProductById(id);
+    const { slug } = await params;
+
+    // If it's a UUID, we'll redirect in the page component, so return minimal metadata
+    if (isUuid(slug)) {
+        return { title: 'Redirecting...' };
+    }
+
+    const product = await getProductBySlug(slug);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://intimacy.ma';
 
     if (!product) {
@@ -30,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const title = product.seo_title || `${product.name} | Intimacy Wellness Maroc`;
     const description = product.seo_description || product.description.substring(0, 160);
     const images = product.imageUrl ? [getProductImage(product.imageUrl)] : [];
-    const canonicalUrl = `${siteUrl}/product/${id}`;
+    const canonicalUrl = `${siteUrl}/product/${getProductSlug(product)}`;
 
     return {
         title,
@@ -64,8 +71,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export const revalidate = 3600; // Cache for 1 hour
 
 export default async function ProductPage({ params }: Props) {
-    const { id } = await params;
-    const product = await getProductById(id);
+    const { slug } = await params;
+
+    // Handle old UUID URLs: 301 redirect to the slug version
+    if (isUuid(slug)) {
+        const product = await getProductById(slug);
+        if (!product) {
+            notFound();
+        }
+        redirect(`/product/${getProductSlug(product)}`);
+    }
+
+    const product = await getProductBySlug(slug);
 
     if (!product) {
         notFound();
@@ -73,7 +90,8 @@ export default async function ProductPage({ params }: Props) {
 
     const relatedProducts = await getRelatedProducts(product.category, product.id);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://intimacy.ma';
-    const productUrl = `${siteUrl}/product/${id}`;
+    const productSlug = getProductSlug(product);
+    const productUrl = `${siteUrl}/product/${productSlug}`;
     const imageUrl = getProductImage(product.imageUrl);
 
     const jsonLd = {

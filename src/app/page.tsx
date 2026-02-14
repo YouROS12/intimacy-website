@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,9 +8,11 @@ import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
 import { Product } from '@/types';
 import { Package, ShieldCheck, CreditCard } from 'lucide-react';
-
+import heroImage from '@/assets/durex-hero.png';
+import { getProductSlug } from '@/utils/slugHelpers';
 
 export default function Home() {
+
   const { t } = useI18n();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -42,11 +44,27 @@ export default function Home() {
     }
   };
 
+  const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Intimacy Wellness Morocco',
+    url: 'https://intimacy.ma',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://intimacy.ma/shop?q={search_term_string}',
+      'query-input': 'required name=search_term_string'
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
 
       {/* Hero Section */}
@@ -78,10 +96,11 @@ export default function Home() {
               <div className="aspect-[4/5] w-full rounded-xl overflow-hidden shadow-2xl relative group">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10"></div>
                 <Image
-                  src="/durex-hero.png"
+                  src={heroImage}
                   alt="Durex Performax Mutual Pleasure"
                   fill
                   priority
+                  placeholder="blur"
                   quality={85}
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
@@ -209,7 +228,7 @@ export default function Home() {
           className="flex overflow-x-auto pb-8 px-4 sm:px-6 lg:px-40 gap-6 no-scrollbar snap-x snap-mandatory"
         >
           {featuredProducts.map((product) => (
-            <Link href={`/product/${product.id}`} key={product.id} className="flex-none w-[280px] md:w-[320px] snap-center group">
+            <Link href={`/product/${getProductSlug(product)}`} key={product.id} className="flex-none w-[280px] md:w-[320px] snap-center group">
               <div className="flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
                 <div className="relative aspect-[3/4] overflow-hidden bg-[#f3ece7]">
                   <div

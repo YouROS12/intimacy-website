@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Product } from '@/types';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
+import { getProductSlug } from '@/utils/slugHelpers';
 
 interface ProductCardProps {
     product: Product;
@@ -20,7 +21,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     };
 
     return (
-        <Link href={`/product/${product.id}`} className="group relative glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full border border-white/20 hover:border-brand-300/50">
+        <Link href={`/product/${getProductSlug(product)}`} className="group relative glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full border border-white/20 hover:border-brand-300/50">
             <div className="aspect-[4/5] w-full overflow-hidden relative bg-white/5">
                 <Image
                     src={getProductImage(product.imageUrl)}

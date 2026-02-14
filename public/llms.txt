@@ -1,0 +1,41 @@
+# Intimacy Wellness Morocco
+
+> Premier store bien-être intime au Maroc. Livraison discrète et rapide.
+
+## About
+
+Intimacy Wellness Morocco is the leading intimate wellness e-commerce platform in Morocco. We offer a curated selection of premium intimate care products, including lubricants, condoms, intimate hygiene gels, and wellness items from trusted brands like Manix, Durex, Cumlaude Lab, and more.
+
+## Site Structure
+
+- Homepage: https://intimacy.ma
+- Shop (all products): https://intimacy.ma/shop
+- Education & Guides: https://intimacy.ma/education
+- Blog: https://intimacy.ma/blog
+- FAQ: https://intimacy.ma/faq
+- About: https://intimacy.ma/about
+
+## Product Categories
+
+- **Condoms**: Manix, Durex, Protect, Carex, Mister Size
+- **Lubricants**: Manix Gel, Protect Gel, Lubrix, Lubrimax, Sedasteril
+- **Intimate Hygiene**: Cumlaude Lab, Novaskin, Soluskin, Dermical, Kemobo, Addax Septidol
+- **Massage Oils**: Manix Massage, Manix Skyn Oriental Touch
+- **Specialty Care**: Cumlaude Lab Viderage, Mesoestetic Hydragel, Eviana Forintime
+
+## Key Information
+
+- **Currency**: MAD (Moroccan Dirham)
+- **Language**: French (primary), English, Arabic
+- **Shipping**: Discreet packaging, nationwide delivery across Morocco
+- **Location**: Morocco
+
+## Sitemaps
+
+- Main sitemap: https://intimacy.ma/sitemap.xml
+- Image sitemap: https://intimacy.ma/image_sitemap.xml
+
+## Contact
+
+- WhatsApp: +212-656-201278
+- Website: https://intimacy.ma

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ProductGridBlock as ProductGridBlockType, Product } from '@/types';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { getProductSlug } from '@/utils/slugHelpers';
 
 export const ProductGridBlock: React.FC<{ block: ProductGridBlockType; products: Product[] }> = ({ block, products }) => {
     // Defensive: Handle missing productIds safely
@@ -23,7 +24,7 @@ export const ProductGridBlock: React.FC<{ block: ProductGridBlockType; products:
                 {blockProducts.map(product => (
                     <Link
                         key={product.id}
-                        href={`/product/${product.id}`}
+                        href={`/product/${getProductSlug(product)}`}
                         className="flex flex-col sm:flex-row items-center gap-5 bg-white p-5 rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 border border-gray-50 group no-underline"
                     >
                         {/* Image Container */}

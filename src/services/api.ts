@@ -1,8 +1,16 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 import { Product, Order, CartItem } from '../types';
+import { generateSlug } from '../utils/slugHelpers';
 
 // Helper to check for real UUIDs
-const isUuid = (id: string) => id.length > 20;
+const isUuidLike = (id: string) => id.length > 20;
+
+// Helper to map DB row to Product with seo_slug fallback
+const mapProduct = (p: any): Product => ({
+    ...p,
+    imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400',
+    seo_slug: p.seo_slug || generateSlug(p.name),
+});
 
 // --- Products ---
 
@@ -21,10 +29,7 @@ export const getProducts = async (): Promise<Product[]> => {
 
     if (!data) return [];
 
-    return data.map((p: any) => ({
-        ...p,
-        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map(mapProduct);
 };
 
 export const getFeaturedProducts = async (): Promise<Product[]> => {
@@ -41,10 +46,7 @@ export const getFeaturedProducts = async (): Promise<Product[]> => {
         return [];
     }
 
-    return data.map((p: any) => ({
-        ...p,
-        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map(mapProduct);
 };
 
 export const getHomepageProducts = async (): Promise<Product[]> => {
@@ -61,10 +63,7 @@ export const getHomepageProducts = async (): Promise<Product[]> => {
         return [];
     }
 
-    return data.map((p: any) => ({
-        ...p,
-        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map(mapProduct);
 };
 
 export const getRelatedProducts = async (category: string, currentId: string): Promise<Product[]> => {
@@ -79,16 +78,13 @@ export const getRelatedProducts = async (category: string, currentId: string): P
 
     if (error || !data) return [];
 
-    return data.map((p: any) => ({
-        ...p,
-        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map(mapProduct);
 };
 
 export const getProductById = async (id: string): Promise<Product | undefined> => {
     if (!isSupabaseConfigured()) return undefined;
 
-    if (!isUuid(id)) return undefined;
+    if (!isUuidLike(id)) return undefined;
 
     const { data, error } = await supabase
         .from('products')
@@ -100,10 +96,32 @@ export const getProductById = async (id: string): Promise<Product | undefined> =
         return undefined;
     }
 
-    return {
-        ...data,
-        imageUrl: data.image_url || data.imageUrl
-    };
+    return mapProduct(data);
+};
+
+export const getProductBySlug = async (slug: string): Promise<Product | undefined> => {
+    if (!isSupabaseConfigured()) return undefined;
+
+    // First try to find by seo_slug in the database
+    const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('seo_slug', slug)
+        .single();
+
+    if (!error && data) {
+        return mapProduct(data);
+    }
+
+    // Fallback: search all products and match by generated slug from name
+    const { data: allProducts, error: allError } = await supabase
+        .from('products')
+        .select('*');
+
+    if (allError || !allProducts) return undefined;
+
+    const match = allProducts.find((p: any) => generateSlug(p.name) === slug);
+    return match ? mapProduct(match) : undefined;
 };
 
 export const getProductsByIds = async (ids: string[]): Promise<Product[]> => {
@@ -122,10 +140,7 @@ export const getProductsByIds = async (ids: string[]): Promise<Product[]> => {
         return [];
     }
 
-    return data.map((p: any) => ({
-        ...p,
-        imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map(mapProduct);
 };
 
 export const addProduct = async (product: Omit<Product, 'id'>) => {
@@ -549,10 +564,7 @@ export const getPseoProducts = async (problemId: string): Promise<Product[]> => 
 
     if (error || !data) return [];
 
-    return data.map((item: any) => ({
-        ...item.products,
-        imageUrl: item.products.image_url || item.products.imageUrl || 'https://via.placeholder.com/400'
-    }));
+    return data.map((item: any) => mapProduct(item.products));
 };
 
 export const getMoroccanCities = async (): Promise<string[]> => {

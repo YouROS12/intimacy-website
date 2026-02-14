@@ -5,6 +5,7 @@ import { ArrowLeft, CheckCircle, AlertTriangle, Book, ShieldCheck } from 'lucide
 import { getPseoPageBySlug, getEvidencePackByProblemId, getPseoProducts } from '@/services/api';
 import { Product } from '@/types';
 import { notFound } from 'next/navigation';
+import { getProductSlug } from '@/utils/slugHelpers';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -132,7 +133,7 @@ export default async function PseoSolutionPage({ params }: Props) {
 
                             <div className="grid sm:grid-cols-2 gap-6 not-prose">
                                 {products.map((prod: Product) => (
-                                    <Link href={`/product/${prod.id}`} key={prod.id} className="flex bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all group">
+                                    <Link href={`/product/${getProductSlug(prod)}`} key={prod.id} className="flex bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all group">
                                         <div className="w-1/3 bg-gray-100 relative">
                                             <img
                                                 src={prod.imageUrl}

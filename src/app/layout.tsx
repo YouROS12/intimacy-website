@@ -8,22 +8,22 @@ import { CartProvider } from '@/contexts/CartContext';
 import { I18nProvider } from '@/contexts/I18nContext';
 import CartDrawer from '@/components/CartDrawer';
 import Link from 'next/link';
-import CookieConsent from '@/components/CookieConsent';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import ClientWidgets from '@/components/ClientWidgets';
 import Footer from '@/components/Footer';
-import OneSignalInit from '@/components/OneSignalInit';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
 const lora = Lora({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-playfair'
+  variable: '--font-playfair',
+  display: 'swap'
 });
 // Use Inter for display/body text
 const interDisplay = Inter({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-manrope'
+  variable: '--font-manrope',
+  display: 'swap'
 });
 
 export const viewport: Viewport = {
@@ -34,8 +34,48 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
-  description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
+  metadataBase: new URL('https://intimacy.ma'),
+  title: {
+    default: 'Intimacy Wellness Morocco | Bien-être intime Premium',
+    template: '%s | Intimacy Wellness Maroc',
+  },
+  description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide partout au Maroc.',
+  openGraph: {
+    type: 'website',
+    locale: 'fr_MA',
+    siteName: 'Intimacy Wellness Morocco',
+    title: 'Intimacy Wellness Morocco | Bien-être intime Premium',
+    description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
+    url: 'https://intimacy.ma',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Intimacy Wellness Morocco',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Intimacy Wellness Morocco',
+    description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: '/',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -55,7 +95,13 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${lora.variable} ${interDisplay.variable} ${inter.variable}`}>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Optimized loading for Material Symbols */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="font-display antialiased text-text-main bg-background-light overflow-x-hidden">
         <I18nProvider>
@@ -68,10 +114,8 @@ export default function RootLayout({
 
                 <Footer />
 
-                {/* Floating Elements */}
-                <CookieConsent />
-                <WhatsAppButton />
-                <OneSignalInit />
+                {/* Floating Elements - Lazy Loaded */}
+                <ClientWidgets />
               </div>
             </CartProvider>
           </AuthProvider>
