@@ -14,6 +14,7 @@ if (!process.env.GOOGLE_INDEXING_KEY) {
 }
 
 const key = JSON.parse(process.env.GOOGLE_INDEXING_KEY);
+// @ts-ignore
 const jwtClient = new google.auth.JWT(
     key.client_email,
     undefined,
