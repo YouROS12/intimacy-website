@@ -15,10 +15,10 @@ export async function triggerGoogleIndexing() {
         // @ts-ignore
         const jwtClient = new google.auth.JWT(
             key.client_email,
-            null,
+            undefined,
             key.private_key,
             ['https://www.googleapis.com/auth/indexing'],
-            null
+            undefined
         );
 
         // Fetch Sitemap
