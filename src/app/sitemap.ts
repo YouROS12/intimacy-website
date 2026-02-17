@@ -1,6 +1,5 @@
 
 import { MetadataRoute } from 'next';
-import { MetadataRoute } from 'next';
 import { getProducts, getAllPosts } from '@/services/api';
 import { getProductSlug } from '@/utils/slugHelpers';
 
