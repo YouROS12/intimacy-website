@@ -11,13 +11,14 @@ export async function triggerGoogleIndexing() {
             return { success: false, message: 'Missing GOOGLE_INDEXING_KEY environment variable.' };
         }
 
-        const key = JSON.parse(process.env.GOOGLE_INDEXING_KEY);
+        const key = JSON.parse(process.env.GOOGLE_INDEXING_KEY) as any;
+        // @ts-ignore
         const jwtClient = new google.auth.JWT(
             key.client_email,
-            undefined,
+            null,
             key.private_key,
             ['https://www.googleapis.com/auth/indexing'],
-            undefined
+            null
         );
 
         // Fetch Sitemap
