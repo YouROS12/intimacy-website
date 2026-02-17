@@ -17,6 +17,7 @@ import {
     getWeeklySales, adminGetAllPseoPages, adminUpdatePseoPage
 } from '@/services/api';
 import { getAdminOrders, getAdminDashboardStats, updateAdminOrderStatus } from '@/actions/admin';
+import { triggerGoogleIndexing } from '@/actions/indexing';
 import { Order, Product, ProductCategory } from '@/types';
 import { isSupabaseConfigured } from '@/services/supabase';
 import * as XLSX from 'xlsx';
@@ -37,6 +38,10 @@ export default function AdminDashboard() {
     const [pseoPages, setPseoPages] = useState<any[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    // --- SEO Indexing State ---
+    const [isIndexing, setIsIndexing] = useState(false);
+    const [indexingResult, setIndexingResult] = useState<{ success: boolean; message: string } | null>(null);
 
     // --- Product Modal State ---
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -555,6 +560,69 @@ export default function AdminDashboard() {
                                 ))
                             )}
                         </ul>
+                    </div>
+                )}
+
+                {/* --- SEO Tab --- */}
+                {activeTab === 'seo' && (
+                    <div className="space-y-6">
+                        <div className="bg-white shadow sm:rounded-lg border border-gray-200 p-6">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <h3 className="text-lg font-medium leading-6 text-gray-900 flex items-center gap-2">
+                                        <Database className="h-5 w-5 text-primary" />
+                                        Google Indexing
+                                    </h3>
+                                    <div className="mt-2 max-w-xl text-sm text-gray-500">
+                                        <p>
+                                            Trigger a manual request to Google's Indexing API. This will submit up to 50 URLs from your sitemap
+                                            to Google, updating their index with your latest content (products, prices, etc.).
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-5 sm:ml-6 sm:mt-0 sm:flex sm:flex-shrink-0 sm:items-center">
+                                    <button
+                                        type="button"
+                                        disabled={isIndexing}
+                                        onClick={async () => {
+                                            setIsIndexing(true);
+                                            setIndexingResult(null);
+                                            try {
+                                                const res = await triggerGoogleIndexing();
+                                                setIndexingResult(res);
+                                            } catch (e: any) {
+                                                setIndexingResult({ success: false, message: e.message });
+                                            } finally {
+                                                setIsIndexing(false);
+                                            }
+                                        }}
+                                        className="inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isIndexing ? 'Indexing...' : 'Mettre à jour Google Index'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {indexingResult && (
+                                <div className={`mt-4 p-4 rounded-md ${indexingResult.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                    <div className="flex">
+                                        <div className="flex-shrink-0">
+                                            {indexingResult.success ? (
+                                                <CheckCircle className="h-5 w-5 text-green-400" aria-hidden="true" />
+                                            ) : (
+                                                <XCircle className="h-5 w-5 text-red-400" aria-hidden="true" />
+                                            )}
+                                        </div>
+                                        <div className="ml-3">
+                                            <h3 className="text-sm font-medium">{indexingResult.success ? 'Success' : 'Error'}</h3>
+                                            <div className="mt-2 text-sm">
+                                                <p>{indexingResult.message}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 )}
 

@@ -38,6 +38,8 @@ export interface Product {
     seo_title?: string;
     seo_description?: string;
     seo_slug?: string;
+    created_at?: string;
+    updated_at?: string;
 }
 
 export interface CartItem extends Product {
