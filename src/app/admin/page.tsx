@@ -698,7 +698,7 @@ export default function AdminDashboard() {
                                             setIsLoading(true);
                                             try {
                                                 const res = await import('@/actions/indexing').then(m => m.addToQueue(selectedUrls));
-                                                alert(res.message);
+                                                alert(`Successfully queued ${res.count} URLs.`);
                                                 setSelectedUrls([]);
                                                 // Refresh stats
                                                 const stats = await import('@/actions/indexing').then(m => m.getQueueStats());
