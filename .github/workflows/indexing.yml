@@ -1,0 +1,32 @@
+name: Google Indexing
+
+on:
+  schedule:
+    # Run at 03:00 UTC every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: website-next/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: website-next
+
+      - name: Run Indexing Script
+        run: npx tsx scripts/submit-indexing.ts
+        working-directory: website-next
+        env:
+          GOOGLE_INDEXING_KEY: ${{ secrets.GOOGLE_INDEXING_KEY }}
+          NEXT_PUBLIC_SITE_URL: https://intimacy.ma
