@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextBlock as TextBlockType } from '@/types';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 export const TextBlock: React.FC<{ block: TextBlockType }> = ({ block }) => {
     return (
@@ -11,7 +12,7 @@ export const TextBlock: React.FC<{ block: TextBlockType }> = ({ block }) => {
             )}
             <div
                 className="prose prose-lg prose-slate max-w-none text-slate-600 leading-relaxed custom-prose"
-                dangerouslySetInnerHTML={{ __html: block.content }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHTML(block.content) }}
             />
         </div>
     );

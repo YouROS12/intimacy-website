@@ -1,4 +1,4 @@
-import { supabase } from '@/services/supabase';
+import { createSupabaseServer } from '@/services/supabase-server';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +14,7 @@ export default async function DebugHealthPage() {
 
     // 2. Supabase Connection
     try {
+        const supabase = await createSupabaseServer();
         const { data, error } = await supabase.from('products').select('count', { count: 'exact', head: true });
         checks.supabase = {
             status: error ? 'ERROR' : 'OK',

@@ -10,6 +10,7 @@ import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
 import { getProductSlug } from '@/utils/slugHelpers';
+import { getCategoryLabel } from '@/utils/categoryHelpers';
 
 interface Props {
     product: Product;
@@ -28,31 +29,8 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
         setTimeout(() => setAddingToCart(false), 500);
     };
 
-    const getCategoryLabel = (cat: string) => {
-        // @ts-ignore
-        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
-    };
-
     return (
         <div className="bg-cream min-h-screen">
-            {/* Schema.org Microdata */}
-            <script type="application/ld+json" dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "Product",
-                    "name": product.name,
-                    "description": product.description,
-                    "image": product.imageUrl,
-                    "offers": {
-                        "@type": "Offer",
-                        "price": product.price,
-                        "priceCurrency": "MAD",
-                        "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-                        "url": typeof window !== 'undefined' ? window.location.href : ''
-                    }
-                })
-            }} />
-
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <button onClick={() => router.back()} className="flex items-center text-slate-500 hover:text-brand-600 mb-8 transition-colors group">
                     <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> {t('product.back_to_shop')}
@@ -78,7 +56,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                     {/* Info */}
                     <div className="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
                         <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-brand-100 text-brand-800 mb-6 border border-brand-200 uppercase tracking-widest">
-                            {getCategoryLabel(product.category)}
+                            {getCategoryLabel(product.category, t)}
                         </span>
                         <h1 className="text-4xl md:text-5xl font-serif font-black tracking-tight text-slate-900 mb-4">{product.name}</h1>
 
@@ -154,7 +132,7 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                                             <span aria-hidden="true" className="absolute inset-0" />
                                             {rp.name}
                                         </h3>
-                                        <p className="mt-1 text-sm text-slate-500 font-medium mb-2">{getCategoryLabel(rp.category)}</p>
+                                        <p className="mt-1 text-sm text-slate-500 font-medium mb-2">{getCategoryLabel(rp.category, t)}</p>
                                         <p className="text-lg font-bold text-brand-600">{rp.price} MAD</p>
                                     </div>
                                 </Link>

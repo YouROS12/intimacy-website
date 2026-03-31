@@ -8,8 +8,8 @@ const Footer = () => {
     const { t } = useI18n();
 
     return (
-        <footer className="bg-background-light dark:bg-background-dark py-8 border-t border-[#f3ece7] dark:border-[#3a2e26]">
-            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-muted dark:text-gray-500">
+        <footer className="bg-background-light py-8 border-t border-[#f3ece7]">
+            <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-text-muted">
                 <p>&copy; {new Date().getFullYear()} Intimacy. {t('footer.rights')}</p>
                 <div className="flex gap-6">
                     <Link href="/legal/privacy" className="hover:text-primary transition-colors">{t('footer.privacy')}</Link>

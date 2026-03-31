@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Filter, Search, ChevronDown, X, SlidersHorizontal, Check } from 'lucide-react';
+import { Search, X, SlidersHorizontal } from 'lucide-react';
 import { Product, ProductCategory } from '@/types';
 import ProductCard from './ProductCard';
 import { useI18n } from '@/contexts/I18nContext';
+import { getCategoryLabel } from '@/utils/categoryHelpers';
 
 interface ShopClientProps {
     initialProducts: Product[];
@@ -110,10 +110,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
         else setPriceRange([priceRange[0], val]);
     };
 
-    const getCategoryLabel = (cat: string) => {
-        // @ts-ignore
-        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
-    };
+
 
     const getBrandLabel = (brand: string) => {
         return brand === 'Tout' ? t('shop.filters.all') : brand;
@@ -153,7 +150,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                                         />
                                         <label htmlFor={`mobile-cat-${cat}`} className="ml-3 text-sm text-gray-600 font-medium">
-                                            {getCategoryLabel(cat)}
+                                            {getCategoryLabel(cat, t)}
                                         </label>
                                     </li>
                                 ))}
@@ -239,7 +236,7 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
                                             className="h-4 w-4 rounded border-gray-300 text-brand-600 focus:ring-brand-500"
                                         />
                                         <label htmlFor={`desktop-cat-${cat}`} className="ml-3 text-sm text-gray-600 hover:text-brand-500 cursor-pointer flex-1">
-                                            {getCategoryLabel(cat)}
+                                            {getCategoryLabel(cat, t)}
                                         </label>
                                     </li>
                                 ))}
@@ -327,8 +324,6 @@ const ShopClientContent: React.FC<ShopClientProps> = ({ initialProducts }) => {
 };
 
 export default function ShopClient(props: ShopClientProps) {
-    const { t } = useI18n(); // Ensure t is available here for loading state if needed, but loading text is usually minimal.
-    // Actually t is invalid here if I don't use it.
 
     return (
         <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>

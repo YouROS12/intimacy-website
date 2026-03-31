@@ -2,7 +2,7 @@ import { getAllPosts } from '@/services/api';
 import { BlogService } from '@/services/blog-service';
 import SafeBlogRenderer from '@/components/SafeBlogRenderer';
 import { SafeBlogContent } from '@/lib/validation';
-import { supabase } from '@/services/supabase';
+import { createSupabaseServer } from '@/services/supabase-server';
 import { ErrorBoundaryWrapper } from '@/components/DebugErrorBoundary';
 
 // Force dynamic rendering to always fetch fresh data
@@ -12,6 +12,7 @@ export default async function DebugPostsPage() {
     console.log("DebugPostsPage: Starting fetch...");
 
     // 1. Fetch ALL posts
+    const supabase = await createSupabaseServer();
     const { data: posts, error } = await supabase
         .from('posts')
         .select('*')

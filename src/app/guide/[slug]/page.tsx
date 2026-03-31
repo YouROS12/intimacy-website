@@ -45,12 +45,9 @@ export default async function BlogPostPage({ params }: Props) {
     try {
         const { slug } = await params;
 
-        console.log(`[BlogPostPage] Rendering post: ${slug}`);
-
         const data = await BlogService.getPost(slug);
 
         if (!data) {
-            console.log(`[BlogPostPage] Post not found for slug: ${slug}`);
             notFound();
         }
 

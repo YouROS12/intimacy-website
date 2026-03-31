@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${displayTitle} | Intimacy Wellness Maroc`,
         description: problemDesc.substring(0, 160),
         alternates: {
-            canonical: `https://intimacywellness.ma/solution/${slug}`,
+            canonical: `https://intimacy.ma/solution/${slug}`,
         }
     };
 }

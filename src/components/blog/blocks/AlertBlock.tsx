@@ -1,6 +1,7 @@
 import React from 'react';
 import { AlertBlock as AlertBlockType } from '@/types';
 import { Info, AlertTriangle, Lightbulb } from 'lucide-react';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 export const AlertBlock: React.FC<{ block: AlertBlockType }> = ({ block }) => {
     const styles = {
@@ -18,7 +19,7 @@ export const AlertBlock: React.FC<{ block: AlertBlockType }> = ({ block }) => {
     return (
         <div className={`my-8 p-6 rounded-2xl border flex gap-4 ${styles[block.variant]}`}>
             <div className="mt-1">{icons[block.variant]}</div>
-            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: block.content }} />
+            <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: sanitizeHTML(block.content) }} />
         </div>
     );
 };

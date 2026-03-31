@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, BookOpen, Heart, Activity, Shield, Calendar, Clock } from 'lucide-react';
+import { Search, BookOpen, Calendar } from 'lucide-react';
 import { useI18n } from '@/contexts/I18nContext';
 
 interface EducationClientProps {
@@ -10,12 +10,7 @@ interface EducationClientProps {
     initialPosts: any[];  // Blog Posts
 }
 
-const CATEGORIES = [
-    { id: 'Wellness', name: 'wellness', icon: Heart, color: 'text-rose-500' },
-    { id: 'Performance', name: 'performance', icon: Activity, color: 'text-blue-500' },
-    { id: 'Health', name: 'health', icon: Shield, color: 'text-green-500' },
-    { id: 'Education', name: 'education', icon: BookOpen, color: 'text-purple-500' },
-];
+
 
 const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], initialPosts = [] }) => {
     const { t: tRaw } = useI18n();

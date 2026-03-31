@@ -6,6 +6,7 @@ import { QuoteBlock } from './blog/blocks/QuoteBlock';
 import { AlertBlock } from './blog/blocks/AlertBlock';
 import { ProductGridBlock } from './blog/blocks/ProductGridBlock';
 import { ExternalLink } from 'lucide-react';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 interface BlogRendererProps {
     content: string | BlogContent | null; // Allow string (legacy/raw) or typed object
@@ -44,7 +45,7 @@ const BlogRenderer: React.FC<BlogRendererProps> = ({ content, products = [] }) =
         return (
             <div
                 className="prose prose-lg prose-slate max-w-none font-serif"
-                dangerouslySetInnerHTML={{ __html: rawHtml }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHTML(rawHtml) }}
             />
         );
     }
