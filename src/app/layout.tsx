@@ -7,22 +7,14 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { CartProvider } from '@/contexts/CartContext';
 import { I18nProvider } from '@/contexts/I18nContext';
 import CartDrawer from '@/components/CartDrawer';
-import Link from 'next/link';
 import ClientWidgets from '@/components/ClientWidgets';
 import Footer from '@/components/Footer';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-inter', display: 'swap' });
 const lora = Lora({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-playfair',
-  display: 'swap'
-});
-// Use Inter for display/body text
-const interDisplay = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-manrope',
+  variable: '--font-lora',
   display: 'swap'
 });
 
@@ -93,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr" className={`${lora.variable} ${interDisplay.variable} ${inter.variable}`}>
+    <html lang="fr" className={`${lora.variable} ${inter.variable}`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

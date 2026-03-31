@@ -11,11 +11,11 @@ export default function NotFound() {
                     </div>
                 </div>
 
-                <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-main dark:text-white">
+                <h1 className="text-4xl md:text-5xl font-serif font-bold text-text-main">
                     Page Introuvable
                 </h1>
 
-                <p className="text-lg text-text-muted dark:text-gray-400">
+                <p className="text-lg text-text-muted">
                     Désolé, le chemin vers ce sanctuaire semble s'être effacé.
                 </p>
 

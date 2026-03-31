@@ -159,18 +159,18 @@ const Navbar: React.FC = () => {
                                             </div>
                                             <div className="py-1">
                                                 <Link href="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors">
-                                                    My Profile
+                                                    {t('nav.profile')}
                                                 </Link>
-                                                {user.role === 'admin' && (
+                                                {user.role === UserRole.ADMIN && (
                                                     <Link href="/admin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary/5 hover:text-primary transition-colors">
-                                                        Admin Dashboard
+                                                        {t('nav.admin')}
                                                     </Link>
                                                 )}
                                                 <button
                                                     onClick={handleLogout}
                                                     className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                                                 >
-                                                    <span>Log Out</span>
+                                                    <span>{t('nav.logout')}</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -254,7 +254,7 @@ const Navbar: React.FC = () => {
                                     <div className="mt-2 pt-2 border-t border-[#f3ece7]">
                                         <div className="px-4 py-2 text-sm font-bold text-primary">{user.name}</div>
                                         <Link href="/profile" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.profile')}</Link>
-                                        {user.role === 'admin' && (
+                                        {user.role === UserRole.ADMIN && (
                                             <Link href="/admin" onClick={() => setIsMenuOpen(false)} className="block px-4 py-2 hover:bg-primary/5 rounded-lg text-text-main font-medium">{t('nav.admin')}</Link>
                                         )}
                                         <button

@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getOrderById } from '@/services/api';
 import { Order } from '@/types';
-import { CheckCircle, Package, Phone, ArrowRight, Home, UserPlus } from 'lucide-react';
+import { CheckCircle, Package, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';

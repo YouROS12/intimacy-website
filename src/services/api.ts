@@ -8,7 +8,7 @@ const isUuidLike = (id: string) => id.length > 20;
 // Helper to map DB row to Product with seo_slug fallback
 const mapProduct = (p: any): Product => ({
     ...p,
-    imageUrl: p.image_url || p.imageUrl || 'https://via.placeholder.com/400',
+    imageUrl: p.image_url || p.imageUrl || '/placeholder-product.svg',
     seo_slug: p.seo_slug || generateSlug(p.name),
 });
 

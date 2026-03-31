@@ -245,7 +245,7 @@ export default function Home() {
                     <h3 className="text-lg font-serif font-bold text-text-main group-hover:text-primary transition-colors line-clamp-1">{product.name}</h3>
                     <p className="text-primary font-bold">{product.price} MAD</p>
                   </div>
-                  <p className="text-sm text-text-muted dark:text-gray-400 line-clamp-2">{product.description}</p>
+                  <p className="text-sm text-text-muted line-clamp-2">{product.description}</p>
                 </div>
               </div>
             </Link>

@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
 import frMessages from '../../messages/fr.json';
 import enMessages from '../../messages/en.json';
 import arMessages from '../../messages/ar.json';
@@ -28,7 +27,6 @@ const messages: Record<Locale, Messages> = {
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
     const [locale, setLocaleState] = useState<Locale>('fr');
-    const router = useRouter();
 
     // Load locale from localStorage on mount
     useEffect(() => {

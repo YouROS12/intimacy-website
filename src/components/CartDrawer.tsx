@@ -6,6 +6,7 @@ import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
+import { getCategoryLabel } from '@/utils/categoryHelpers';
 
 const CartDrawer: React.FC = () => {
     const { items, isOpen, setIsOpen, removeFromCart, updateQuantity, total } = useCart();
@@ -13,11 +14,6 @@ const CartDrawer: React.FC = () => {
     const { t } = useI18n();
 
     if (!isOpen) return null;
-
-    const getCategoryLabel = (cat: string) => {
-        // @ts-ignore
-        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
-    };
 
     return (
         <div className="fixed inset-0 z-[100] overflow-hidden">
@@ -68,7 +64,7 @@ const CartDrawer: React.FC = () => {
                                                                 <h3 className="line-clamp-2 pr-2">{item.name}</h3>
                                                                 <p className="whitespace-nowrap font-bold text-gray-900">{item.price * item.quantity} MAD</p>
                                                             </div>
-                                                            <p className="mt-1 text-sm text-gray-500">{getCategoryLabel(item.category)}</p>
+                                                            <p className="mt-1 text-sm text-gray-500">{getCategoryLabel(item.category, t)}</p>
                                                         </div>
                                                         <div className="flex-1 flex items-end justify-between text-sm mt-2">
                                                             <div className="flex items-center gap-2 border border-gray-300 rounded-md p-1">

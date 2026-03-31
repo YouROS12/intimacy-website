@@ -11,6 +11,7 @@ import { QuoteBlock } from './blog/blocks/QuoteBlock';
 import { AlertBlock } from './blog/blocks/AlertBlock';
 import { ProductGridBlock } from './blog/blocks/ProductGridBlock';
 import { ExternalLink, AlertOctagon } from 'lucide-react';
+import { sanitizeHTML } from '@/utils/sanitize';
 
 interface Props {
     content: SafeBlogContent | null;
@@ -48,7 +49,7 @@ const SafeBlogRenderer: React.FC<Props> = ({ content, products = [], rawContent 
             return (
                 <div
                     className="prose prose-lg prose-slate max-w-none font-serif opacity-80"
-                    dangerouslySetInnerHTML={{ __html: rawContent }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTML(rawContent) }}
                 />
             );
         }

@@ -7,6 +7,7 @@ import { Product } from '@/types';
 import { getProductImage } from '@/utils/imageHelpers';
 import { useI18n } from '@/contexts/I18nContext';
 import { getProductSlug } from '@/utils/slugHelpers';
+import { getCategoryLabel } from '@/utils/categoryHelpers';
 
 interface ProductCardProps {
     product: Product;
@@ -14,11 +15,6 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     const { t } = useI18n();
-
-    const getCategoryLabel = (cat: string) => {
-        // @ts-ignore
-        return t(`shop.categories.${cat}`) !== `shop.categories.${cat}` ? t(`shop.categories.${cat}`) : cat;
-    };
 
     return (
         <Link href={`/product/${getProductSlug(product)}`} className="group relative glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-brand-500/10 transition-all duration-500 flex flex-col h-full border border-white/20 hover:border-brand-300/50">
@@ -39,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
 
             <div className="p-5 flex-1 flex flex-col relative z-10">
-                <span className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{getCategoryLabel(product.category)}</span>
+                <span className="text-xs font-bold text-brand-500 uppercase tracking-widest mb-2">{getCategoryLabel(product.category, t)}</span>
                 <h3 className="font-serif text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors line-clamp-2 mb-2 leading-tight">
                     {product.name}
                 </h3>

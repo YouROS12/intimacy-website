@@ -70,8 +70,8 @@ export async function middleware(request: NextRequest) {
     // Protected Routes Logic
     const pathname = request.nextUrl.pathname;
 
-    // 1. Admin Protection
-    if (pathname.startsWith('/admin')) {
+    // 1. Admin & Debug Page Protection
+    if (pathname.startsWith('/admin') || pathname.startsWith('/debug-')) {
         if (!user) {
             const url = request.nextUrl.clone();
             url.pathname = '/login';

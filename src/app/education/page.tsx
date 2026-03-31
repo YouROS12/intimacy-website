@@ -12,7 +12,6 @@ export const dynamic = 'force-dynamic';
 
 export default async function EducationPage() {
     try {
-        console.log("Fetching Education Page Data...");
         // Fetch data safely
         const [guides, posts] = await Promise.all([
             getAllPseoPages().catch(e => {
