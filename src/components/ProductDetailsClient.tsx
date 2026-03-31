@@ -3,8 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { ShoppingBag, ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { ShoppingBag, Check, AlertCircle, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
@@ -18,7 +17,6 @@ interface Props {
 }
 
 const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => {
-    const router = useRouter();
     const { addToCart } = useCart();
     const { t } = useI18n();
     const [addingToCart, setAddingToCart] = useState(false);
@@ -32,9 +30,17 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
     return (
         <div className="bg-cream min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <button onClick={() => router.back()} className="flex items-center text-slate-500 hover:text-brand-600 mb-8 transition-colors group">
-                    <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" /> {t('product.back_to_shop')}
-                </button>
+                <nav aria-label="Breadcrumb" className="mb-8">
+                    <ol className="flex items-center gap-1 text-sm text-slate-500 flex-wrap">
+                        <li><Link href="/" className="hover:text-brand-600 transition-colors">{t('nav.home')}</Link></li>
+                        <li><ChevronRight className="h-3.5 w-3.5" /></li>
+                        <li><Link href="/shop" className="hover:text-brand-600 transition-colors">{t('nav.shop')}</Link></li>
+                        <li><ChevronRight className="h-3.5 w-3.5" /></li>
+                        <li><Link href={`/shop?category=${encodeURIComponent(product.category)}`} className="hover:text-brand-600 transition-colors">{getCategoryLabel(product.category, t)}</Link></li>
+                        <li><ChevronRight className="h-3.5 w-3.5" /></li>
+                        <li><span className="text-slate-900 font-medium truncate max-w-[200px] inline-block align-bottom">{product.name}</span></li>
+                    </ol>
+                </nav>
 
                 <div className="lg:grid lg:grid-cols-2 lg:gap-x-12 lg:items-start">
                     {/* Image */}
@@ -90,10 +96,11 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                             </p>
                         </div>
 
-                        <div className="mt-10 flex sm:flex-col1">
+                        <div className="mt-10">
                             <button
                                 type="button"
                                 onClick={() => handleAddToCart(product)}
+                                aria-label={t('product.add_to_cart')}
                                 className={`w-full flex-1 border border-transparent rounded-full py-5 px-8 flex items-center justify-center text-lg font-bold text-white focus:outline-none focus:ring-4 focus:ring-brand-500/30 transition-all duration-300 shadow-xl shadow-brand-500/20 hover:shadow-brand-500/40 transform hover:-translate-y-1 ${addingToCart ? 'bg-green-600' : 'bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400'}`}
                             >
                                 {addingToCart ? (
@@ -120,10 +127,12 @@ const ProductDetailsClient: React.FC<Props> = ({ product, relatedProducts }) => 
                             {relatedProducts.map((rp) => (
                                 <Link key={rp.id} href={`/product/${getProductSlug(rp)}`} className="group relative">
                                     <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-2xl bg-white shadow-lg border border-white/20 relative" style={{ aspectRatio: '1/1' }}>
-                                        <img
+                                        <Image
                                             src={getProductImage(rp.imageUrl)}
                                             alt={rp.name}
-                                            className="h-full w-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700"
+                                            fill
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                                            className="object-cover object-center transform group-hover:scale-110 transition-transform duration-700"
                                         />
                                         <div className="absolute inset-0 bg-black/5 group-hover:bg-black/0 transition-colors" />
                                     </div>

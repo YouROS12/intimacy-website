@@ -4,7 +4,7 @@
  * Specifically converts Supabase Storage URLs to /cdn/products/ paths.
  */
 export const getProductImage = (url?: string | null) => {
-    if (!url) return 'https://via.placeholder.com/400';
+    if (!url) return '/placeholder-product.svg';
 
     // Fallback for legacy caching or unmigrated items
     if (url.includes('lacdp.ma')) return url;

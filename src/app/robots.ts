@@ -18,9 +18,6 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/admin/', '/profile/', '/checkout/'],
             },
         ],
-        sitemap: [
-            `${baseUrl}/sitemap.xml`,
-            `${baseUrl}/image_sitemap.xml`,
-        ],
+        sitemap: `${baseUrl}/sitemap.xml`,
     };
 }
