@@ -6,6 +6,7 @@ import { getPseoPageBySlug, getEvidencePackByProblemId, getPseoProducts } from '
 import { Product } from '@/types';
 import { notFound } from 'next/navigation';
 import { getProductSlug } from '@/utils/slugHelpers';
+import Image from 'next/image';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -135,10 +136,11 @@ export default async function PseoSolutionPage({ params }: Props) {
                                 {products.map((prod: Product) => (
                                     <Link href={`/product/${getProductSlug(prod)}`} key={prod.id} className="flex bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg transition-all group">
                                         <div className="w-1/3 bg-gray-100 relative">
-                                            <img
-                                                src={prod.imageUrl}
+                                            <Image
+                                                src={prod.imageUrl || '/placeholder-product.svg'}
                                                 alt={prod.name}
-                                                className="absolute inset-0 w-full h-full object-cover"
+                                                fill
+                                                className="object-cover"
                                             />
                                         </div>
                                         <div className="p-4 flex flex-col justify-center w-2/3">

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, BookOpen, Calendar } from 'lucide-react';
 import { useI18n } from '@/contexts/I18nContext';
+import Image from 'next/image';
 
 interface EducationClientProps {
     initialGuides: any[]; // PSEO Pages
@@ -92,10 +93,11 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
                             {/* Image with fallback */}
                             <div className="h-48 overflow-hidden relative bg-gray-100">
                                 {item.image ? (
-                                    <img
+                                    <Image
                                         src={item.image}
                                         alt={item.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                         }}

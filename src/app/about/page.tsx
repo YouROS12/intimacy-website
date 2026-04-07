@@ -18,7 +18,9 @@ export default function AboutPage() {
                     <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-black" />
                 </div>
                 <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
-                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6" dangerouslySetInnerHTML={{ __html: t('hero.title') }} />
+                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-6">
+                        {t('hero.title')} <span className="text-brand-400">{t('hero.titleHighlight')}</span>.
+                    </h1>
                     <p className="text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
                         {t('hero.subtitle')}
                     </p>

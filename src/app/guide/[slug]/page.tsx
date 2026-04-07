@@ -4,7 +4,8 @@ import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
 import { BlogService } from '@/services/blog-service';
 import SafeBlogRenderer from '@/components/SafeBlogRenderer';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import Image from 'next/image';
+import messages from '../../../../messages/fr.json';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -52,7 +53,10 @@ export default async function BlogPostPage({ params }: Props) {
         }
 
         const post = data.original;
-        const t = await getTranslations('education');
+        const t = (key: string) => {
+            const value = (messages.education as Record<string, any>)[key];
+            return typeof value === 'string' ? value : key;
+        };
 
         // JSON-LD
         const jsonLd = {
@@ -125,11 +129,14 @@ export default async function BlogPostPage({ params }: Props) {
                 {/* Cover Image */}
                 {post.cover_image && (
                     <div className="max-w-5xl mx-auto px-4 mb-12">
-                        <img
-                            src={post.cover_image}
-                            alt={post.title}
-                            className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-500"
-                        />
+                        <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-500">
+                            <Image
+                                src={post.cover_image}
+                                alt={post.title}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
                     </div>
                 )}
 
