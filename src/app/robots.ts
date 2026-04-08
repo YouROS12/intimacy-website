@@ -13,9 +13,9 @@ export default function robots(): MetadataRoute.Robots {
             },
             // AI / LLM bots — welcome
             {
-                userAgent: ['GPTBot', 'ChatGPT-User', 'Claude-Web', 'Bytespider', 'CCBot', 'anthropic-ai', 'Google-Extended'],
+                userAgent: ['GPTBot', 'ChatGPT-User', 'Claude-Web', 'PerplexityBot', 'Bytespider', 'CCBot', 'anthropic-ai', 'Google-Extended'],
                 allow: '/',
-                disallow: ['/admin/', '/profile/', '/checkout/'],
+                disallow: ['/admin/', '/profile/', '/checkout/', '/order-confirmation/'],
             },
         ],
         sitemap: `${baseUrl}/sitemap.xml`,

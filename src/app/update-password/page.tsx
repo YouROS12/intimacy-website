@@ -34,8 +34,10 @@ export default function UpdatePasswordPage() {
         // If no user yet, check Supabase event directly as backup/primary for recovery flow
         // Dynamic import to avoid SSR issues if any, though useAuth already imports it. 
         // We use the instance from services/supabase
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { supabase } = require('@/services/supabase');
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: any) => {
             if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
                 setIsVerified(true);
@@ -83,10 +85,10 @@ export default function UpdatePasswordPage() {
             setTimeout(() => {
                 router.push('/profile?updated=true');
             }, 2000);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Update password error:", error);
             setStatus('error');
-            setErrorMessage(error.message || t('auth.errors.general'));
+            setErrorMessage((error instanceof Error ? error.message : null) || t('auth.errors.general'));
         }
     };
 

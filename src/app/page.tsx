@@ -9,6 +9,7 @@ import messages from '../../messages/fr.json';
 // Server-side translation helper (defaults to French for SSR/SEO)
 function t(key: string): string {
   const keys = key.split('.');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let value: any = messages;
   for (const k of keys) {
     value = value?.[k];
@@ -27,13 +28,49 @@ export default async function Home() {
     name: 'Intimacy Wellness Morocco',
     url: 'https://intimacy.ma',
     logo: 'https://intimacy.ma/logo.png',
+    sameAs: [
+      'https://www.instagram.com/intimacy.ma',
+      'https://www.facebook.com/intimacy.ma',
+      'https://www.tiktok.com/@intimacy.ma',
+    ],
     contactPoint: {
       '@type': 'ContactPoint',
       telephone: '+212-656-201278',
       contactType: 'customer service',
       areaServed: 'MA',
       availableLanguage: ['en', 'fr', 'ar']
-    }
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: 'MA',
+      addressRegion: 'Morocco',
+    },
+  };
+
+  const onlineStoreJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'OnlineStore',
+    name: 'Intimacy Wellness Morocco',
+    url: 'https://intimacy.ma',
+    logo: 'https://intimacy.ma/logo.png',
+    description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide.',
+    currenciesAccepted: 'MAD',
+    paymentAccepted: 'Cash on Delivery, CashPlus, Wave',
+    priceRange: '30 MAD - 500 MAD',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Morocco',
+    },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Produits Bien-être Intime',
+      itemListElement: [
+        { '@type': 'OfferCatalog', name: 'Préservatifs' },
+        { '@type': 'OfferCatalog', name: 'Lubrifiants' },
+        { '@type': 'OfferCatalog', name: 'Hygiène Intime' },
+        { '@type': 'OfferCatalog', name: 'Huiles de Massage' },
+      ],
+    },
   };
 
   const websiteJsonLd = {
@@ -53,6 +90,10 @@ export default async function Home() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(onlineStoreJsonLd) }}
       />
       <script
         type="application/ld+json"

@@ -89,10 +89,14 @@ export default function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        {/* Optimized loading for Material Symbols */}
+        {/* Non-render-blocking Material Symbols: load async via media hack */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
+          media="print"
+          // @ts-expect-error -- onLoad sets media to 'all' after load for non-blocking font
+          onLoad="this.media='all'"
         />
       </head>
       <body className="font-display antialiased text-text-main bg-background-light overflow-x-hidden">

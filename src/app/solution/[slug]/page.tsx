@@ -30,7 +30,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         description: problemDesc.substring(0, 160),
         alternates: {
             canonical: `https://intimacy.ma/solution/${slug}`,
-        }
+        },
+        openGraph: {
+            title: `${displayTitle} | Intimacy Wellness Maroc`,
+            description: problemDesc.substring(0, 160),
+            url: `https://intimacy.ma/solution/${slug}`,
+            siteName: 'Intimacy Wellness Morocco',
+            locale: 'fr_MA',
+            type: 'article',
+            images: [{ url: '/og-image.png', width: 1200, height: 630, alt: displayTitle }],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: displayTitle,
+            description: problemDesc.substring(0, 160),
+            images: ['/og-image.png'],
+        },
     };
 }
 
@@ -53,6 +68,7 @@ export default async function PseoSolutionPage({ params }: Props) {
     ]);
 
     // 3. Process Evidence
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let evidence: any = null;
     if (evidencePack && evidencePack.claims) {
         try {
@@ -75,8 +91,39 @@ export default async function PseoSolutionPage({ params }: Props) {
     const claims = evidence?.claims || [];
     const sources = evidence?.sources || [];
 
+    // JSON-LD: Article schema
+    const articleJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: displayTitle,
+        description: displayIntro,
+        url: `https://intimacy.ma/solution/${slug}`,
+        publisher: {
+            '@type': 'Organization',
+            name: 'Intimacy Wellness Morocco',
+            logo: { '@type': 'ImageObject', url: 'https://intimacy.ma/logo.png' }
+        },
+        author: { '@type': 'Organization', name: 'Intimacy Wellness Morocco' },
+        datePublished: pageData.created_at || new Date().toISOString(),
+        dateModified: pageData.updated_at || pageData.created_at || new Date().toISOString(),
+    };
+
+    // JSON-LD: Breadcrumbs
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://intimacy.ma' },
+            { '@type': 'ListItem', position: 2, name: 'Centre d\'Expertise', item: 'https://intimacy.ma/education' },
+            { '@type': 'ListItem', position: 3, name: displayTitle, item: `https://intimacy.ma/solution/${slug}` },
+        ],
+    };
+
     return (
         <div className="bg-white min-h-screen">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
+
             {/* Header */}
             <div className="bg-slate-50 border-b border-slate-100 py-12 px-4">
                 <div className="max-w-4xl mx-auto">
@@ -90,7 +137,7 @@ export default async function PseoSolutionPage({ params }: Props) {
                         {displayTitle}
                     </h1>
                     <div className="flex items-center gap-4 text-sm text-slate-500">
-                        <span className="flex items-center"><ShieldCheck className="h-4 w-4 mr-1 text-green-500" /> Vérifié par l'IA Researcher</span>
+                        <span className="flex items-center"><ShieldCheck className="h-4 w-4 mr-1 text-green-500" /> Vérifié par l&apos;IA Researcher</span>
                         <span>•</span>
                         <span>Temps de lecture: 3 min</span>
                     </div>
@@ -109,6 +156,7 @@ export default async function PseoSolutionPage({ params }: Props) {
                     </h2>
 
                     <div className="grid gap-4 not-prose mb-12">
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         {claims.length > 0 ? claims.map((claim: any, idx: number) => (
                             <div key={idx} className={`p-4 rounded-lg border-l-4 ${claim.type === 'warning' ? 'bg-orange-50 border-orange-400' :
                                 claim.type === 'advice' ? 'bg-green-50 border-green-500' :

@@ -1,34 +1,52 @@
 # Intimacy Wellness Morocco
 
-> Premier store bien-être intime au Maroc. Livraison discrète et rapide.
+> Premier store bien-être intime au Maroc. Livraison 100% discrète et rapide partout au Maroc.
 
 ## About
 
-Intimacy Wellness Morocco is the leading intimate wellness e-commerce platform in Morocco. We offer a curated selection of premium intimate care products, including lubricants, condoms, intimate hygiene gels, and wellness items from trusted brands like Manix, Durex, Cumlaude Lab, and more.
+Intimacy Wellness Morocco (intimacy.ma) is the leading intimate wellness e-commerce platform in Morocco. We offer a curated selection of premium intimate care products from trusted brands, all with discreet packaging and fast nationwide delivery. Based in Morocco, we serve exclusively the Moroccan market with local expertise and culturally sensitive service.
 
 ## Site Structure
 
 - Homepage: https://intimacy.ma
 - Shop (all products): https://intimacy.ma/shop
-- Education & Guides: https://intimacy.ma/education
-- Blog: https://intimacy.ma/blog
+- Centre d'Expertise (education hub): https://intimacy.ma/education
+- Guides & Articles: https://intimacy.ma/guide/{slug}
+- Solutions & Health Pages: https://intimacy.ma/solution/{slug}
 - FAQ: https://intimacy.ma/faq
 - About: https://intimacy.ma/about
 
 ## Product Categories
 
-- **Condoms**: Manix, Durex, Protect, Carex, Mister Size
-- **Lubricants**: Manix Gel, Protect Gel, Lubrix, Lubrimax, Sedasteril
-- **Intimate Hygiene**: Cumlaude Lab, Novaskin, Soluskin, Dermical, Kemobo, Addax Septidol
-- **Massage Oils**: Manix Massage, Manix Skyn Oriental Touch
-- **Specialty Care**: Cumlaude Lab Viderage, Mesoestetic Hydragel, Eviana Forintime
+- **Condoms / Préservatifs**: Manix, Durex, Protect, Carex, Mister Size — wide range from classic to ultra-thin and ribbed
+- **Lubricants / Lubrifiants**: Manix Gel, Protect Gel, Lubrix, Lubrimax, Sedasteril — water-based, silicone, flavored
+- **Intimate Hygiene / Hygiène Intime**: Cumlaude Lab, Novaskin, Soluskin, Dermical, Kemobo, Addax Septidol
+- **Massage Oils / Huiles de Massage**: Manix Massage, Manix Skyn Oriental Touch
+- **Specialty Care / Soins Spécialisés**: Cumlaude Lab Viderage, Mesoestetic Hydragel, Eviana Forintime
 
 ## Key Information
 
 - **Currency**: MAD (Moroccan Dirham)
-- **Language**: French (primary), English, Arabic
-- **Shipping**: Discreet packaging, nationwide delivery across Morocco
-- **Location**: Morocco
+- **Price Range**: 30 MAD – 500 MAD
+- **Languages**: French (primary), English, Arabic
+- **Shipping**: 100% discreet packaging, no logo or content mention. Nationwide delivery across Morocco in 24-48h.
+- **Payment**: Cash on Delivery (COD), CashPlus, Wave
+- **Location**: Morocco (.ma domain)
+- **Return Policy**: Easy returns within 14 days for sealed/unopened products
+
+## Frequently Asked Questions
+
+**Q: Is the delivery really discreet?**
+A: Yes, 100%. Packages are completely anonymous with no logo or mention of content. Even the delivery person doesn't know what's inside.
+
+**Q: What are the delivery times?**
+A: We deliver nationwide across Morocco in 24-48 hours.
+
+**Q: Are the products authentic?**
+A: Yes. All products are sourced directly from authorized distributors and are 100% certified authentic.
+
+**Q: How can I pay?**
+A: Cash on Delivery (paiement à la livraison), CashPlus, and Wave mobile payments.
 
 ## Sitemaps
 

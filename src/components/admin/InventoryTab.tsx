@@ -57,8 +57,8 @@ export default function InventoryTab({ products, onDataChanged }: InventoryTabPr
             }
             await onDataChanged();
             setIsModalOpen(false);
-        } catch (err: any) {
-            alert("Failed to save product: " + err.message);
+        } catch (err: unknown) {
+            alert("Failed to save product: " + (err instanceof Error ? err.message : String(err)));
         } finally {
             setIsSaving(false);
         }
@@ -69,8 +69,8 @@ export default function InventoryTab({ products, onDataChanged }: InventoryTabPr
         try {
             await deleteProduct(id);
             await onDataChanged();
-        } catch (e: any) {
-            alert("Failed to delete: " + e.message);
+        } catch (e: unknown) {
+            alert("Failed to delete: " + (e instanceof Error ? e.message : String(e)));
         }
     };
 

@@ -8,8 +8,11 @@ import { linkGuestOrders } from '@/services/api';
 interface AuthContextType {
     user: User | null;
     login: (email: string, password?: string) => Promise<void>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     signup: (email: string, password: string, fullName: string, phone: string, address: string) => Promise<{ user: any, session: any } | null>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     convertGuestToPermanent: (email: string, password: string, fullName: string, phone: string, address: string) => Promise<{ user: any, session: any }>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     signInAnonymously: () => Promise<{ user: any, session: any }>;
     logout: () => void;
     isLoading: boolean;
@@ -98,6 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (error) throw error;
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const signup = async (email: string, password: string, fullName: string, phone: string, address: string): Promise<{ user: any, session: any } | null> => {
         // The Database Trigger 'handle_new_user' will read this metadata and create the profile row.
         const { data, error } = await supabase.auth.signUp({

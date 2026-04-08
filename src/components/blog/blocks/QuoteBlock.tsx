@@ -10,7 +10,7 @@ export const QuoteBlock: React.FC<{ block: QuoteBlockType }> = ({ block }) => {
             </div>
             <div className="relative z-10 pl-6 border-l-4 border-brand-500">
                 <p className="text-xl md:text-2xl font-serif text-slate-700 italic leading-relaxed mb-4">
-                    "{block.content.replace(/<[^>]*>?/gm, '')}"
+                    &ldquo;{block.content.replace(/<[^>]*>?/gm, '')}&rdquo;
                 </p>
                 {(block.author || block.role) && (
                     <footer className="text-sm">

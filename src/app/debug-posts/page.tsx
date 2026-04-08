@@ -1,4 +1,3 @@
-import { getAllPosts } from '@/services/api';
 import { BlogService } from '@/services/blog-service';
 import SafeBlogRenderer from '@/components/SafeBlogRenderer';
 import { SafeBlogContent } from '@/lib/validation';
@@ -35,7 +34,7 @@ export default async function DebugPostsPage() {
 
             <div className="grid gap-8">
                 {posts.map((post) => {
-                    let validationResult: any = { status: 'PENDING' };
+                    let validationResult: { status: string; [key: string]: unknown } = { status: 'PENDING' };
                     let content: SafeBlogContent | null = null;
 
                     try {
@@ -47,8 +46,8 @@ export default async function DebugPostsPage() {
                         } else {
                             validationResult = { status: 'INVALID', details: 'Schema mismatch or parser failure' };
                         }
-                    } catch (e: any) {
-                        validationResult = { status: 'CRASH', error: e.message };
+                    } catch (e: unknown) {
+                        validationResult = { status: 'CRASH', error: e instanceof Error ? e.message : String(e) };
                     }
 
                     return (

@@ -143,7 +143,7 @@ export async function updateAdminOrderStatus(orderId: string, status: string) {
     if (profile?.role !== 'admin') throw new Error('Forbidden');
 
     // 2. Prepare Update Data
-    const updateData: any = { status };
+    const updateData: Record<string, string | null> = { status };
     const now = new Date().toISOString();
 
     // Auto-set timestamps logic (mirrored from client)

@@ -76,7 +76,7 @@ export default function ProfilePage() {
         if (!user) return;
 
         // Validation
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         let hasError = false;
 
         if (!editForm.full_name.trim()) {
@@ -119,7 +119,7 @@ export default function ProfilePage() {
 
     const handlePasswordChange = async () => {
         // Validation
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         let hasError = false;
 
         if (passwordForm.newPassword.length < 6) {

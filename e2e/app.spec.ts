@@ -367,3 +367,399 @@ test.describe('Responsive Design', () => {
     expect(response?.status()).toBeLessThan(500);
   });
 });
+
+// ═══════════════════════════════════════════════════════════════
+// 13. EDUCATION PAGE — content + structured data
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Education Page', () => {
+  test('loads with heading hierarchy H1 → H2', async ({ page }) => {
+    await page.goto('/education');
+    const h1 = page.locator('h1');
+    await expect(h1).toBeVisible();
+    const h2 = page.locator('h2');
+    expect(await h2.count()).toBeGreaterThan(0);
+  });
+
+  test('has CollectionPage + BreadcrumbList JSON-LD', async ({ page }) => {
+    await page.goto('/education');
+    const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+    const count = await jsonLdScripts.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+
+    const types: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const content = await jsonLdScripts.nth(i).textContent();
+      const parsed = JSON.parse(content!);
+      types.push(parsed['@type']);
+    }
+    expect(types).toContain('CollectionPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('has full OG metadata', async ({ page }) => {
+    await page.goto('/education');
+    const ogTitle = page.locator('meta[property="og:title"]');
+    await expect(ogTitle).toHaveAttribute('content', /.+/);
+    const ogLocale = page.locator('meta[property="og:locale"]');
+    await expect(ogLocale).toHaveAttribute('content', 'fr_MA');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 14. PRODUCT PAGE — SEO structured data
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Product Page SEO', () => {
+  test('product page has Product + BreadcrumbList JSON-LD', async ({ page }) => {
+    // Go to shop, find first product link
+    await page.goto('/shop');
+    await page.waitForTimeout(2000);
+    const productLink = page.locator('a[href^="/product/"]').first();
+    if (await productLink.isVisible()) {
+      const href = await productLink.getAttribute('href');
+      await page.goto(href!);
+
+      const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+      const count = await jsonLdScripts.count();
+      expect(count).toBeGreaterThanOrEqual(2);
+
+      const types: string[] = [];
+      for (let i = 0; i < count; i++) {
+        const content = await jsonLdScripts.nth(i).textContent();
+        const parsed = JSON.parse(content!);
+        types.push(parsed['@type']);
+      }
+      expect(types).toContain('Product');
+      expect(types).toContain('BreadcrumbList');
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 15. SOLUTION PAGE — loads and has structured data
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Solution Page', () => {
+  test('solution pages are accessible from education', async ({ page }) => {
+    await page.goto('/education');
+    await page.waitForTimeout(2000);
+    const solutionLink = page.locator('a[href^="/guide/"]').first();
+    if (await solutionLink.isVisible()) {
+      await solutionLink.click();
+      await page.waitForTimeout(2000);
+      // Should have Article JSON-LD
+      const jsonLd = page.locator('script[type="application/ld+json"]');
+      expect(await jsonLd.count()).toBeGreaterThanOrEqual(1);
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 16. CART — add to cart flow
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Cart Interaction', () => {
+  test('cart drawer can be toggled', async ({ page }) => {
+    await page.goto('/');
+    // Look for the cart/bag icon button in navbar
+    const cartButton = page.locator('button').filter({ has: page.locator('[class*="ShoppingBag"], svg') }).first();
+    if (await cartButton.isVisible()) {
+      await cartButton.click();
+      await page.waitForTimeout(500);
+      // Cart drawer or empty state should appear
+      const body = await page.textContent('body');
+      const hasCartUI = body?.includes('panier') || body?.includes('cart') || body?.includes('vide') || body?.includes('empty');
+      expect(hasCartUI).toBeTruthy();
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 17. SEO META — canonical + hreflang on key pages
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('SEO Meta Tags', () => {
+  const pagesWithCanonicals = [
+    { path: '/', name: 'Home' },
+    { path: '/shop', name: 'Shop' },
+    { path: '/about', name: 'About' },
+    { path: '/faq', name: 'FAQ' },
+    { path: '/education', name: 'Education' },
+  ];
+
+  for (const { path, name } of pagesWithCanonicals) {
+    test(`${name} page has canonical URL`, async ({ page }) => {
+      await page.goto(path);
+      const canonical = page.locator('link[rel="canonical"]');
+      await expect(canonical).toHaveAttribute('href', /intimacy\.ma/);
+    });
+  }
+
+  test('robots meta allows indexing on public pages', async ({ page }) => {
+    await page.goto('/');
+    // Should NOT have noindex
+    const robotsMeta = page.locator('meta[name="robots"]');
+    if (await robotsMeta.count() > 0) {
+      const content = await robotsMeta.getAttribute('content');
+      expect(content).not.toContain('noindex');
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 18. HOMEPAGE — JSON-LD completeness
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Homepage Schema Completeness', () => {
+  test('has Organization + OnlineStore + WebSite schemas', async ({ page }) => {
+    await page.goto('/');
+    const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+    const count = await jsonLdScripts.count();
+    expect(count).toBeGreaterThanOrEqual(3);
+
+    const types: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const content = await jsonLdScripts.nth(i).textContent();
+      const parsed = JSON.parse(content!);
+      types.push(parsed['@type']);
+    }
+    expect(types).toContain('Organization');
+    expect(types).toContain('OnlineStore');
+    expect(types).toContain('WebSite');
+  });
+
+  test('Organization has sameAs social links', async ({ page }) => {
+    await page.goto('/');
+    const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+    const count = await jsonLdScripts.count();
+
+    for (let i = 0; i < count; i++) {
+      const content = await jsonLdScripts.nth(i).textContent();
+      const parsed = JSON.parse(content!);
+      if (parsed['@type'] === 'Organization') {
+        expect(parsed.sameAs).toBeDefined();
+        expect(parsed.sameAs.length).toBeGreaterThanOrEqual(1);
+        expect(parsed.contactPoint).toBeDefined();
+        expect(parsed.address).toBeDefined();
+      }
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 19. 404 PAGE — not found handling
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('404 Page', () => {
+  test('returns 404 for non-existent page', async ({ page }) => {
+    const response = await page.goto('/this-page-does-not-exist-xyz');
+    expect(response?.status()).toBe(404);
+  });
+
+  test('returns 404 for non-existent product', async ({ page }) => {
+    const response = await page.goto('/product/non-existent-product-slug-xyz');
+    expect(response?.status()).toBe(404);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 20. SHOP PAGE — filters & ItemList JSON-LD
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Shop Page Details', () => {
+  test('has ItemList JSON-LD', async ({ page }) => {
+    await page.goto('/shop');
+    const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+    const count = await jsonLdScripts.count();
+    expect(count).toBeGreaterThanOrEqual(1);
+
+    let hasItemList = false;
+    for (let i = 0; i < count; i++) {
+      const content = await jsonLdScripts.nth(i).textContent();
+      const parsed = JSON.parse(content!);
+      if (parsed['@type'] === 'ItemList') {
+        hasItemList = true;
+        expect(parsed.itemListElement.length).toBeGreaterThan(0);
+      }
+    }
+    expect(hasItemList).toBeTruthy();
+  });
+
+  test('has H1 heading', async ({ page }) => {
+    await page.goto('/shop');
+    await page.waitForTimeout(2000);
+    const h1 = page.locator('h1');
+    await expect(h1).toBeVisible();
+  });
+
+  test('has OG metadata', async ({ page }) => {
+    await page.goto('/shop');
+    const ogTitle = page.locator('meta[property="og:title"]');
+    await expect(ogTitle).toHaveAttribute('content', /.+/);
+    const ogSiteName = page.locator('meta[property="og:site_name"]');
+    await expect(ogSiteName).toHaveAttribute('content', /Intimacy/);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 21. FAQ PAGE — structured data validation
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('FAQ Page Details', () => {
+  test('has FAQPage + BreadcrumbList JSON-LD', async ({ page }) => {
+    await page.goto('/faq');
+    const jsonLdScripts = page.locator('script[type="application/ld+json"]');
+    const count = await jsonLdScripts.count();
+    expect(count).toBeGreaterThanOrEqual(2);
+
+    const types: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const content = await jsonLdScripts.nth(i).textContent();
+      const parsed = JSON.parse(content!);
+      types.push(parsed['@type']);
+    }
+    expect(types).toContain('FAQPage');
+    expect(types).toContain('BreadcrumbList');
+  });
+
+  test('has proper heading hierarchy (H1 then H2)', async ({ page }) => {
+    await page.goto('/faq');
+    const h1 = page.locator('h1');
+    await expect(h1).toBeVisible();
+    const h2s = page.locator('h2');
+    expect(await h2s.count()).toBeGreaterThan(0);
+  });
+
+  test('has OG + Twitter metadata', async ({ page }) => {
+    await page.goto('/faq');
+    const ogTitle = page.locator('meta[property="og:title"]');
+    await expect(ogTitle).toHaveAttribute('content', /.+/);
+    const twitterCard = page.locator('meta[name="twitter:card"]');
+    await expect(twitterCard).toHaveAttribute('content', 'summary_large_image');
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 22. ABOUT PAGE — metadata from layout.tsx
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('About Page SEO', () => {
+  test('has full OG + Twitter metadata', async ({ page }) => {
+    await page.goto('/about');
+    const ogTitle = page.locator('meta[property="og:title"]');
+    await expect(ogTitle).toHaveAttribute('content', /.+/);
+    const ogLocale = page.locator('meta[property="og:locale"]');
+    await expect(ogLocale).toHaveAttribute('content', 'fr_MA');
+    const twitterCard = page.locator('meta[name="twitter:card"]');
+    await expect(twitterCard).toHaveAttribute('content', 'summary_large_image');
+  });
+
+  test('has canonical URL', async ({ page }) => {
+    await page.goto('/about');
+    const canonical = page.locator('link[rel="canonical"]');
+    await expect(canonical).toHaveAttribute('href', /intimacy\.ma\/about/);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 23. FOOTER — links work
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Footer', () => {
+  test('footer is visible with legal links', async ({ page }) => {
+    await page.goto('/');
+    const footer = page.locator('footer');
+    await expect(footer).toBeVisible();
+
+    // Should contain links to legal pages
+    const privacyLink = footer.locator('a[href="/legal/privacy"]');
+    await expect(privacyLink).toBeVisible();
+    const termsLink = footer.locator('a[href="/legal/terms"]');
+    await expect(termsLink).toBeVisible();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 24. LEGAL PAGES — all legal pages load
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Legal Pages', () => {
+  const legalPages = [
+    { path: '/legal/privacy', name: 'Privacy' },
+    { path: '/legal/terms', name: 'Terms' },
+    { path: '/legal/returns', name: 'Returns' },
+  ];
+
+  for (const { path, name } of legalPages) {
+    test(`${name} page loads with content`, async ({ page }) => {
+      const response = await page.goto(path);
+      expect(response?.status()).toBe(200);
+      const body = await page.textContent('body');
+      expect(body!.length).toBeGreaterThan(200);
+    });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 25. CONSOLE ERRORS — check more pages
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Console Errors', () => {
+  const pagesToCheck = [
+    { path: '/shop', name: 'Shop' },
+    { path: '/faq', name: 'FAQ' },
+    { path: '/education', name: 'Education' },
+  ];
+
+  for (const { path, name } of pagesToCheck) {
+    test(`no console errors on ${name} page`, async ({ page }) => {
+      const errors: string[] = [];
+      page.on('console', msg => {
+        if (msg.type() === 'error') errors.push(msg.text());
+      });
+
+      await page.goto(path);
+      await page.waitForTimeout(2000);
+
+      const realErrors = errors.filter(e =>
+        !e.includes('supabase') &&
+        !e.includes('NEXT_PUBLIC') &&
+        !e.includes('fetch') &&
+        !e.includes('Failed to load resource') &&
+        !e.includes('net::') &&
+        !e.includes('OneSignal')
+      );
+      expect(realErrors.length).toBe(0);
+    });
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// 26. SITEMAP & ROBOTS — accessible
+// ═══════════════════════════════════════════════════════════════
+
+test.describe('Sitemap & Robots', () => {
+  test('sitemap.xml is accessible', async ({ page }) => {
+    const response = await page.goto('/sitemap.xml');
+    expect(response?.status()).toBe(200);
+    const content = await page.content();
+    expect(content).toContain('urlset');
+    expect(content).toContain('intimacy.ma');
+  });
+
+  test('robots.txt is accessible', async ({ page }) => {
+    const response = await page.goto('/robots.txt');
+    expect(response?.status()).toBe(200);
+    const content = await page.content();
+    expect(content).toContain('User-agent');
+    expect(content).toContain('Sitemap');
+  });
+
+  test('llms.txt is accessible', async ({ page }) => {
+    const response = await page.goto('/llms.txt');
+    expect(response?.status()).toBe(200);
+    const content = await page.content();
+    expect(content).toContain('Intimacy');
+  });
+});

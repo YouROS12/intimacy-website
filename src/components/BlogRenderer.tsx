@@ -31,7 +31,7 @@ const BlogRenderer: React.FC<BlogRendererProps> = ({ content, products = [] }) =
                 // actually if it has blocks it's good.
                 rawHtml = content;
             }
-        } catch (e) {
+        } catch {
             // Not JSON, treat as HTML
             rawHtml = content;
         }
@@ -72,6 +72,7 @@ const BlogRenderer: React.FC<BlogRendererProps> = ({ content, products = [] }) =
                         return <ProductGridBlock key={key} block={block} products={products} />;
                     default:
                         // Fallback for unknown blocks (e.g. legacy 'image' type)
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         console.warn(`Unknown block type: ${(block as any).type}`);
                         return null;
                 }

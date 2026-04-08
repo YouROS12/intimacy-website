@@ -7,7 +7,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AlertTriangle } from 'lucide-react';
 import {
     getProducts,
-    getWeeklySales, adminGetAllPseoPages
+    getWeeklySales,
 } from '@/services/api';
 import { getAdminOrders, getAdminDashboardStats, updateAdminOrderStatus } from '@/actions/admin';
 import { Order, Product } from '@/types';
@@ -32,24 +32,8 @@ export default function AdminDashboard() {
     const [salesData, setSalesData] = useState<{ name: string; sales: number }[]>([]);
     const [orders, setOrders] = useState<Order[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-
-    useEffect(() => {
-        router.refresh();
-
-        if (!authLoading) {
-            if (!user) {
-                router.replace('/login?from=/admin');
-                return;
-            }
-            if (user.role === 'admin') {
-                loadData();
-            }
-        }
-    }, [user, authLoading, router]);
 
     const loadData = async () => {
-        setIsLoading(true);
         try {
             const [s, o, p, sales] = await Promise.all([
                 getAdminDashboardStats(),
@@ -64,17 +48,29 @@ export default function AdminDashboard() {
             setSalesData(sales);
         } catch (e) {
             console.error("Failed to load dashboard data", e);
-        } finally {
-            setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        router.refresh();
+
+        if (!authLoading) {
+            if (!user) {
+                router.replace('/login?from=/admin');
+                return;
+            }
+            if (user.role === 'admin') {
+                loadData(); // eslint-disable-line react-hooks/set-state-in-effect
+            }
+        }
+    }, [user, authLoading, router]);
 
     const handleStatusUpdate = async (orderId: string, newStatus: string) => {
         try {
             await updateAdminOrderStatus(orderId, newStatus);
             await loadData();
-        } catch (e: any) {
-            alert("Failed to update status: " + e.message);
+        } catch (e: unknown) {
+            alert("Failed to update status: " + (e instanceof Error ? e.message : String(e)));
         }
     };
 

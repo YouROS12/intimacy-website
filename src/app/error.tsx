@@ -27,7 +27,7 @@ export default function Error({
                 </h2>
 
                 <p className="text-slate-600">
-                    Nous n'avons pas pu charger cette page correctement.
+                    Nous n&apos;avons pas pu charger cette page correctement.
                 </p>
 
                 <div className="flex flex-col gap-4 justify-center pt-4">

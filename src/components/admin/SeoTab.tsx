@@ -32,8 +32,8 @@ export default function SeoTab() {
             setQueueStats(stats as unknown as QueueStats);
             const sitemap = await getSitemapUrls();
             setSitemapEntries(sitemap as unknown as SitemapEntry[]);
-        } catch (e: any) {
-            alert("Error loading data: " + e.message);
+        } catch (e: unknown) {
+            alert("Error loading data: " + (e instanceof Error ? e.message : String(e)));
         } finally {
             setIsLoading(false);
         }
@@ -48,8 +48,8 @@ export default function SeoTab() {
             alert(res.message);
             const stats = await getQueueStats();
             setQueueStats(stats as unknown as QueueStats);
-        } catch (e: any) {
-            alert('Error: ' + e.message);
+        } catch (e: unknown) {
+            alert('Error: ' + (e instanceof Error ? e.message : String(e)));
         } finally {
             setIsLoading(false);
         }
@@ -63,8 +63,8 @@ export default function SeoTab() {
             setIndexingResult(res);
             const stats = await getQueueStats();
             setQueueStats(stats as unknown as QueueStats);
-        } catch (e: any) {
-            setIndexingResult({ success: false, message: e.message });
+        } catch (e: unknown) {
+            setIndexingResult({ success: false, message: e instanceof Error ? e.message : String(e) });
         } finally {
             setIsIndexing(false);
         }
@@ -80,8 +80,8 @@ export default function SeoTab() {
             setSelectedUrls([]);
             const stats = await getQueueStats();
             setQueueStats(stats as unknown as QueueStats);
-        } catch (e: any) {
-            alert("Failed: " + e.message);
+        } catch (e: unknown) {
+            alert("Failed: " + (e instanceof Error ? e.message : String(e)));
         } finally {
             setIsLoading(false);
         }

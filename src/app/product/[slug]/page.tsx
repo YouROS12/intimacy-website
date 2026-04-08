@@ -127,7 +127,7 @@ export default async function ProductPage({ params }: Props) {
             priceCurrency: 'MAD',
             availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             itemCondition: 'https://schema.org/NewCondition',
-            priceValidUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+            priceValidUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // eslint-disable-line react-hooks/purity
             seller: {
                 '@type': 'Organization',
                 name: 'Intimacy Wellness Morocco',

@@ -3,7 +3,7 @@ import { createSupabaseServer } from '@/services/supabase-server';
 export const dynamic = 'force-dynamic';
 
 export default async function DebugHealthPage() {
-    const checks: any = {};
+    const checks: Record<string, unknown> = {};
 
     // 1. Env Vars
     checks.env = {
@@ -21,10 +21,10 @@ export default async function DebugHealthPage() {
             message: error?.message,
             count: data || 'N/A' // head: true returns null data mostly but count
         };
-    } catch (e: any) {
+    } catch (e: unknown) {
         checks.supabase = {
             status: 'CRASH',
-            message: e.message
+            message: e instanceof Error ? e.message : String(e)
         };
     }
 

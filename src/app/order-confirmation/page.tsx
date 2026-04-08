@@ -4,7 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getOrderById } from '@/services/api';
 import { Order } from '@/types';
-import { CheckCircle, Package, Phone } from 'lucide-react';
+import { CheckCircle, Phone } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { useI18n } from '@/contexts/I18nContext';
@@ -14,7 +14,7 @@ const WHATSAPP_NUMBER = '212656201278';
 function OrderConfirmationContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const { user } = useAuth();
+    useAuth();
     const { t } = useI18n();
 
     // Retrieve params from URL

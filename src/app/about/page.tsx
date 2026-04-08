@@ -35,7 +35,7 @@ export default function AboutPage() {
                             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-brand-50 text-brand-600 mb-6">
                                 <Lock className="h-8 w-8" />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-slate-900">{t('features.private.title')}</h3>
+                            <h2 className="text-xl font-bold mb-3 text-slate-900">{t('features.private.title')}</h2>
                             <p className="text-slate-600">
                                 {t('features.private.description')}
                             </p>
@@ -44,7 +44,7 @@ export default function AboutPage() {
                             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 text-blue-600 mb-6">
                                 <Box className="h-8 w-8" />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-slate-900">{t('features.discreet.title')}</h3>
+                            <h2 className="text-xl font-bold mb-3 text-slate-900">{t('features.discreet.title')}</h2>
                             <p className="text-slate-600">
                                 {t('features.discreet.description')}
                             </p>
@@ -53,7 +53,7 @@ export default function AboutPage() {
                             <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-green-50 text-green-600 mb-6">
                                 <Shield className="h-8 w-8" />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-slate-900">{t('features.authentic.title')}</h3>
+                            <h2 className="text-xl font-bold mb-3 text-slate-900">{t('features.authentic.title')}</h2>
                             <p className="text-slate-600">
                                 {t('features.authentic.description')}
                             </p>
@@ -80,7 +80,7 @@ export default function AboutPage() {
                                 <div className="h-12 w-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-lg shadow-lg">1</div>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold text-slate-900">{t('process.step1.title')}</h4>
+                                <h3 className="text-lg font-bold text-slate-900">{t('process.step1.title')}</h3>
                                 <p className="text-slate-600">{t('process.step1.description')}</p>
                             </div>
                         </div>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                                 <div className="h-12 w-12 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-lg shadow-lg">2</div>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold text-slate-900">{t('process.step2.title')}</h4>
+                                <h3 className="text-lg font-bold text-slate-900">{t('process.step2.title')}</h3>
                                 <p className="text-slate-600">{t('process.step2.description')}</p>
                             </div>
                         </div>
@@ -102,7 +102,7 @@ export default function AboutPage() {
                                 <div className="h-12 w-12 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-lg shadow-lg">3</div>
                             </div>
                             <div>
-                                <h4 className="text-lg font-bold text-slate-900">{t('process.step3.title')}</h4>
+                                <h3 className="text-lg font-bold text-slate-900">{t('process.step3.title')}</h3>
                                 <p className="text-slate-600">{t('process.step3.description')}</p>
                             </div>
                         </div>

@@ -5,19 +5,19 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createOrder, getMoroccanCities } from '@/services/api';
-import { ShieldCheck, ShoppingBag, Truck, MapPin, AlertCircle, Eye, EyeOff, Check, X, UserPlus } from 'lucide-react';
+import { ShieldCheck, ShoppingBag, Truck, MapPin, AlertCircle, Check } from 'lucide-react';
 import { validateMoroccanPhone, parseAddress } from '@/utils/helpers';
 import { sanitizeInput, sanitizePhone, sanitizeEmail } from '@/utils/sanitize';
-import { validatePassword, PASSWORD_RULES } from '@/utils/passwordValidation';
+import { validatePassword } from '@/utils/passwordValidation';
 import { getProductImage } from '@/utils/imageHelpers';
 import Image from 'next/image';
 import { useI18n } from '@/contexts/I18nContext';
 
 export default function CheckoutPage() {
     const { items, total, clearCart } = useCart();
-    const { user, signup, signInAnonymously, convertGuestToPermanent } = useAuth();
+    const { user, signup, signInAnonymously } = useAuth();
     const router = useRouter();
-    const { t, locale } = useI18n();
+    const { t } = useI18n();
     const [isProcessing, setIsProcessing] = useState(false);
     const [cities, setCities] = useState<string[]>(["Casablanca"]);
     const [submitError, setSubmitError] = useState('');
@@ -31,19 +31,22 @@ export default function CheckoutPage() {
     });
 
     // Account creation toggle and fields
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [wantsAccount, setWantsAccount] = useState(false);
     const [accountData, setAccountData] = useState({
         email: '',
         password: '',
         confirmPassword: ''
     });
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
 
     // Validation errors
     const [phoneError, setPhoneError] = useState('');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [emailError, setEmailError] = useState('');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [passwordError, setPasswordError] = useState('');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
     // Password strength
@@ -80,13 +83,11 @@ export default function CheckoutPage() {
         }
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleAccountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setAccountData(prev => ({ ...prev, [name]: value }));
 
-        if (name === 'password') {
-            // Real-time strength check is handled by passwordStrength variable
-        }
         if (name === 'confirmPassword') {
             if (value !== accountData.password) {
                 setConfirmPasswordError('Les mots de passe ne correspondent pas');
@@ -155,9 +156,9 @@ export default function CheckoutPage() {
                         userId = result.user.id;
                         isNewAccount = true;
                     }
-                } catch (signupError: any) {
+                } catch (signupError: unknown) {
                     console.error('Signup failed:', signupError);
-                    setSubmitError(signupError.message || 'Erreur lors de la création du compte');
+                    setSubmitError((signupError instanceof Error ? signupError.message : String(signupError)) || 'Erreur lors de la création du compte');
                     setIsProcessing(false);
                     return; // Stop checkout if account creation fails explicitly requested
                 }
@@ -190,9 +191,9 @@ export default function CheckoutPage() {
             clearCart();
             router.push(`/order-confirmation?orderId=${orderId}&email=${wantsAccount ? encodeURIComponent(accountData.email) : ''}&newAccount=${isNewAccount}`);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Order creation failed:', error);
-            setSubmitError(t('checkout.order_failure') + ': ' + (error.message || 'Erreur inconnue'));
+            setSubmitError(t('checkout.order_failure') + ': ' + (error instanceof Error ? error.message : 'Erreur inconnue'));
             window.scrollTo(0, 0);
         } finally {
             setIsProcessing(false);

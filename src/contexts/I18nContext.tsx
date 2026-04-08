@@ -31,7 +31,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     // Load locale from localStorage on mount
     useEffect(() => {
         const saved = localStorage.getItem('locale') as Locale || 'fr';
-        setLocaleState(saved);
+        setLocaleState(saved); // eslint-disable-line react-hooks/set-state-in-effect
     }, []);
 
     const setLocale = (newLocale: Locale) => {
@@ -45,7 +45,8 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     // Helper to get nested translation
     const t = (key: string): string => {
         const keys = key.split('.');
-        let value: any = messages[locale];
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let value: any = messages[locale];
 
         for (const k of keys) {
             value = value?.[k];

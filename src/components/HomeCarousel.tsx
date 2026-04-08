@@ -2,6 +2,7 @@
 
 import { useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Product } from '@/types';
 import { getProductImage } from '@/utils/imageHelpers';
 import { getProductSlug } from '@/utils/slugHelpers';
@@ -54,10 +55,13 @@ export default function HomeCarousel({ products }: HomeCarouselProps) {
           <Link href={`/product/${getProductSlug(product)}`} key={product.id} className="flex-none w-[280px] md:w-[320px] snap-center group">
             <div className="flex flex-col h-full bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
               <div className="relative aspect-[3/4] overflow-hidden bg-[#f3ece7]">
-                <div
-                  className="w-full h-full bg-center bg-cover bg-no-repeat transition-transform duration-500 group-hover:scale-105"
-                  style={{ backgroundImage: `url('${getProductImage(product.imageUrl)}')` }}
-                ></div>
+                <Image
+                  src={getProductImage(product.imageUrl)}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 280px, 320px"
+                  className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                />
                 <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-2 py-1 rounded">{t('home.carousel.bestSeller')}</div>
                 <button className="absolute bottom-4 right-4 size-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-text-main shadow-md translate-y-14 group-hover:translate-y-0 transition-transform duration-300 hover:bg-primary hover:text-white">
                   <span className="material-symbols-outlined text-sm">add_shopping_cart</span>

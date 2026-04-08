@@ -126,8 +126,10 @@ export const NotificationTemplates = {
     }),
 };
 
-export default {
+const pushNotificationService = {
     sendNotificationToUser,
     sendNotificationToAll,
     NotificationTemplates,
 };
+
+export default pushNotificationService;

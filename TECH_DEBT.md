@@ -1,14 +1,14 @@
 # Technical Debt & Remaining Work
 
-> Last updated: 2026-03-31
-> Build status: ✅ Passing (exit code 0, 156 static pages)
+> Last updated: 2026-04-07
+> Build status: ✅ Passing (exit code 0)
 > Last commit: `5e0e3fb` on `develop`
 
 ---
 
 ## Context: What Was Already Done
 
-Two rounds of fixes have been completed:
+Four rounds of fixes have been completed:
 
 ### Round 1 — Security & Code Quality
 - XSS: `sanitizeHTML()` applied to all 4 blog renderers (`TextBlock`, `AlertBlock`, `BlogRenderer`, `SafeBlogRenderer`)
@@ -28,57 +28,39 @@ Two rounds of fixes have been completed:
 - Removed ghost `image_sitemap.xml` from robots.ts
 - Replaced all `via.placeholder.com` with local SVG fallback
 
+### Round 3 — Complete SEO & GEO Roadmap (12/12 tasks)
+- JSON-LD: Solution pages (Article + BreadcrumbList), Shop (ItemList), Education (CollectionPage + BreadcrumbList), FAQ (FAQPage + BreadcrumbList), Guide (Article + BreadcrumbList)
+- Homepage: Organization + OnlineStore + WebSite schemas with sameAs, address, SearchAction
+- OG/Twitter: Full metadata on About (via layout.tsx), Shop, Education, FAQ, Guide, Solution pages
+- llms.txt: Complete rewrite with all sections, correct routes, FAQ highlights
+- Heading hierarchy: FAQ H3→H2, About H4→H3, Education added H2 before cards
+- Sitemap: Solution pages added with priority 0.7
+- robots.ts: PerplexityBot added, disallow rules aligned
+
+### Round 4 — Tech Debt Cleanup
+- Home Page SSR: Converted to server component, `getFeaturedProducts()` server-side, JSON-LD server-rendered, hardcoded strings → `t()` keys from `messages/fr.json`
+- Admin Monolith: Split into `OverviewTab`, `OrdersTab`, `InventoryTab`, `SeoTab` with `dynamic()` imports
+- `Intimate Gel` translation: Added to all 3 locale files (fr/en/ar)
+- `<img>` → `<Image>`: All remaining instances migrated (0 `<img>` tags in src/)
+- About `dangerouslySetInnerHTML`: Removed from hero title
+- `@ts-ignore`: All instances eliminated from source files
+
 ---
 
 ## Remaining Items (by priority)
 
-### 1. 🔴 Home Page SSR Refactor
-**Files**: `src/app/page.tsx`
-**Impact**: HIGH — The home page (`/`) is the most SEO-critical page but is entirely client-rendered (`"use client"`). Google sees an empty product carousel on first crawl.
-
-**What needs to happen**:
-- Convert `page.tsx` to a Server Component
-- Extract interactive parts (carousel scroll buttons) into a small `HomeClient.tsx`
-- Move `getFeaturedProducts()` call from `useEffect` to server-side `await`
-- Move JSON-LD scripts to server-rendered output (already there, but currently only rendered after hydration)
-
-**Risks**: This is the highest-risk change. The page uses `useI18n()` (client-only context), so the i18n approach needs to change to `getTranslations()` from `next-intl` or pass translations as props. Test thoroughly.
-
-**Related hardcoded strings** (also in `page.tsx`):
-- "Clinical Excellence", "Dermatologist Tested", "Organic Ingredients", "Discreet Shipping"
-- "Learn about our process", "Best Sellers", "Curated Selection", "Best Seller" badge
-- These should be replaced with `t()` keys from `messages/fr.json` (keys already exist under `home.features.*`)
+### 1. ✅ DONE — Home Page SSR Refactor
+**Status**: Completed in Round 4. Server component with server-side data fetching.
 
 ---
 
-### 2. 🟡 Missing Translation: `Intimate Gel` Category
-**File**: `messages/fr.json` → `shop.categories`
-**Impact**: LOW — Shows raw English category name in the shop filter UI
-
-**Fix**: Add to `messages/fr.json`:
-```json
-"categories": {
-    "Lubricant": "Lubrifiants",
-    "Condoms": "Préservatifs",
-    "Delay Spray/Cream": "Spray/Crème Retardant",
-    "Wellness Kit": "Kit Bien-être",
-    "Intimate Gel": "Gel Intime"   // ← ADD THIS
-}
-```
-
-Check the database for any other categories not covered. Run `npm run build` and look for `Translation missing:` warnings.
+### 2. ✅ DONE — Missing Translation: `Intimate Gel` Category
+**Status**: Completed. Present in all 3 locale files.
 
 ---
 
-### 3. 🟡 Admin Page Monolith
-**File**: `src/app/admin/page.tsx` (~60KB, 800+ lines)
-**Impact**: MEDIUM — Performance (large JS bundle), maintainability
-
-**What needs to happen**:
-- Split into tab-specific components: `OrdersTab`, `ProductsTab`, `AnalyticsTab`, etc.
-- Use `React.lazy()` or Next.js dynamic imports for code splitting
-- Fix the 15+ `@ts-ignore` directives (most are due to loose `any` types on order/product objects)
-- Type the admin data properly instead of using `any`
+### 3. ✅ DONE — Admin Page Monolith
+**Status**: Completed in Round 4. Split into 4 tab components with dynamic imports.
 
 ---
 
@@ -90,31 +72,23 @@ Check the database for any other categories not covered. Run `npm run build` and
 - `next-intl` is installed and configured (middleware, `i18n/request.ts`, `next.config.mjs`)
 - But **no component uses it**. Every component uses the custom `I18nContext` with `useI18n()`
 - `I18nContext` is client-only (React Context), so server components can't use `t()`
+- The home page works around this with a local `t()` helper reading `messages/fr.json` directly
 
 **Options**:
 1. **Migrate to `next-intl` fully** — Replace all `useI18n()` with `useTranslations()` (client) and `getTranslations()` (server). Remove custom context.
 2. **Remove `next-intl`** — If you don't need server-side translations or locale routing, remove `next-intl` and keep the custom context. Simpler but blocks SSR i18n.
 
-**Recommendation**: Option 1 if you plan to do the Home Page SSR refactor (item #1). Option 2 if you want to keep things simple and don't mind the home page staying client-rendered.
+**Recommendation**: Option 1 for full SSR i18n. Option 2 for simplicity. This is a deliberate architectural decision — not a bug.
 
 ---
 
-### 5. 🟢 `<img>` → `<Image>` Migration (Remaining)
-**Files**:
-- `src/app/checkout/page.tsx` (line ~357) — cart item thumbnails
-- `src/app/admin/page.tsx` (line ~523) — product thumbnails in admin
-- `src/app/profile/page.tsx` (line ~419) — order item images
-- `src/app/page.tsx` (line ~236) — home page uses `backgroundImage` CSS
-
-**Impact**: LOW — These are all behind auth or non-SEO-critical pages. The checkout/profile/admin pages are disallowed in robots.txt. The home page one would be fixed as part of the SSR refactor.
+### 5. ✅ DONE — `<img>` → `<Image>` Migration
+**Status**: Completed. Zero `<img>` tags remain in src/.
 
 ---
 
-### 6. 🟢 About Page `dangerouslySetInnerHTML` with i18n
-**File**: `src/app/about/page.tsx` (line 21)
-**Impact**: LOW — The source is static `messages/fr.json`, not user input. But the hero title uses `dangerouslySetInnerHTML={{ __html: t('hero.title') }}` to render a `<span>` tag embedded in the translation JSON.
-
-**Fix**: Replace with JSX — split the title into parts or use `whitespace-pre-line` CSS instead of `<br>` tags in the JSON.
+### 6. ✅ DONE — About Page `dangerouslySetInnerHTML`
+**Status**: Completed. Hero title no longer uses `dangerouslySetInnerHTML`.
 
 ---
 

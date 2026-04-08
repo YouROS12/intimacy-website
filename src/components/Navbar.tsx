@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ShoppingBag, User as UserIcon, LogOut, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
+import { ShoppingBag, User as UserIcon, Menu, X, ShieldCheck, Search, Globe } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useI18n } from '@/contexts/I18nContext';
