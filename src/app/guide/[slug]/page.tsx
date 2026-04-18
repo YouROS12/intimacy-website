@@ -24,19 +24,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
 
         return {
-            title: `${postData.original.title} | Intimacy.ma`,
+            title: `${postData.original.title} | Intimacy Wellness Maroc`,
             description: postData.original.excerpt,
             alternates: {
                 canonical: `https://intimacy.ma/guide/${slug}`,
             },
             openGraph: {
-                title: `${postData.original.title} | Intimacy.ma`,
+                title: `${postData.original.title} | Intimacy Wellness Maroc`,
                 description: postData.original.excerpt,
                 url: `https://intimacy.ma/guide/${slug}`,
                 siteName: 'Intimacy Wellness Morocco',
                 locale: 'fr_MA',
                 type: 'article',
-                images: postData.original.cover_image ? [postData.original.cover_image] : ['/og-image.png'],
+                publishedTime: postData.original.published_at,
+                modifiedTime: postData.original.updated_at || postData.original.published_at,
+                authors: postData.original.author ? [`https://intimacy.ma/about`] : undefined,
+                images: postData.original.cover_image ? [{ url: postData.original.cover_image, width: 1200, height: 630, alt: postData.original.title }] : ['/og-image.png'],
             },
             twitter: {
                 card: 'summary_large_image',

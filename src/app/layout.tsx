@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     default: 'Intimacy Wellness Morocco | Bien-être intime Premium',
     template: '%s | Intimacy Wellness Maroc',
   },
-  description: 'Premier store bien-être intime au Maroc. Livraison discrète et rapide partout au Maroc.',
+  description: 'Premier store bien-être intime au Maroc — préservatifs, lubrifiants, hygiène intime. Livraison discrète 24-48h partout au Maroc. Paiement à la livraison.',
   openGraph: {
     type: 'website',
     locale: 'fr_MA',

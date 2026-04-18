@@ -34,8 +34,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
-    const title = product.seo_title || `${product.name} | Intimacy Wellness Maroc`;
-    const description = product.seo_description || product.description.substring(0, 160);
+    const categoryLabels: Record<string, string> = {
+        'Lubricant': 'Lubrifiant',
+        'Condoms': 'Préservatif',
+        'Delay Spray/Cream': 'Spray Retardant',
+        'Wellness Kit': 'Kit Bien-être',
+        'Intimate Gel': 'Gel Intime',
+    };
+    const categoryLabel = categoryLabels[product.category] || product.category;
+    const brandPart = product.brand ? ` ${product.brand}` : '';
+    const title = product.seo_title || `${product.name}${brandPart} | Achat Maroc | Intimacy Wellness`;
+    const descBase = `Achetez ${product.name}${product.brand ? ` (${product.brand})` : ''} à ${product.price} MAD — ${categoryLabel} premium. Livraison discrète 24-48h partout au Maroc. ${product.description}`;
+    const description = product.seo_description || descBase.substring(0, 160);
     const images = product.imageUrl ? [getProductImage(product.imageUrl)] : [];
     const canonicalUrl = `${siteUrl}/product/${getProductSlug(product)}`;
 
@@ -54,10 +64,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 url,
                 width: 800,
                 height: 800,
-                alt: product.name,
+                alt: `${product.name} - ${categoryLabel} au Maroc`,
             })),
             locale: 'fr_MA',
-            type: 'article',
+            type: 'website',
         },
         twitter: {
             card: 'summary_large_image',
@@ -148,6 +158,14 @@ export default async function ProductPage({ params }: Props) {
         }
     };
 
+    const productCategoryLabels: Record<string, string> = {
+        'Lubricant': 'Lubrifiants',
+        'Condoms': 'Préservatifs',
+        'Delay Spray/Cream': 'Spray Retardant',
+        'Wellness Kit': 'Kits Bien-être',
+        'Intimate Gel': 'Gels Intimes',
+    };
+
     const breadcrumbLd = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -167,7 +185,7 @@ export default async function ProductPage({ params }: Props) {
             {
                 '@type': 'ListItem',
                 position: 3,
-                name: product.category,
+                name: productCategoryLabels[product.category] || product.category,
                 item: `${siteUrl}/shop?category=${encodeURIComponent(product.category)}`
             },
             {

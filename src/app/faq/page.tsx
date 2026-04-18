@@ -2,14 +2,14 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'FAQ - Questions Fréquentes | Intimacy Wellness Maroc',
-    description: 'Réponses à vos questions sur la commande, la livraison discrète et nos produits.',
+    title: 'FAQ — Livraison Discrète, Délais & Produits | Intimacy Wellness Maroc',
+    description: 'Réponses complètes : livraison discrète au Maroc en 24-48h, paiement à la livraison, authenticité des produits, retours. Tout sur intimacy.ma.',
     alternates: {
         canonical: 'https://intimacy.ma/faq',
     },
     openGraph: {
-        title: 'FAQ | Intimacy Wellness Maroc',
-        description: 'Questions fréquentes sur la livraison discrète, les délais et nos produits au Maroc.',
+        title: 'FAQ | Livraison Discrète & Produits Bien-être Intime au Maroc',
+        description: 'Livraison discrète 24-48h, paiement à la livraison (COD), produits authentiques. Toutes les réponses sur intimacy.ma.',
         url: 'https://intimacy.ma/faq',
         siteName: 'Intimacy Wellness Morocco',
         locale: 'fr_MA',
@@ -28,13 +28,52 @@ export default function FAQPage() {
     const faqData = [
         {
             question: "La livraison est-elle vraiment discrète ?",
-            answer: "Oui, à 100%. Nos colis sont totalement anonymes, sans logo ni mention du contenu..."
+            answer: "Oui, à 100%. Nos colis sont totalement anonymes : aucun logo, aucune mention du contenu ou de la marque sur l'emballage extérieur. Même le livreur ne sait pas ce qu'il transporte. Votre vie privée est notre priorité absolue."
         },
         {
-            question: "Quels sont les délais de livraison ?",
-            answer: "Nous livrons en 24-48h partout au Maroc..."
+            question: "Quels sont les délais de livraison au Maroc ?",
+            answer: "Nous livrons en 24 à 48 heures partout au Maroc — Casablanca, Rabat, Marrakech, Fès, Tanger, Agadir et toutes les autres villes. Les commandes passées avant 18h sont expédiées le jour même."
+        },
+        {
+            question: "Quels modes de paiement acceptez-vous ?",
+            answer: "Nous acceptons le paiement à la livraison (cash on delivery), CashPlus et Wave. Pas besoin de carte bancaire — vous payez en espèces quand vous recevez votre commande."
+        },
+        {
+            question: "Les produits sont-ils authentiques et certifiés ?",
+            answer: "Oui. Tous nos produits (Durex, Manix, Prote+, Cumlaude Lab, etc.) sont sourcés directement auprès de distributeurs agréés et sont 100% certifiés authentiques. Nous ne vendons aucun produit contrefait."
+        },
+        {
+            question: "Puis-je acheter des préservatifs en ligne au Maroc ?",
+            answer: "Oui, vous pouvez commander des préservatifs (Durex, Manix, Mister Size, Carex…) directement sur intimacy.ma. Livraison discrète en 24-48h partout au Maroc avec paiement à la livraison."
+        },
+        {
+            question: "Quelle est votre politique de retour ?",
+            answer: "Nous acceptons les retours dans les 14 jours suivant la réception pour tout produit scellé et non ouvert. Contactez-nous via WhatsApp pour initier un retour."
+        },
+        {
+            question: "Livrez-vous dans toutes les villes du Maroc ?",
+            answer: "Oui, nous livrons dans toutes les villes et régions du Maroc : Grand Casablanca, Rabat-Salé, Marrakech-Safi, Fès-Meknès, Souss-Massa, Tanger-Tétouan, l'Oriental, et toutes les autres régions."
+        },
+        {
+            question: "La livraison est-elle gratuite ?",
+            answer: "La livraison est gratuite pour toute commande de 500 MAD ou plus. En dessous de ce montant, des frais de livraison standard s'appliquent."
+        },
+        {
+            question: "Comment puis-je contacter le service client ?",
+            answer: "Notre service client est disponible via WhatsApp au +212-656-201278. Nous répondons généralement en moins d'une heure pendant les heures de travail."
+        },
+        {
+            question: "Proposez-vous des lubrifiants intimes au Maroc ?",
+            answer: "Oui, nous proposons une large gamme de lubrifiants intimes : à base d'eau (Manix Gel, Protect Gel, Lubrix), au silicone, et aromatisés. Tous disponibles avec livraison discrète au Maroc."
+        },
+        {
+            question: "Mes données personnelles sont-elles sécurisées ?",
+            answer: "Absolument. Nous ne partageons jamais vos informations personnelles avec des tiers. Vos données de commande sont chiffrées et utilisées uniquement pour la livraison. Consultez notre politique de confidentialité pour plus de détails."
+        },
+        {
+            question: "Puis-je passer une commande sans créer de compte ?",
+            answer: "Oui, vous pouvez commander en tant qu'invité sans créer de compte. Vous avez simplement besoin d'indiquer votre nom, téléphone et adresse de livraison. La création d'un compte est optionnelle et permet de suivre vos commandes."
         }
-        // ... more items
     ];
 
     const jsonLd = {

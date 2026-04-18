@@ -13,7 +13,15 @@ export default function robots(): MetadataRoute.Robots {
             },
             // AI / LLM bots — welcome
             {
-                userAgent: ['GPTBot', 'ChatGPT-User', 'Claude-Web', 'PerplexityBot', 'Bytespider', 'CCBot', 'anthropic-ai', 'Google-Extended'],
+                userAgent: [
+                    'GPTBot', 'ChatGPT-User', 'OAI-SearchBot',
+                    'Claude-Web', 'anthropic-ai',
+                    'PerplexityBot',
+                    'Google-Extended', 'Googlebot-News',
+                    'Bytespider', 'CCBot',
+                    'cohere-ai', 'AI2Bot',
+                    'Applebot-Extended',
+                ],
                 allow: '/',
                 disallow: ['/admin/', '/profile/', '/checkout/', '/order-confirmation/'],
             },
