@@ -51,9 +51,10 @@ interface SupabaseProduct {
 // ─── Cookie helpers ───────────────────────────────────────────────────────────
 function extractSetCookies(response: Response): string[] {
   // Use getSetCookie() when available (Node 20+ / undici 6+)
-  if (typeof (response.headers as Record<string, unknown>)['getSetCookie'] === 'function') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (response.headers as any).getSetCookie() as string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const headers = response.headers as any;
+  if (typeof headers['getSetCookie'] === 'function') {
+    return headers.getSetCookie() as string[];
   }
   // Fallback: split by ", " only at cookie-name boundaries
   const raw = response.headers.get('set-cookie') ?? '';
