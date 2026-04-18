@@ -77,6 +77,11 @@
                 "title": "Produits authentiques",
                 "description": "Garantie 100%"
             }
+        },
+        "carousel": {
+            "badge": "Meilleures Ventes",
+            "title": "Sélection Raffinée",
+            "bestSeller": "Meilleure Vente"
         }
     },
     "shop": {
@@ -111,7 +116,8 @@
             "Lubricant": "Lubrifiants",
             "Condoms": "Préservatifs",
             "Delay Spray/Cream": "Spray/Crème Retardant",
-            "Wellness Kit": "Kit Bien-être"
+            "Wellness Kit": "Kit Bien-être",
+            "Intimate Gel": "Gel Intime"
         }
     },
     "checkout": {
@@ -235,7 +241,8 @@
     },
     "about": {
         "hero": {
-            "title": "Bien-être, Confidentialité & <span class='text-brand-400'>Confiance</span>.",
+            "title": "Bien-être, Confidentialité &",
+      "titleHighlight": "Confiance",
             "subtitle": "Nous sommes la première destination au Maroc pour les produits de bien-être intime. Nous croyons que la santé sexuelle doit être accessible, sûre et sans aucun jugement."
         },
         "features": {

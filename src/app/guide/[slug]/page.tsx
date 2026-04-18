@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/error-boundaries */
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Calendar, User, Clock, Share2 } from 'lucide-react';
 import { BlogService } from '@/services/blog-service';
 import SafeBlogRenderer from '@/components/SafeBlogRenderer';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import Image from 'next/image';
+import messages from '../../../../messages/fr.json';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -28,8 +30,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 canonical: `https://intimacy.ma/guide/${slug}`,
             },
             openGraph: {
-                images: postData.original.cover_image ? [postData.original.cover_image] : []
-            }
+                title: `${postData.original.title} | Intimacy.ma`,
+                description: postData.original.excerpt,
+                url: `https://intimacy.ma/guide/${slug}`,
+                siteName: 'Intimacy Wellness Morocco',
+                locale: 'fr_MA',
+                type: 'article',
+                images: postData.original.cover_image ? [postData.original.cover_image] : ['/og-image.png'],
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: postData.original.title,
+                description: postData.original.excerpt,
+                images: postData.original.cover_image ? [postData.original.cover_image] : ['/og-image.png'],
+            },
         };
     } catch (error) {
         console.error("Error generating metadata:", error);
@@ -52,7 +66,11 @@ export default async function BlogPostPage({ params }: Props) {
         }
 
         const post = data.original;
-        const t = await getTranslations('education');
+        const t = (key: string) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const value = (messages.education as Record<string, any>)[key];
+            return typeof value === 'string' ? value : key;
+        };
 
         // JSON-LD
         const jsonLd = {
@@ -77,11 +95,25 @@ export default async function BlogPostPage({ params }: Props) {
             description: post.excerpt
         };
 
+        const breadcrumbJsonLd = {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://intimacy.ma' },
+                { '@type': 'ListItem', position: 2, name: 'Centre d\'Expertise', item: 'https://intimacy.ma/education' },
+                { '@type': 'ListItem', position: 3, name: post.title, item: `https://intimacy.ma/guide/${slug}` },
+            ],
+        };
+
         return (
             <div className="bg-white min-h-screen">
                 <script
                     type="application/ld+json"
                     dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
                 />
 
                 {/* Post Header */}
@@ -106,7 +138,7 @@ export default async function BlogPostPage({ params }: Props) {
                                 {(() => {
                                     try {
                                         return new Date(post.published_at).toLocaleDateString();
-                                    } catch (e) {
+                                    } catch {
                                         return 'Date inconnue';
                                     }
                                 })()}
@@ -125,11 +157,14 @@ export default async function BlogPostPage({ params }: Props) {
                 {/* Cover Image */}
                 {post.cover_image && (
                     <div className="max-w-5xl mx-auto px-4 mb-12">
-                        <img
-                            src={post.cover_image}
-                            alt={post.title}
-                            className="w-full h-[300px] md:h-[500px] object-cover rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-500"
-                        />
+                        <div className="relative w-full h-[300px] md:h-[500px] overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-shadow duration-500">
+                            <Image
+                                src={post.cover_image}
+                                alt={post.title}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
                     </div>
                 )}
 

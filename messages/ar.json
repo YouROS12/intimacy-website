@@ -77,6 +77,11 @@
                 "title": "منتجات أصلية",
                 "description": "ضمان 100٪"
             }
+        },
+        "carousel": {
+            "badge": "الأكثر مبيعًا",
+            "title": "مختارات مميزة",
+            "bestSeller": "الأكثر مبيعًا"
         }
     },
     "shop": {
@@ -111,7 +116,8 @@
             "Lubricant": "المزلقات",
             "Condoms": "الواقي الذكري",
             "Delay Spray/Cream": "بخاخ/كريم تأخير",
-            "Wellness Kit": "مجموعة العافية"
+            "Wellness Kit": "مجموعة العافية",
+            "Intimate Gel": "جل حميم"
         }
     },
     "checkout": {
@@ -235,7 +241,8 @@
     },
     "about": {
         "hero": {
-            "title": "رفاهية، خصوصية و <span class='text-brand-400'>ثقة</span>.",
+            "title": "رفاهية، خصوصية و",
+      "titleHighlight": "ثقة",
             "subtitle": "نحن الوجهة الأولى في المغرب لمنتجات العناية الحميمة. نؤمن أن الصحة الجنسية يجب أن تكون متاحة، آمنة وبدون أحكام."
         },
         "features": {

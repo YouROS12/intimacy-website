@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 // --- Primitives ---
-const UuidSchema = z.string().uuid().or(z.string().min(10)); // Relaxed UUID for safety
 const UrlSchema = z.string().url().or(z.string().startsWith('/'));
 
 // --- Block Schemas ---
@@ -80,6 +79,7 @@ export const BlogContentSchema = z.object({
 
 // --- Parsing Helper ---
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseBlogContent(input: any): z.infer<typeof BlogContentSchema> | null {
     try {
         // Case 1: Input is already an object

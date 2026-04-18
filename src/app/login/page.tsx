@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { ShieldCheck, MapPin, Phone, User as UserIcon, Lock, ArrowLeft, Building, AlertCircle } from 'lucide-react';
 import { getMoroccanCities } from '@/services/api';
-import { validateMoroccanPhone, formatAddress } from '@/utils/helpers';
+import { validateMoroccanPhone } from '@/utils/helpers';
 import { sanitizeInput, sanitizeEmail, sanitizePhone } from '@/utils/sanitize';
 import Link from 'next/link';
 import { useI18n } from '@/contexts/I18nContext';
@@ -94,7 +94,7 @@ function Content() {
             } else {
                 // --- Strict Validations ---
                 let hasError = false;
-                const newFieldErrors: any = {};
+                const newFieldErrors: Record<string, string> = {};
 
                 if (password !== confirmPassword) {
                     setError(t('auth.errors.password_mismatch'));
@@ -152,20 +152,21 @@ function Content() {
                 }
                 router.replace(redirectPath);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
             // Better error handling for firebase auth errors
-            if (err.code === 'auth/email-already-in-use') {
+            const errObj = err as Record<string, unknown>;
+            if (errObj.code === 'auth/email-already-in-use') {
                 setError('Cet email est déjà utilisé.');
-            } else if (err.code === 'auth/invalid-email') {
+            } else if (errObj.code === 'auth/invalid-email') {
                 setError('Email invalide.');
-            } else if (err.code === 'auth/wrong-password') {
+            } else if (errObj.code === 'auth/wrong-password') {
                 setError('Mot de passe incorrect.');
-            } else if (err.code === 'auth/user-not-found') {
+            } else if (errObj.code === 'auth/user-not-found') {
                 setError('Utilisateur introuvable.');
             }
             else {
-                setError(err.message || t('auth.errors.general'));
+                setError((err instanceof Error ? err.message : null) || t('auth.errors.general'));
             }
         } finally {
             setLoading(false);

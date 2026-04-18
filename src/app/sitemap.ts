@@ -1,14 +1,15 @@
 
 import { MetadataRoute } from 'next';
-import { getProducts, getAllPosts } from '@/services/api';
+import { getProducts, getAllPosts, getAllPseoPages } from '@/services/api';
 import { getProductSlug } from '@/utils/slugHelpers';
 
 const baseUrl = 'https://intimacy.ma';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const [products, posts] = await Promise.all([
+    const [products, posts, pseoPages] = await Promise.all([
         getProducts(),
-        getAllPosts()
+        getAllPosts(),
+        getAllPseoPages().catch(() => []),
     ]);
 
     const productUrls = products.map((product) => ({
@@ -18,6 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
     }));
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const postUrls = posts.map((post: any) => ({
         url: `${baseUrl}/guide/${post.slug}`,
         lastModified: new Date(post.updated_at || post.created_at || Date.now()),
@@ -58,5 +60,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
         ...productUrls,
         ...postUrls,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ...pseoPages.map((page: any) => ({
+            url: `${baseUrl}/solution/${page.slug}`,
+            lastModified: new Date(page.updated_at || page.created_at || Date.now()),
+            changeFrequency: 'weekly' as const,
+            priority: 0.7,
+        })),
     ];
 }

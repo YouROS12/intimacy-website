@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { getProductImage } from '@/utils/imageHelpers';
+import Image from 'next/image';
 import { useI18n } from '@/contexts/I18nContext';
 import { getCategoryLabel } from '@/utils/categoryHelpers';
 
@@ -51,11 +52,12 @@ const CartDrawer: React.FC = () => {
                                         <ul role="list" className="-my-6 divide-y divide-gray-200">
                                             {items.map((item) => (
                                                 <li key={item.id} className="py-6 flex">
-                                                    <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden bg-gray-50">
-                                                        <img
+                                                    <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden bg-gray-50 relative">
+                                                        <Image
                                                             src={getProductImage(item.imageUrl)}
                                                             alt={item.name}
-                                                            className="w-full h-full object-center object-cover"
+                                                            fill
+                                                            className="object-center object-cover"
                                                         />
                                                     </div>
                                                     <div className="ml-4 flex-1 flex flex-col">

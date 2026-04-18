@@ -19,7 +19,8 @@ export enum ProductCategory {
     LUBRICANT = 'Lubricant',
     CONDOMS = 'Condoms',
     DELAY = 'Delay Spray/Cream',
-    KIT = 'Wellness Kit'
+    KIT = 'Wellness Kit',
+    INTIMATE_GEL = 'Intimate Gel'
 }
 
 export interface Product {
@@ -79,7 +80,7 @@ export interface ChatMessage {
 // We import generic types but we don't want to import the run-time schemas here to keep types.ts pure if possible.
 // However, since we need z.infer, we must import the schema or the type.
 // Let's import the TYPES from validation, assuming they are exported.
-import { SafeBlogContent, SafeBlogBlock, SafeBlogBlockType } from './lib/validation';
+import { SafeBlogContent, SafeBlogBlock } from './lib/validation';
 
 export type BlogTheme = 'educational_deep_dive' | 'product_showcase' | 'listicle';
 

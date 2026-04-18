@@ -10,6 +10,7 @@ import { validateMoroccanPhone, formatAddress, parseAddress } from '@/utils/help
 import { sanitizeInput, sanitizePhone } from '@/utils/sanitize';
 import { useI18n } from '@/contexts/I18nContext';
 import { getProductImage } from '@/utils/imageHelpers';
+import Image from 'next/image';
 
 export default function ProfilePage() {
     const { user, isLoading, refreshProfile, updatePassword } = useAuth();
@@ -75,7 +76,7 @@ export default function ProfilePage() {
         if (!user) return;
 
         // Validation
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         let hasError = false;
 
         if (!editForm.full_name.trim()) {
@@ -118,7 +119,7 @@ export default function ProfilePage() {
 
     const handlePasswordChange = async () => {
         // Validation
-        const newErrors: any = {};
+        const newErrors: Record<string, string> = {};
         let hasError = false;
 
         if (passwordForm.newPassword.length < 6) {
@@ -413,12 +414,13 @@ export default function ProfilePage() {
                                                 {order.items.map((item, idx) => (
                                                     <li key={idx} className="py-3 flex justify-between items-center">
                                                         <div className="flex items-center">
-                                                            <div className="h-10 w-10 rounded bg-gray-100 flex-shrink-0 mr-4 overflow-hidden">
+                                                            <div className="h-10 w-10 rounded bg-gray-100 flex-shrink-0 mr-4 overflow-hidden relative">
                                                                 {item.imageUrl || item.image_url ? (
-                                                                    <img
+                                                                    <Image
                                                                         src={getProductImage(item.imageUrl || item.image_url || '')}
                                                                         alt={item.name}
-                                                                        className="w-full h-full object-cover"
+                                                                        fill
+                                                                        className="object-cover"
                                                                     />
                                                                 ) : (
                                                                     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">

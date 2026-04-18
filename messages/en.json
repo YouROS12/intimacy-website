@@ -77,6 +77,11 @@
                 "title": "Authentic Products",
                 "description": "100% Guaranteed"
             }
+        },
+        "carousel": {
+            "badge": "Best Sellers",
+            "title": "Curated Selection",
+            "bestSeller": "Best Seller"
         }
     },
     "shop": {
@@ -111,7 +116,8 @@
             "Lubricant": "Lubricants",
             "Condoms": "Condoms",
             "Delay Spray/Cream": "Delay Spray/Cream",
-            "Wellness Kit": "Wellness Kit"
+            "Wellness Kit": "Wellness Kit",
+            "Intimate Gel": "Intimate Gel"
         }
     },
     "checkout": {
@@ -235,7 +241,8 @@
     },
     "about": {
         "hero": {
-            "title": "Wellness, Privacy & <span class='text-brand-400'>Trust</span>.",
+            "title": "Wellness, Privacy &",
+      "titleHighlight": "Trust",
             "subtitle": "We are Morocco's premier destination for intimate wellness products. We believe sexual health should be accessible, safe, and judgment-free."
         },
         "features": {

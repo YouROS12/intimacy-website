@@ -4,6 +4,24 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
     title: 'FAQ - Questions Fréquentes | Intimacy Wellness Maroc',
     description: 'Réponses à vos questions sur la commande, la livraison discrète et nos produits.',
+    alternates: {
+        canonical: 'https://intimacy.ma/faq',
+    },
+    openGraph: {
+        title: 'FAQ | Intimacy Wellness Maroc',
+        description: 'Questions fréquentes sur la livraison discrète, les délais et nos produits au Maroc.',
+        url: 'https://intimacy.ma/faq',
+        siteName: 'Intimacy Wellness Morocco',
+        locale: 'fr_MA',
+        type: 'website',
+        images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'FAQ Intimacy Wellness Maroc' }],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'FAQ | Intimacy Wellness Maroc',
+        description: 'Tout savoir sur la livraison discrète et nos produits au Maroc.',
+        images: ['/og-image.png'],
+    },
 };
 
 export default function FAQPage() {
@@ -32,11 +50,24 @@ export default function FAQPage() {
         }))
     };
 
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://intimacy.ma' },
+            { '@type': 'ListItem', position: 2, name: 'FAQ', item: 'https://intimacy.ma/faq' },
+        ],
+    };
+
     return (
         <div className="bg-background-light min-h-screen py-12 lg:py-20">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
             />
 
             <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,7 +79,7 @@ export default function FAQPage() {
                 <div className="space-y-6">
                     {faqData.map((item, index) => (
                         <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-[#f3ece7]">
-                            <h3 className="text-xl font-bold text-text-main mb-3">{item.question}</h3>
+                            <h2 className="text-xl font-bold text-text-main mb-3">{item.question}</h2>
                             <div className="text-text-muted leading-relaxed">
                                 {item.answer}
                             </div>

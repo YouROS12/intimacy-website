@@ -3,6 +3,7 @@ import { parseBlogContent, SafeBlogContent } from '@/lib/validation';
 import { Product } from '@/types';
 
 export interface ValidatedPost {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     original: any; // Raw Supabase data
     content: SafeBlogContent | null; // Validated content or null
     products: Product[]; // Fetched related products
@@ -10,6 +11,7 @@ export interface ValidatedPost {
 
 export const BlogService = {
     // Debug helper
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     validateContentForDebug(rawContent: any): SafeBlogContent | null {
         return parseBlogContent(rawContent);
     },

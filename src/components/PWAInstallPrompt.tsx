@@ -17,7 +17,7 @@ const PWAInstallPrompt: React.FC = () => {
     useEffect(() => {
         // Check if iOS
         const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        setIsIOS(isIOSDevice);
+        setIsIOS(isIOSDevice); // eslint-disable-line react-hooks/set-state-in-effect
 
         // Check if already installed
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches;

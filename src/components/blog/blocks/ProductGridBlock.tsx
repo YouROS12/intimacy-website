@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ProductGridBlock as ProductGridBlockType, Product } from '@/types';
 import { ShoppingBag, ArrowRight } from 'lucide-react';
 import { getProductSlug } from '@/utils/slugHelpers';
+import Image from 'next/image';
 
 export const ProductGridBlock: React.FC<{ block: ProductGridBlockType; products: Product[] }> = ({ block, products }) => {
     // Defensive: Handle missing productIds safely
@@ -30,10 +31,11 @@ export const ProductGridBlock: React.FC<{ block: ProductGridBlockType; products:
                         {/* Image Container */}
                         <div className="h-28 w-28 flex-shrink-0 bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center p-3 relative group-hover:bg-brand-50/30 transition-colors">
                             {product.imageUrl || product.image_url ? (
-                                <img
-                                    src={product.imageUrl || product.image_url}
+                                <Image
+                                    src={(product.imageUrl || product.image_url)!}
                                     alt={product.name}
-                                    className="h-full w-auto object-contain mix-blend-multiply filter group-hover:brightness-110 transition-all"
+                                    fill
+                                    className="object-contain mix-blend-multiply filter group-hover:brightness-110 transition-all"
                                 />
                             ) : (
                                 <div className="text-gray-300">No Image</div>

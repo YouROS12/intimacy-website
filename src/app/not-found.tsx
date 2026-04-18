@@ -16,7 +16,7 @@ export default function NotFound() {
                 </h1>
 
                 <p className="text-lg text-text-muted">
-                    Désolé, le chemin vers ce sanctuaire semble s'être effacé.
+                    Désolé, le chemin vers ce sanctuaire semble s&apos;être effacé.
                 </p>
 
                 <div className="pt-6">
@@ -24,7 +24,7 @@ export default function NotFound() {
                         href="/"
                         className="inline-flex items-center justify-center h-12 px-8 rounded-full bg-primary hover:bg-primary/90 text-white text-base font-bold transition-transform active:scale-95 shadow-lg shadow-primary/25"
                     >
-                        Retour à l'accueil
+                        Retour à l&apos;accueil
                     </Link>
                 </div>
             </div>

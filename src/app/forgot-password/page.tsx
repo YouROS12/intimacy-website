@@ -22,10 +22,10 @@ export default function ForgotPasswordPage() {
         try {
             await resetPassword(email);
             setStatus('success');
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error("Reset password error:", error);
             setStatus('error');
-            setErrorMessage(error.message || t('auth.errors.general'));
+            setErrorMessage((error instanceof Error ? error.message : null) || t('auth.errors.general'));
         }
     };
 

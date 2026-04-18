@@ -79,9 +79,9 @@ export async function getSitemapUrls(): Promise<{ url: string; lastmod: number }
         }
         // return sorted by newest
         return items.sort((a, b) => b.lastmod - a.lastmod);
-    } catch (e: any) {
+    } catch (e: unknown) {
         console.error("Error fetching sitemap:", e);
-        throw new Error(e.message);
+        throw new Error(e instanceof Error ? e.message : String(e));
     }
 }
 
@@ -123,6 +123,7 @@ export async function getQueueStats() {
         total: data.length
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data.forEach((row: any) => {
         const s = row.status || 'pending';
         stats[s] = (stats[s] || 0) + 1;
@@ -262,11 +263,13 @@ export async function processQueueBatch(limit: number = 10) {
                 }).eq('id', item.id);
                 failCount++;
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             // Network error / Auth error
             // If it's a GaxiosError, it might have a response
-            const status = e.response?.status || 500;
-            const msg = e.message || 'Unknown Error';
+            const errObj = e as Record<string, unknown>;
+            const response = errObj.response as { status?: number } | undefined;
+            const status = response?.status || 500;
+            const msg = e instanceof Error ? e.message : 'Unknown Error';
 
             if (status === 429) {
                 quotaHit = true;
@@ -320,6 +323,7 @@ export async function scheduleFreshUrls(limit: number = 50) {
 
     // 2. Construct URLs
     // Note: Adjust URL pattern based on your actual routes
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const items = candidates.map((c: any) => ({
         url: `${SITE_URL}/product/${c.seo_slug || c.id}`,
         priority: c.priority

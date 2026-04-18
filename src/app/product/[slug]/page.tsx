@@ -1,7 +1,7 @@
 
 import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
-import { getProductBySlug, getProductById, getRelatedProducts } from '@/services/api';
+import { getProducts, getProductBySlug, getProductById, getRelatedProducts } from '@/services/api';
 import ProductDetailsClient from '@/components/ProductDetailsClient';
 import { getProductImage } from '@/utils/imageHelpers';
 import { isUuid, getProductSlug } from '@/utils/slugHelpers';
@@ -57,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 alt: product.name,
             })),
             locale: 'fr_MA',
-            type: 'website',
+            type: 'article',
         },
         twitter: {
             card: 'summary_large_image',
@@ -65,7 +65,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description,
             images,
         },
+        other: {
+            'product:price:amount': String(product.price),
+            'product:price:currency': 'MAD',
+            'product:availability': product.stock > 0 ? 'in stock' : 'out of stock',
+            'product:condition': 'new',
+            'product:brand': product.brand || 'Intimacy Wellness',
+        },
     };
+}
+
+export async function generateStaticParams() {
+    const products = await getProducts();
+    return products.map((p) => ({
+        slug: getProductSlug(p),
+    }));
 }
 
 export const revalidate = 3600; // Cache for 1 hour
@@ -113,6 +127,24 @@ export default async function ProductPage({ params }: Props) {
             priceCurrency: 'MAD',
             availability: product.stock > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
             itemCondition: 'https://schema.org/NewCondition',
+            priceValidUntil: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // eslint-disable-line react-hooks/purity
+            seller: {
+                '@type': 'Organization',
+                name: 'Intimacy Wellness Morocco',
+                url: 'https://intimacy.ma'
+            },
+            shippingDetails: {
+                '@type': 'OfferShippingDetails',
+                shippingDestination: {
+                    '@type': 'DefinedRegion',
+                    addressCountry: 'MA'
+                },
+                deliveryTime: {
+                    '@type': 'ShippingDeliveryTime',
+                    handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
+                    transitTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 2, unitCode: 'DAY' }
+                }
+            }
         }
     };
 

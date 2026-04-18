@@ -1,11 +1,12 @@
 import { supabase, isSupabaseConfigured } from './supabase';
-import { Product, Order, CartItem } from '../types';
+import { Product, Order } from '../types';
 import { generateSlug } from '../utils/slugHelpers';
 
 // Helper to check for real UUIDs
 const isUuidLike = (id: string) => id.length > 20;
 
 // Helper to map DB row to Product with seo_slug fallback
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const mapProduct = (p: any): Product => ({
     ...p,
     imageUrl: p.image_url || p.imageUrl || '/placeholder-product.svg',
@@ -120,6 +121,7 @@ export const getProductBySlug = async (slug: string): Promise<Product | undefine
 
     if (allError || !allProducts) return undefined;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const match = allProducts.find((p: any) => generateSlug(p.name) === slug);
     return match ? mapProduct(match) : undefined;
 };
@@ -276,7 +278,7 @@ export const updateOrderStatus = async (orderId: string, status: string) => {
     if (!isSupabaseConfigured()) throw new Error("Database not configured");
 
     // Build update object with status and appropriate timestamp
-    const updateData: any = { status };
+    const updateData: Record<string, string | null> = { status };
     const now = new Date().toISOString();
 
     // Auto-set timestamp fields based on status
@@ -414,7 +416,9 @@ export const getWeeklySales = async () => {
         const dateKey = d.toISOString().split('T')[0];
 
         const dayTotal = orders
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .filter((o: any) => o.created_at.startsWith(dateKey))
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .reduce((sum: number, o: any) => sum + o.total, 0);
 
         result.push({ name: dayName, sales: dayTotal });
@@ -488,6 +492,7 @@ export const adminGetAllPseoPages = async () => {
     return data;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const adminUpdatePseoPage = async (id: string, updates: any) => {
     if (!isSupabaseConfigured()) throw new Error("Database not connected");
 
@@ -564,6 +569,7 @@ export const getPseoProducts = async (problemId: string): Promise<Product[]> => 
 
     if (error || !data) return [];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return data.map((item: any) => mapProduct(item.products));
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { HeroBlock as HeroBlockType } from '@/types';
 
 export const HeroBlock: React.FC<{ block: HeroBlockType }> = ({ block }) => {
@@ -6,10 +7,11 @@ export const HeroBlock: React.FC<{ block: HeroBlockType }> = ({ block }) => {
         <div className="mb-12 relative rounded-3xl overflow-hidden shadow-2xl">
             {block.image && (
                 <div className="absolute inset-0">
-                    <img
+                    <Image
                         src={block.image}
                         alt={block.heading}
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
                 </div>

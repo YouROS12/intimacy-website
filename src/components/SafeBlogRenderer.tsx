@@ -16,21 +16,21 @@ import { sanitizeHTML } from '@/utils/sanitize';
 interface Props {
     content: SafeBlogContent | null;
     products?: Product[];
-    rawContent?: any; // For fallback
+    rawContent?: string; // For fallback
 }
 
 // Error Boundary Component for individual blocks
 class BlockErrorBoundary extends React.Component<{ children: React.ReactNode, fallback?: React.ReactNode }, { hasError: boolean }> {
-    constructor(props: any) {
+    constructor(props: { children: React.ReactNode, fallback?: React.ReactNode }) {
         super(props);
         this.state = { hasError: false };
     }
 
-    static getDerivedStateFromError(error: any) {
+    static getDerivedStateFromError(_error: unknown) { // eslint-disable-line @typescript-eslint/no-unused-vars
         return { hasError: true };
     }
 
-    componentDidCatch(error: any, errorInfo: any) {
+    componentDidCatch(error: unknown, errorInfo: unknown) {
         console.error("Block rendering failed:", error, errorInfo);
     }
 
@@ -69,7 +69,6 @@ const SafeBlogRenderer: React.FC<Props> = ({ content, products = [], rawContent 
 
                 return (
                     <BlockErrorBoundary key={key} fallback={<div className="hidden" data-error={`block-${idx}`} />}>
-                        {/* @ts-ignore: Types alignment between Zod/Supabase */}
                         <BlockDispatcher block={block} products={products} />
                     </BlockErrorBoundary>
                 );
@@ -104,10 +103,15 @@ const SafeBlogRenderer: React.FC<Props> = ({ content, products = [], rawContent 
 // Dispatcher Component
 const BlockDispatcher = ({ block, products }: { block: SafeBlogBlock, products: Product[] }) => {
     switch (block.type) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         case 'text': return <TextBlock block={block as any} />;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         case 'hero': return <HeroBlock block={block as any} />;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         case 'quote': return <QuoteBlock block={block as any} />;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         case 'alert': return <AlertBlock block={block as any} />;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         case 'product_grid': return <ProductGridBlock block={block as any} products={products} />;
         case 'image_group': return <div className="text-gray-400 italic text-sm text-center">Images: {block.images.length}</div>; // Todo: Implement ImageGroup
         default: return null;

@@ -4,9 +4,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, BookOpen, Calendar } from 'lucide-react';
 import { useI18n } from '@/contexts/I18nContext';
+import Image from 'next/image';
 
 interface EducationClientProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initialGuides: any[]; // PSEO Pages
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     initialPosts: any[];  // Blog Posts
 }
 
@@ -21,7 +24,7 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
     // Normalize and Merge Data with safeguards
     const allItems = [
         ...(Array.isArray(initialGuides) ? initialGuides : []).map(g => ({
-            id: g.id || Math.random().toString(),
+            id: g.id || Math.random().toString(), // eslint-disable-line react-hooks/purity
             type: 'guide',
             title: g.title || 'Untitled',
             slug: g.slug,
@@ -32,7 +35,7 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
             date: g.created_at || new Date().toISOString()
         })),
         ...(Array.isArray(initialPosts) ? initialPosts : []).map(p => ({
-            id: p.id || Math.random().toString(),
+            id: p.id || Math.random().toString(), // eslint-disable-line react-hooks/purity
             type: 'article',
             title: p.title || 'Untitled',
             slug: p.slug,
@@ -81,6 +84,10 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-12">
+                {/* Section heading for proper heading hierarchy */}
+                <h2 className="text-2xl font-bold text-slate-900 mb-8 font-serif">
+                    {t('articles.title') || 'Articles & Guides'}
+                </h2>
                 {/* Unified Articles Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredItems.map((item) => (
@@ -92,10 +99,11 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
                             {/* Image with fallback */}
                             <div className="h-48 overflow-hidden relative bg-gray-100">
                                 {item.image ? (
-                                    <img
+                                    <Image
                                         src={item.image}
                                         alt={item.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                                         onError={(e) => {
                                             (e.target as HTMLImageElement).style.display = 'none';
                                         }}
@@ -131,7 +139,7 @@ const EducationClient: React.FC<EducationClientProps> = ({ initialGuides = [], i
                                                         const d = new Date(item.date);
                                                         if (isNaN(d.getTime())) return 'Date inconnue';
                                                         return d.toLocaleDateString();
-                                                    } catch (e) {
+                                                    } catch {
                                                         return 'Date inconnue';
                                                     }
                                                 })()}

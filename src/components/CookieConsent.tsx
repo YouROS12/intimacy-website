@@ -9,7 +9,7 @@ const CookieConsent: React.FC = () => {
         // Safe access to localStorage in client component
         const consent = localStorage.getItem('cookie_consent');
         if (!consent) {
-            setIsVisible(true);
+            setIsVisible(true); // eslint-disable-line react-hooks/set-state-in-effect
         }
     }, []);
 
