@@ -3,7 +3,8 @@
 import { createClient } from '@supabase/supabase-js';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import { Order } from '@/types';
+import { Order, StockSyncResult, StockSyncRunRecord } from '@/types';
+import { runStockSync } from '@/lib/stock-sync';
 
 // Initialize Service Role Client (Bypasses RLS)
 const supabaseAdmin = createClient(
@@ -11,8 +12,7 @@ const supabaseAdmin = createClient(
     process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export async function getAdminOrders(): Promise<Order[]> {
-    // 1. Verify Authentication & Role
+async function requireAdminUser() {
     const cookieStore = await cookies();
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -26,11 +26,8 @@ export async function getAdminOrders(): Promise<Order[]> {
                     try {
                         cookiesToSet.forEach(({ name, value, options }) =>
                             cookieStore.set(name, value, options)
-                        )
+                        );
                     } catch {
-                        // The `setAll` method was called from a Server Component.
-                        // This can be ignored if you have middleware refreshing
-                        // user sessions.
                     }
                 },
             },
@@ -40,17 +37,20 @@ export async function getAdminOrders(): Promise<Order[]> {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
-        console.error('Unauthorized admin access attempt');
         throw new Error('Unauthorized');
     }
 
-    // 2. Add extra check for role in 'profiles' table
     const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
     if (profile?.role !== 'admin') {
         throw new Error('Forbidden: Admin access required');
     }
 
-    // 3. Fetch Orders using Admin Client (Bypassing RLS)
+    return { supabase, user };
+}
+
+export async function getAdminOrders(): Promise<Order[]> {
+    await requireAdminUser();
+
     const { data, error } = await supabaseAdmin
         .from('orders')
         .select('*')
@@ -65,41 +65,8 @@ export async function getAdminOrders(): Promise<Order[]> {
 }
 
 export async function getAdminDashboardStats() {
-    // 1. Verify Authentication & Role
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() {
-                    return cookieStore.getAll();
-                },
-                setAll(cookiesToSet) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookieStore.set(name, value, options)
-                        )
-                    } catch {
-                    }
-                },
-            },
-        }
-    );
+    await requireAdminUser();
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-        throw new Error('Unauthorized');
-    }
-
-    // 2. Verify Admin Role
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    if (profile?.role !== 'admin') {
-        throw new Error('Forbidden');
-    }
-
-    // 2. Fetch Stats using Admin Client
     const { data: orders } = await supabaseAdmin.from('orders').select('total');
     const { count } = await supabaseAdmin.from('profiles').select('*', { count: 'exact', head: true });
 
@@ -114,35 +81,8 @@ export async function getAdminDashboardStats() {
 }
 
 export async function updateAdminOrderStatus(orderId: string, status: string) {
-    // 1. Verify Authentication
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-            cookies: {
-                getAll() { return cookieStore.getAll(); },
-                setAll(cookiesToSet) {
-                    try {
-                        cookiesToSet.forEach(({ name, value, options }) =>
-                            cookieStore.set(name, value, options)
-                        );
-                    } catch {
-                        // Called from Server Action context
-                    }
-                },
-            }
-        }
-    );
+    await requireAdminUser();
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) throw new Error('Unauthorized');
-
-    // 2. Verify Admin Role
-    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-    if (profile?.role !== 'admin') throw new Error('Forbidden');
-
-    // 2. Prepare Update Data
     const updateData: Record<string, string | null> = { status };
     const now = new Date().toISOString();
 
@@ -190,4 +130,28 @@ export async function updateAdminOrderStatus(orderId: string, status: string) {
     }
 
     return { success: true };
+}
+
+export async function getStockSyncRuns(limit = 10): Promise<StockSyncRunRecord[]> {
+    await requireAdminUser();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const adminClient = supabaseAdmin as any;
+    const { data, error } = await adminClient
+        .from('stock_sync_runs')
+        .select('*')
+        .order('started_at', { ascending: false })
+        .limit(limit);
+
+    if (error) {
+        console.error('Error fetching stock sync runs:', error);
+        return [];
+    }
+
+    return (data as StockSyncRunRecord[]) || [];
+}
+
+export async function runManualStockSync(): Promise<StockSyncResult> {
+    const { user } = await requireAdminUser();
+    return runStockSync({ triggerSource: 'manual', initiatedBy: user.id });
 }

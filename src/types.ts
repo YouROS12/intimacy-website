@@ -69,6 +69,50 @@ export interface Order {
     };
 }
 
+export type StockSyncTriggerSource = 'cron' | 'manual';
+
+export interface StockSyncStats {
+    updated: number;
+    skipped: number;
+    failed: number;
+    total: number;
+}
+
+export interface StockSyncLogEntry {
+    timestamp: string;
+    level: 'info' | 'warn' | 'error';
+    scope: 'system' | 'lacdp' | 'supabase' | 'telegram';
+    message: string;
+    meta?: Record<string, string | number | boolean | null>;
+}
+
+export interface StockSyncRunRecord {
+    id: number;
+    trigger_source: StockSyncTriggerSource;
+    initiated_by: string | null;
+    status: 'running' | 'success' | 'error';
+    started_at: string;
+    completed_at: string | null;
+    stats: StockSyncStats | null;
+    orders_count: number;
+    rupture_products: string[];
+    error_message: string | null;
+    log_lines: StockSyncLogEntry[];
+    created_at: string;
+}
+
+export interface StockSyncResult {
+    success: boolean;
+    runId: number | null;
+    startedAt: string;
+    completedAt: string;
+    triggerSource: StockSyncTriggerSource;
+    stats: StockSyncStats;
+    ordersCount: number;
+    ruptureProducts: string[];
+    error?: string;
+}
+
 export interface ChatMessage {
     role: 'user' | 'model';
     text: string;

@@ -8,10 +8,6 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig = {
-    // Required to activate src/instrumentation.ts (the cron scheduler)
-    experimental: {
-        instrumentationHook: true,
-    },
     images: {
         remotePatterns: [
             { protocol: 'https', hostname: 'lacdp.ma' },

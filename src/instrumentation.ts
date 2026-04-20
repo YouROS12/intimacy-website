@@ -19,6 +19,10 @@ export async function register() {
   // Only run in the Node.js server process, not in the Edge runtime.
   if (process.env.NEXT_RUNTIME !== 'nodejs') return;
 
+  // Avoid keeping local dev and build processes alive with cron timers.
+  const lifecycleEvent = process.env.npm_lifecycle_event ?? '';
+  if (lifecycleEvent === 'build' || lifecycleEvent === 'dev') return;
+
   const cron      = await import('node-cron');
   const SITE_URL  = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
   const SECRET    = process.env.CRON_SECRET ?? '';
