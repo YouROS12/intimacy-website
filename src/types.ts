@@ -113,6 +113,83 @@ export interface StockSyncResult {
     error?: string;
 }
 
+export type SeoIndexStatus = 'indexed' | 'not_indexed' | 'blocked' | 'unknown' | 'error';
+
+export interface SeoQueryInsight {
+    query: string;
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number;
+}
+
+export interface SeoKeywordIdeas {
+    shortTail: string[];
+    longTail: string[];
+    quickWins: string[];
+}
+
+export interface SeoPageInsight {
+    url: string;
+    clicks: number;
+    impressions: number;
+    ctr: number;
+    position: number | null;
+    topQueries: SeoQueryInsight[];
+    keywordIdeas: SeoKeywordIdeas;
+    indexStatus: SeoIndexStatus;
+    indexCoverageState: string | null;
+    lastCrawlTime: string | null;
+    googleCanonical: string | null;
+    userCanonical: string | null;
+    inspectionError: string | null;
+}
+
+export interface SeoInsightsSummary {
+    selectedPages: number;
+    pagesWithPerformance: number;
+    inspectedPages: number;
+    indexedPages: number;
+    notIndexedPages: number;
+    blockedPages: number;
+    totalClicks: number;
+    totalImpressions: number;
+    averagePosition: number | null;
+    quickWinPages: number;
+    ctrOpportunityPages: number;
+}
+
+export interface SeoInsightsPagination {
+    page: number;
+    pageSize: number;
+    totalPages: number;
+    totalUrls: number;
+    startIndex: number;
+    endIndex: number;
+    hasPrevious: boolean;
+    hasNext: boolean;
+}
+
+export interface SeoInsightsCacheMeta {
+    source: 'live' | 'cache';
+    snapshotCreatedAt: string | null;
+    cacheAgeMinutes: number | null;
+    expiresAt: string | null;
+}
+
+export interface SeoInsightsDashboard {
+    property: string;
+    country: string;
+    generatedAt: string;
+    periodStart: string;
+    periodEnd: string;
+    summary: SeoInsightsSummary;
+    pages: SeoPageInsight[];
+    notes: string[];
+    pagination: SeoInsightsPagination;
+    cache: SeoInsightsCacheMeta;
+}
+
 export interface ChatMessage {
     role: 'user' | 'model';
     text: string;
