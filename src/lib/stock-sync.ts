@@ -398,7 +398,7 @@ async function patchStock(
   const client = getSupabaseAdminClient();
   const { error } = await client
     .from('products')
-    .update({ stock, updated_at: new Date().toISOString() })
+    .update({ stock })
     .eq('id', productId);
 
   if (error) {
