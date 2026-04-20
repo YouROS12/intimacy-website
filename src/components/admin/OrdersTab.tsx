@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Eye, Package, Truck, Clock, MessageCircle
 } from 'lucide-react';
@@ -10,14 +10,68 @@ import Image from 'next/image';
 
 interface OrdersTabProps {
     orders: Order[];
-    onStatusUpdate: (orderId: string, newStatus: string) => Promise<void>;
+    onStatusUpdate: (orderId: string, newStatus: Order['status']) => Promise<void>;
+    onBulkStatusUpdate: (orderIds: string[], newStatus: Order['status']) => Promise<void>;
 }
 
-export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
-    const [orderFilter, setOrderFilter] = useState('all');
+const ORDER_STATUSES: Order['status'][] = ['pending', 'processing', 'shipped', 'delivered', 'returned', 'cancelled'];
+
+function formatStatusLabel(status: Order['status']) {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
+export default function OrdersTab({ orders, onStatusUpdate, onBulkStatusUpdate }: OrdersTabProps) {
+    const [orderFilter, setOrderFilter] = useState<'all' | Order['status']>('all');
+    const [selectedOrderIds, setSelectedOrderIds] = useState<string[]>([]);
+    const [bulkStatus, setBulkStatus] = useState<Order['status'] | ''>('');
+    const [isBulkUpdating, setIsBulkUpdating] = useState(false);
+
+    useEffect(() => {
+        setSelectedOrderIds((current) => current.filter((id) => orders.some((order) => order.id === id)));
+    }, [orders]);
+
     const filteredOrders = orderFilter === 'all'
         ? orders
         : orders.filter(o => o.status === orderFilter);
+
+    const filteredOrderIds = filteredOrders.map((order) => order.id);
+    const selectedFilteredCount = filteredOrderIds.filter((id) => selectedOrderIds.includes(id)).length;
+    const allFilteredSelected = filteredOrders.length > 0 && selectedFilteredCount === filteredOrders.length;
+
+    const toggleOrderSelection = (orderId: string) => {
+        setSelectedOrderIds((current) => (
+            current.includes(orderId)
+                ? current.filter((id) => id !== orderId)
+                : [...current, orderId]
+        ));
+    };
+
+    const toggleFilteredSelection = () => {
+        if (allFilteredSelected) {
+            setSelectedOrderIds((current) => current.filter((id) => !filteredOrderIds.includes(id)));
+            return;
+        }
+
+        setSelectedOrderIds((current) => [...new Set([...current, ...filteredOrderIds])]);
+    };
+
+    const handleBulkUpdate = async () => {
+        if (!bulkStatus || selectedOrderIds.length === 0) return;
+
+        const confirmed = window.confirm(
+            `Mettre à jour ${selectedOrderIds.length} commande(s) sélectionnée(s) vers ${formatStatusLabel(bulkStatus)} ?`
+        );
+        if (!confirmed) return;
+
+        setIsBulkUpdating(true);
+        try {
+            await onBulkStatusUpdate(selectedOrderIds, bulkStatus);
+            setSelectedOrderIds([]);
+            setBulkStatus('');
+        } finally {
+            setIsBulkUpdating(false);
+        }
+    };
 
     const handleWhatsApp = (order: Order) => {
         if (!order.shipping_info?.phone) return alert("Pas de numéro de téléphone disponible");
@@ -32,7 +86,7 @@ export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
             <div className="px-4 py-5 sm:px-6 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4 bg-gray-50/50">
                 <h3 className="text-lg leading-6 font-medium text-gray-900">Gestion des Commandes ({filteredOrders.length})</h3>
                 <div className="flex flex-wrap gap-2">
-                    {['all', 'pending', 'processing', 'shipped', 'delivered', 'returned', 'cancelled'].map((status) => (
+                    {(['all', ...ORDER_STATUSES] as const).map((status) => (
                         <button
                             key={status}
                             onClick={() => setOrderFilter(status)}
@@ -46,10 +100,52 @@ export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
                 </div>
             </div>
 
+            {selectedOrderIds.length > 0 && (
+                <div className="px-4 py-4 sm:px-6 border-b border-primary/10 bg-primary/5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                    <div className="text-sm font-medium text-gray-900">
+                        {selectedOrderIds.length} commande(s) sélectionnée(s)
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
+                        <select
+                            value={bulkStatus}
+                            onChange={(e) => setBulkStatus(e.target.value as Order['status'] | '')}
+                            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                        >
+                            <option value="">Choisir le nouveau statut</option>
+                            {ORDER_STATUSES.map((status) => (
+                                <option key={status} value={status}>{formatStatusLabel(status)}</option>
+                            ))}
+                        </select>
+                        <button
+                            onClick={() => setSelectedOrderIds([])}
+                            className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-white"
+                        >
+                            Effacer la sélection
+                        </button>
+                        <button
+                            onClick={handleBulkUpdate}
+                            disabled={!bulkStatus || isBulkUpdating}
+                            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary/90 disabled:opacity-50"
+                        >
+                            {isBulkUpdating ? 'Mise à jour...' : 'Appliquer à la sélection'}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12">
+                                <input
+                                    type="checkbox"
+                                    checked={allFilteredSelected}
+                                    onChange={toggleFilteredSelection}
+                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                    title="Sélectionner les commandes filtrées"
+                                />
+                            </th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase w-12"></th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commande</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Client</th>
@@ -63,6 +159,14 @@ export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
                         {filteredOrders.map((order) => (
                             <React.Fragment key={order.id}>
                                 <tr className="hover:bg-gray-50 transition-colors">
+                                    <td className="px-6 py-4">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedOrderIds.includes(order.id)}
+                                            onChange={() => toggleOrderSelection(order.id)}
+                                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                        />
+                                    </td>
                                     <td className="px-6 py-4">
                                         <button
                                             onClick={() => {
@@ -92,7 +196,7 @@ export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <select
                                             value={order.status}
-                                            onChange={(e) => onStatusUpdate(order.id, e.target.value)}
+                                            onChange={(e) => onStatusUpdate(order.id, e.target.value as Order['status'])}
                                             className={`text-xs font-semibold rounded-full px-3 py-1 border-0 focus:ring-2 focus:ring-primary ${order.status === 'delivered' ? 'bg-green-100 text-green-800' :
                                                 order.status === 'shipped' ? 'bg-blue-100 text-blue-800' :
                                                     order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' :
@@ -122,7 +226,7 @@ export default function OrdersTab({ orders, onStatusUpdate }: OrdersTabProps) {
 
                                 {/* Expandable Order Details Row */}
                                 <tr id={`order-details-${order.id}`} className="hidden bg-gray-50">
-                                    <td colSpan={7} className="px-6 py-4">
+                                    <td colSpan={8} className="px-6 py-4">
                                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                             {/* Left: Products */}
                                             <div>

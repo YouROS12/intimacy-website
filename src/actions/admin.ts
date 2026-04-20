@@ -80,13 +80,10 @@ export async function getAdminDashboardStats() {
     };
 }
 
-export async function updateAdminOrderStatus(orderId: string, status: string) {
-    await requireAdminUser();
-
+function buildOrderStatusUpdateData(status: Order['status']) {
     const updateData: Record<string, string | null> = { status };
     const now = new Date().toISOString();
 
-    // Auto-set timestamps logic (mirrored from client)
     switch (status) {
         case 'processing':
             updateData.confirmed_at = now;
@@ -118,7 +115,14 @@ export async function updateAdminOrderStatus(orderId: string, status: string) {
             break;
     }
 
-    // 3. Update using Admin Client
+    return updateData;
+}
+
+export async function updateAdminOrderStatus(orderId: string, status: Order['status']) {
+    await requireAdminUser();
+
+    const updateData = buildOrderStatusUpdateData(status);
+
     const { error } = await supabaseAdmin
         .from('orders')
         .update(updateData)
@@ -130,6 +134,29 @@ export async function updateAdminOrderStatus(orderId: string, status: string) {
     }
 
     return { success: true };
+}
+
+export async function bulkUpdateAdminOrderStatus(orderIds: string[], status: Order['status']) {
+    await requireAdminUser();
+
+    const uniqueOrderIds = [...new Set(orderIds)].filter(Boolean);
+    if (uniqueOrderIds.length === 0) {
+        return { success: true, updatedCount: 0 };
+    }
+
+    const updateData = buildOrderStatusUpdateData(status);
+
+    const { error } = await supabaseAdmin
+        .from('orders')
+        .update(updateData)
+        .in('id', uniqueOrderIds);
+
+    if (error) {
+        console.error('Bulk admin update failed:', error);
+        throw new Error('Bulk update failed');
+    }
+
+    return { success: true, updatedCount: uniqueOrderIds.length };
 }
 
 export async function getStockSyncRuns(limit = 10): Promise<StockSyncRunRecord[]> {

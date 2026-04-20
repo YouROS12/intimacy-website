@@ -10,6 +10,7 @@ import {
     getWeeklySales,
 } from '@/services/api';
 import {
+    bulkUpdateAdminOrderStatus,
     getAdminOrders,
     getAdminDashboardStats,
     getStockSyncRuns,
@@ -85,12 +86,21 @@ export default function AdminDashboard() {
         }
     }, [user, authLoading, router]);
 
-    const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+    const handleStatusUpdate = async (orderId: string, newStatus: Order['status']) => {
         try {
             await updateAdminOrderStatus(orderId, newStatus);
             await loadData();
         } catch (e: unknown) {
             alert("Failed to update status: " + (e instanceof Error ? e.message : String(e)));
+        }
+    };
+
+    const handleBulkStatusUpdate = async (orderIds: string[], newStatus: Order['status']) => {
+        try {
+            await bulkUpdateAdminOrderStatus(orderIds, newStatus);
+            await loadData();
+        } catch (e: unknown) {
+            alert("Failed to update selected orders: " + (e instanceof Error ? e.message : String(e)));
         }
     };
 
@@ -145,7 +155,11 @@ export default function AdminDashboard() {
                     <OverviewTab stats={stats} salesData={salesData} productCount={products.length} />
                 )}
                 {activeTab === 'orders' && (
-                    <OrdersTab orders={orders} onStatusUpdate={handleStatusUpdate} />
+                    <OrdersTab
+                        orders={orders}
+                        onStatusUpdate={handleStatusUpdate}
+                        onBulkStatusUpdate={handleBulkStatusUpdate}
+                    />
                 )}
                 {activeTab === 'inventory' && (
                     <InventoryTab products={products} onDataChanged={loadData} />
