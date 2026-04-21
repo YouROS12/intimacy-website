@@ -2,6 +2,14 @@
 
 import React, { useState } from 'react';
 import { BarChart3, Database, Globe2, Lightbulb, RefreshCw, Search, Upload } from 'lucide-react';
+import {
+    addToQueue,
+    getQueueStats,
+    getSitemapUrls,
+    processQueueBatch,
+    scheduleFreshUrls,
+} from '@/actions/indexing';
+import { getSeoInsights } from '@/actions/seo-insights';
 import { SeoIndexStatus, SeoInsightsDashboard, SeoPageInsight } from '@/types';
 
 interface QueueStats {
@@ -174,7 +182,6 @@ export default function SeoTab() {
         setSeoInsightsError(null);
 
         try {
-            const { getSeoInsights } = await import('@/actions/seo-insights');
             const insights = await getSeoInsights({
                 page: nextPage,
                 pageSize: nextPageSize,
@@ -193,7 +200,6 @@ export default function SeoTab() {
     const loadSmartSchedule = async () => {
         setIsLoading(true);
         try {
-            const { getQueueStats, getSitemapUrls } = await import('@/actions/indexing');
             const stats = await getQueueStats();
             setQueueStats(stats as unknown as QueueStats);
             const sitemap = await getSitemapUrls();
@@ -209,7 +215,6 @@ export default function SeoTab() {
         if (!confirm("This will scan the 'seo_freshness' table for high-priority items and queue them.\n\nContinue?")) return;
         setIsLoading(true);
         try {
-            const { scheduleFreshUrls, getQueueStats } = await import('@/actions/indexing');
             const res = await scheduleFreshUrls(50);
             alert(res.message);
             const stats = await getQueueStats();
@@ -224,7 +229,6 @@ export default function SeoTab() {
     const handleProcessBatch = async () => {
         setIsIndexing(true);
         try {
-            const { processQueueBatch, getQueueStats } = await import('@/actions/indexing');
             const res = await processQueueBatch(10);
             setIndexingResult(res);
             const stats = await getQueueStats();
@@ -240,7 +244,6 @@ export default function SeoTab() {
         if (!confirm(`Add ${selectedUrls.length} URLs to the indexing queue?`)) return;
         setIsLoading(true);
         try {
-            const { addToQueue, getQueueStats } = await import('@/actions/indexing');
             const res = await addToQueue(selectedUrls);
             alert(`Successfully queued ${res.count} URLs.`);
             setSelectedUrls([]);
