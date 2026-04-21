@@ -1,5 +1,6 @@
 
 import { Metadata } from 'next';
+import { FREE_SHIPPING_THRESHOLD_MAD, STANDARD_SHIPPING_RATE_MAD } from '@/lib/shipping';
 
 export const metadata: Metadata = {
     title: 'FAQ — Livraison Discrète, Délais & Produits | Intimacy Wellness Maroc',
@@ -56,7 +57,7 @@ export default function FAQPage() {
         },
         {
             question: "La livraison est-elle gratuite ?",
-            answer: "La livraison est gratuite pour toute commande de 500 MAD ou plus. En dessous de ce montant, des frais de livraison standard s'appliquent."
+            answer: `La livraison est gratuite pour toute commande de ${FREE_SHIPPING_THRESHOLD_MAD} MAD ou plus. En dessous de ce montant, des frais de livraison standards de ${STANDARD_SHIPPING_RATE_MAD} MAD s'appliquent.`
         },
         {
             question: "Comment puis-je contacter le service client ?",

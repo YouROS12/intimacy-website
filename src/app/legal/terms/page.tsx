@@ -2,6 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import LegalLayout from '@/components/LegalLayout';
+import { FREE_SHIPPING_THRESHOLD_MAD, STANDARD_SHIPPING_RATE_MAD } from '@/lib/shipping';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -39,7 +40,10 @@ export default function TermsPage() {
                 <ul>
                     <li>Les prix sont affichés en Dirhams Marocains (MAD)</li>
                     <li>Paiement accepté : <strong>Espèces à la livraison (COD)</strong></li>
-                    <li>Livraison gratuite sur tout le territoire marocain</li>
+                    <li>
+                        Livraison gratuite pour toute commande de {FREE_SHIPPING_THRESHOLD_MAD} MAD ou plus ;
+                        en dessous, des frais standards de {STANDARD_SHIPPING_RATE_MAD} MAD s'appliquent
+                    </li>
                 </ul>
 
                 <h2>5. Commandes</h2>

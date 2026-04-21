@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { FREE_SHIPPING_THRESHOLD_MAD, getAmountUntilFreeShipping, getCheckoutTotal, getShippingRateForSubtotal } from '@/lib/shipping';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { createOrder, getMoroccanCities } from '@/services/api';
@@ -18,6 +19,10 @@ export default function CheckoutPage() {
     const { user, signup, signInAnonymously } = useAuth();
     const router = useRouter();
     const { t } = useI18n();
+    const shippingTotal = getShippingRateForSubtotal(total);
+    const checkoutTotal = getCheckoutTotal(total);
+    const remainingForFreeShipping = getAmountUntilFreeShipping(total);
+    const qualifiesForFreeShipping = shippingTotal === 0;
     const [isProcessing, setIsProcessing] = useState(false);
     const [cities, setCities] = useState<string[]>(["Casablanca"]);
     const [submitError, setSubmitError] = useState('');
@@ -177,7 +182,7 @@ export default function CheckoutPage() {
             const orderId = await createOrder({
                 user_id: userId || null,
                 items: items,
-                total: total,
+                total: checkoutTotal,
                 status: 'pending',
                 shipping_info: {
                     first_name: sanitizedFullName,
@@ -384,22 +389,22 @@ export default function CheckoutPage() {
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <dt className="text-sm text-gray-600">{t('checkout.summary.shipping')}</dt>
-                                    {total >= 500 ? (
+                                    {qualifiesForFreeShipping ? (
                                         <dd className="text-sm font-medium text-green-600">{t('checkout.summary.shipping_free_badge')}</dd>
                                     ) : (
-                                        <dd className="text-sm font-medium text-gray-900">35 MAD</dd>
+                                        <dd className="text-sm font-medium text-gray-900">{shippingTotal} MAD</dd>
                                     )}
                                 </div>
-                                {total < 500 && total > 0 && (
+                                {!qualifiesForFreeShipping && total > 0 && (
                                     <div className="flex items-center gap-2 p-3 bg-blue-50 rounded-lg">
                                         <span className="text-xs text-blue-700">
-                                            {t('checkout.summary.free_shipping_progress').replace('{amount}', String(500 - total))}
+                                            {t('checkout.summary.free_shipping_progress').replace('{amount}', String(Math.min(remainingForFreeShipping, FREE_SHIPPING_THRESHOLD_MAD)))}
                                         </span>
                                     </div>
                                 )}
                                 <div className="flex items-center justify-between border-t border-gray-200 pt-4">
                                     <dt className="text-base font-bold text-gray-900">{t('checkout.summary.total')}</dt>
-                                    <dd className="text-base font-bold text-brand-600">{total >= 500 ? total : total + 35} MAD</dd>
+                                    <dd className="text-base font-bold text-brand-600">{checkoutTotal} MAD</dd>
                                 </div>
                             </dl>
 

@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import { getProducts, getProductBySlug, getProductById, getRelatedProducts } from '@/services/api';
 import ProductDetailsClient from '@/components/ProductDetailsClient';
+import { SHIPPING_CURRENCY, SHIPPING_DESTINATION_COUNTRY_CODE, getShippingRateForSubtotal } from '@/lib/shipping';
 import { getProductImage } from '@/utils/imageHelpers';
 import { isUuid, getProductSlug } from '@/utils/slugHelpers';
 
@@ -117,6 +118,7 @@ export default async function ProductPage({ params }: Props) {
     const productSlug = getProductSlug(product);
     const productUrl = `${siteUrl}/product/${productSlug}`;
     const imageUrl = getProductImage(product.imageUrl);
+    const shippingRate = getShippingRateForSubtotal(product.price);
 
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -145,9 +147,14 @@ export default async function ProductPage({ params }: Props) {
             },
             shippingDetails: {
                 '@type': 'OfferShippingDetails',
+                shippingRate: {
+                    '@type': 'MonetaryAmount',
+                    value: shippingRate,
+                    currency: SHIPPING_CURRENCY
+                },
                 shippingDestination: {
                     '@type': 'DefinedRegion',
-                    addressCountry: 'MA'
+                    addressCountry: SHIPPING_DESTINATION_COUNTRY_CODE
                 },
                 deliveryTime: {
                     '@type': 'ShippingDeliveryTime',
