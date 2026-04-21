@@ -90,6 +90,18 @@ type SeoInsightsActionResult =
     | { ok: true; data: SeoInsightsDashboard }
     | { ok: false; error: string };
 
+type GoogleApiErrorResponse = {
+    error?: {
+        code?: number;
+        message?: string;
+        status?: string;
+        errors?: Array<{
+            message?: string;
+            reason?: string;
+        }>;
+    };
+};
+
 function getSupabaseAdmin() {
     const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -134,8 +146,11 @@ function toPublicSeoInsightsError(error: unknown) {
         /Missing public Supabase auth configuration/i.test(message)
         || /Missing Supabase admin configuration/i.test(message)
         || /GOOGLE_INDEXING_KEY/i.test(message)
+        || /GOOGLE_SEARCH_CONSOLE_PROPERTY/i.test(message)
         || /Search Console/i.test(message)
+        || /Google service account authentication failed/i.test(message)
         || /Failed to fetch sitemap/i.test(message)
+        || /Failed to reach sitemap/i.test(message)
     ) {
         return message;
     }
@@ -220,13 +235,57 @@ function addMinutes(isoDate: string, minutes: number) {
 }
 
 function normalizeProperty(property: string) {
-    return property.startsWith('sc-domain:') ? property : property.replace(/\/$/, '/');
+    const trimmed = property.trim();
+
+    if (!trimmed) {
+        throw new Error('GOOGLE_SEARCH_CONSOLE_PROPERTY is empty. Use a URL-prefix property like https://intimacy.ma/ or a domain property like sc-domain:intimacy.ma.');
+    }
+
+    if (trimmed.startsWith('sc-domain:')) {
+        return trimmed;
+    }
+
+    if (!/^https?:\/\//i.test(trimmed)) {
+        throw new Error(`Invalid GOOGLE_SEARCH_CONSOLE_PROPERTY \"${trimmed}\". Use a URL-prefix property like https://intimacy.ma/ or a domain property like sc-domain:intimacy.ma.`);
+    }
+
+    return trimmed.endsWith('/') ? trimmed : `${trimmed}/`;
+}
+
+function getGoogleApiErrorDetails(error: unknown) {
+    const errorRecord = error as {
+        code?: number;
+        message?: string;
+        response?: {
+            status?: number;
+            data?: GoogleApiErrorResponse | string;
+        };
+    };
+
+    const responseData = errorRecord.response?.data;
+    const apiError = typeof responseData === 'string' ? undefined : responseData?.error;
+    const apiReasons = apiError?.errors
+        ?.map((item) => item.message || item.reason)
+        .filter((value): value is string => Boolean(value));
+
+    return {
+        status: errorRecord.response?.status ?? apiError?.code ?? errorRecord.code,
+        message: apiError?.message || apiReasons?.join('; ') || errorRecord.message || 'Unknown Google API error.',
+    };
 }
 
 async function fetchSitemapUrls(): Promise<SitemapEntry[]> {
-    const response = await fetch(SITEMAP_URL, { next: { revalidate: 0 } });
+    let response: Response;
+
+    try {
+        response = await fetch(SITEMAP_URL, { next: { revalidate: 0 } });
+    } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw new Error(`Failed to reach sitemap at ${SITEMAP_URL}. Check NEXT_PUBLIC_SITE_URL and the public site deployment. ${message}`);
+    }
+
     if (!response.ok) {
-        throw new Error(`Failed to fetch sitemap: ${response.statusText}`);
+        throw new Error(`Failed to fetch sitemap at ${SITEMAP_URL}: ${response.status} ${response.statusText}`);
     }
 
     const xml = await response.text();
@@ -249,6 +308,7 @@ async function fetchSitemapUrls(): Promise<SitemapEntry[]> {
 
 async function querySearchConsole<T>(path: string, body: Record<string, unknown>) {
     const auth = getSearchConsoleAuth();
+    const property = normalizeProperty(SEARCH_CONSOLE_PROPERTY);
 
     try {
         const response = await auth.request<T>({
@@ -259,12 +319,36 @@ async function querySearchConsole<T>(path: string, body: Record<string, unknown>
 
         return response.data;
     } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        if (message.includes('403')) {
-            throw new Error(`Search Console access denied for property ${SEARCH_CONSOLE_PROPERTY}. Grant the service account access in Google Search Console.`);
+        const { status, message } = getGoogleApiErrorDetails(error);
+
+        console.error('Search Console API request failed:', {
+            path,
+            property,
+            status,
+            message,
+        });
+
+        if (status === 403) {
+            throw new Error(`Search Console access denied for property ${property}. Grant the service account access in Google Search Console.`);
         }
 
-        throw error;
+        if (status === 401 || /invalid_grant|invalid_client|jwt/i.test(message)) {
+            throw new Error(`Google service account authentication failed. Check GOOGLE_INDEXING_KEY. Google API said: ${message}`);
+        }
+
+        if (status === 404) {
+            throw new Error(`Search Console property ${property} was not found. Verify GOOGLE_SEARCH_CONSOLE_PROPERTY matches the exact property in Google Search Console.`);
+        }
+
+        if (status === 400) {
+            throw new Error(`Search Console request failed for property ${property} (400). Verify GOOGLE_SEARCH_CONSOLE_PROPERTY matches the exact property in Google Search Console. URL-prefix properties must include the full URL and trailing slash. Google API said: ${message}`);
+        }
+
+        if (status) {
+            throw new Error(`Search Console request failed for property ${property} (${status}). Google API said: ${message}`);
+        }
+
+        throw new Error(`Search Console request failed for property ${property}. ${message}`);
     }
 }
 
