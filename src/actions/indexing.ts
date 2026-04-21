@@ -101,7 +101,8 @@ export async function getSitemapUrls(): Promise<{ url: string; lastmod: number }
 async function internalQueueItems(items: { url: string; priority?: 'high' | 'normal' | 'low' }[]) {
     if (!items.length) return { success: true, count: 0 };
 
-    const supabaseAdmin = getSupabaseAdmin();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabaseAdmin = getSupabaseAdmin() as any;
 
     const rows = items.map(item => ({
         url: item.url,
@@ -166,7 +167,8 @@ export async function getQueueItems(statusFilter: string = 'all', limit: number 
 
 // 5. PROCESS QUEUE BATCH (Production Hardened)
 export async function processQueueBatch(limit: number = 10) {
-    const supabaseAdmin = getSupabaseAdmin();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabaseAdmin = getSupabaseAdmin() as any;
     // A. Check Rolling 24h Quota (Correct Google Logic)
     // We count actual attempts made in the last 24h
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -329,7 +331,8 @@ export async function deleteQueueItem(id: string) {
 
 // 7. Schedule Fresh Content (The "Brain")
 export async function scheduleFreshUrls(limit: number = 50) {
-    const supabaseAdmin = getSupabaseAdmin();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabaseAdmin = getSupabaseAdmin() as any;
     // 1. Claim candidates via RPC
     const { data: candidates, error } = await supabaseAdmin
         .rpc('claim_fresh_candidates', { limit_count: limit });
