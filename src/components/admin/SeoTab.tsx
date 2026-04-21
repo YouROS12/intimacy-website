@@ -182,11 +182,18 @@ export default function SeoTab() {
         setSeoInsightsError(null);
 
         try {
-            const insights = await getSeoInsights({
+            const result = await getSeoInsights({
                 page: nextPage,
                 pageSize: nextPageSize,
                 forceRefresh: options?.forceRefresh ?? false,
             });
+
+            if (!result.ok) {
+                setSeoInsightsError(result.error);
+                return;
+            }
+
+            const insights = result.data;
             setSeoInsights(insights);
             setInsightsPage(insights.pagination.page);
             setInsightsPageSize(insights.pagination.pageSize);

@@ -129,6 +129,10 @@ export default function StockSyncTab({ runs, onManualSync, onRefreshLogs }: Stoc
                             {latestRun?.stats ? `${latestRun.stats.updated} / ${latestRun.stats.total} produits traités` : 'Pas de données'}
                         </div>
                     </div>
+                    <div className="rounded-lg border border-gray-200 p-4">
+                        <div className="text-xs uppercase tracking-wide text-gray-500">Rupture totale</div>
+                        <div className="mt-2 text-sm font-medium text-gray-900">{latestRun?.stats?.outOfStockTotal ?? 0} produit(s)</div>
+                    </div>
                 </div>
 
                 {(message || error) && (
@@ -194,6 +198,10 @@ export default function StockSyncTab({ runs, onManualSync, onRefreshLogs }: Stoc
                                     <div className="rounded-md bg-gray-50 px-3 py-2">
                                         <div className="text-xs uppercase tracking-wide text-gray-500">Commandes / ruptures</div>
                                         <div className="mt-1 font-semibold">{run.orders_count} / {run.rupture_products.length}</div>
+                                    </div>
+                                    <div className="rounded-md bg-gray-50 px-3 py-2 col-span-2">
+                                        <div className="text-xs uppercase tracking-wide text-gray-500">Total produits en rupture</div>
+                                        <div className="mt-1 font-semibold">{run.stats?.outOfStockTotal ?? 0}</div>
                                     </div>
                                 </div>
                             </div>

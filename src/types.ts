@@ -76,6 +76,7 @@ export interface StockSyncStats {
     skipped: number;
     failed: number;
     total: number;
+    outOfStockTotal?: number;
 }
 
 export interface StockSyncLogEntry {

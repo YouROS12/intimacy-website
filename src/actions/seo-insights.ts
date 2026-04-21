@@ -17,15 +17,13 @@ import {
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://intimacy.ma';
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
 const SEARCH_CONSOLE_PROPERTY = process.env.GOOGLE_SEARCH_CONSOLE_PROPERTY || `${SITE_URL.replace(/\/$/, '')}/`;
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const MOROCCO_COUNTRY_CODE = 'mar';
 const MOROCCO_COUNTRY_NAME = 'Morocco';
 const DEFAULT_PAGE_SIZE = 20;
 const MAX_PAGE_SIZE = 50;
 const CACHE_TTL_MINUTES = 360;
 
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+let supabaseAdmin: ReturnType<typeof createClient> | null = null;
 
 type SearchAnalyticsRow = {
     keys?: string[];
@@ -88,11 +86,69 @@ type GetSeoInsightsOptions = {
     forceRefresh?: boolean;
 };
 
+type SeoInsightsActionResult =
+    | { ok: true; data: SeoInsightsDashboard }
+    | { ok: false; error: string };
+
+function getSupabaseAdmin() {
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+        throw new Error('Missing Supabase admin configuration. Set SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY.');
+    }
+
+    if (!supabaseAdmin) {
+        supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    }
+
+    return supabaseAdmin;
+}
+
+function getPublicSupabaseConfig() {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('Missing public Supabase auth configuration. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.');
+    }
+
+    return {
+        supabaseUrl,
+        supabaseAnonKey,
+    };
+}
+
+function toPublicSeoInsightsError(error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to load Morocco SEO insights.';
+
+    if (/Unauthorized/i.test(message)) {
+        return 'Your session expired. Sign in again to load SEO insights.';
+    }
+
+    if (/Forbidden/i.test(message)) {
+        return 'Admin access is required to load SEO insights.';
+    }
+
+    if (
+        /Missing public Supabase auth configuration/i.test(message)
+        || /Missing Supabase admin configuration/i.test(message)
+        || /GOOGLE_INDEXING_KEY/i.test(message)
+        || /Search Console/i.test(message)
+        || /Failed to fetch sitemap/i.test(message)
+    ) {
+        return message;
+    }
+
+    return 'Failed to load Morocco SEO insights. Check Search Console and Supabase configuration.';
+}
+
 async function requireAdminUser() {
     const cookieStore = await cookies();
+    const { supabaseUrl, supabaseAnonKey } = getPublicSupabaseConfig();
     const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        supabaseUrl,
+        supabaseAnonKey,
         {
             cookies: {
                 getAll() {
@@ -131,7 +187,14 @@ function getSearchConsoleAuth() {
         throw new Error('Missing GOOGLE_INDEXING_KEY. The service account key is required for Search Console access.');
     }
 
-    const key = JSON.parse(raw);
+    let key: { client_email?: string; private_key?: string };
+
+    try {
+        key = JSON.parse(raw);
+    } catch {
+        throw new Error('GOOGLE_INDEXING_KEY is not valid JSON.');
+    }
+
     if (!key.client_email || !key.private_key) {
         throw new Error('GOOGLE_INDEXING_KEY must include client_email and private_key.');
     }
@@ -413,6 +476,8 @@ function isCacheUsable(record: SeoInsightsSnapshotRecord | null, periodStart: st
 
 async function getCachedSnapshot(periodStart: string, periodEnd: string): Promise<SeoInsightsSnapshotRecord | null> {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const supabaseAdmin = getSupabaseAdmin() as any;
         const { data, error } = await supabaseAdmin
             .from('seo_insights_snapshots')
             .select('property, country, period_start, period_end, generated_at, payload')
@@ -439,6 +504,8 @@ async function getCachedSnapshot(periodStart: string, periodEnd: string): Promis
 
 async function saveSnapshot(snapshot: SeoInsightsSnapshotPayload) {
     try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const supabaseAdmin = getSupabaseAdmin() as any;
         const { error } = await supabaseAdmin.from('seo_insights_snapshots').upsert(
             {
                 property: snapshot.property,
@@ -574,33 +641,48 @@ async function buildSnapshot(periodStart: string, periodEnd: string): Promise<Se
     };
 }
 
-export async function getSeoInsights(options: GetSeoInsightsOptions = {}): Promise<SeoInsightsDashboard> {
-    await requireAdminUser();
+export async function getSeoInsights(options: GetSeoInsightsOptions = {}): Promise<SeoInsightsActionResult> {
+    try {
+        await requireAdminUser();
 
-    const requestedPageSize = Number.isFinite(options.pageSize) ? Number(options.pageSize) : DEFAULT_PAGE_SIZE;
-    const pageSize = Math.max(10, Math.min(requestedPageSize, MAX_PAGE_SIZE));
-    const requestedPage = Number.isFinite(options.page) ? Number(options.page) : 1;
-    const page = Math.max(1, requestedPage);
-    const forceRefresh = options.forceRefresh === true;
+        const requestedPageSize = Number.isFinite(options.pageSize) ? Number(options.pageSize) : DEFAULT_PAGE_SIZE;
+        const pageSize = Math.max(10, Math.min(requestedPageSize, MAX_PAGE_SIZE));
+        const requestedPage = Number.isFinite(options.page) ? Number(options.page) : 1;
+        const page = Math.max(1, requestedPage);
+        const forceRefresh = options.forceRefresh === true;
 
-    const periodEndDate = new Date();
-    periodEndDate.setDate(periodEndDate.getDate() - 2);
+        const periodEndDate = new Date();
+        periodEndDate.setDate(periodEndDate.getDate() - 2);
 
-    const periodStartDate = new Date(periodEndDate);
-    periodStartDate.setDate(periodStartDate.getDate() - 27);
+        const periodStartDate = new Date(periodEndDate);
+        periodStartDate.setDate(periodStartDate.getDate() - 27);
 
-    const periodStart = formatDate(periodStartDate);
-    const periodEnd = formatDate(periodEndDate);
+        const periodStart = formatDate(periodStartDate);
+        const periodEnd = formatDate(periodEndDate);
 
-    if (!forceRefresh) {
-        const cachedSnapshot = await getCachedSnapshot(periodStart, periodEnd);
-        if (cachedSnapshot?.payload) {
-            return paginateSnapshot(cachedSnapshot.payload, page, pageSize, 'cache');
+        if (!forceRefresh) {
+            const cachedSnapshot = await getCachedSnapshot(periodStart, periodEnd);
+            if (cachedSnapshot?.payload) {
+                return {
+                    ok: true,
+                    data: paginateSnapshot(cachedSnapshot.payload, page, pageSize, 'cache'),
+                };
+            }
         }
+
+        const snapshot = await buildSnapshot(periodStart, periodEnd);
+        await saveSnapshot(snapshot);
+
+        return {
+            ok: true,
+            data: paginateSnapshot(snapshot, page, pageSize, 'live'),
+        };
+    } catch (error) {
+        console.error('Failed to load SEO insights:', error);
+
+        return {
+            ok: false,
+            error: toPublicSeoInsightsError(error),
+        };
     }
-
-    const snapshot = await buildSnapshot(periodStart, periodEnd);
-    await saveSnapshot(snapshot);
-
-    return paginateSnapshot(snapshot, page, pageSize, 'live');
 }

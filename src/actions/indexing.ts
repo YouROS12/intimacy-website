@@ -5,17 +5,22 @@ import { createClient } from '@supabase/supabase-js';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://intimacy.ma';
 const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
+let supabaseAdmin: ReturnType<typeof createClient> | null = null;
 
-// Use private SUPABASE_URL if available, fallback to public (not ideal but works)
-const SUPABASE_URL = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+function getSupabaseAdmin() {
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-    throw new Error("Supabase URL or Service Role Key missing.");
+    if (!supabaseUrl || !supabaseServiceRoleKey) {
+        throw new Error('Missing Supabase admin configuration. Set SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL) and SUPABASE_SERVICE_ROLE_KEY.');
+    }
+
+    if (!supabaseAdmin) {
+        supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+    }
+
+    return supabaseAdmin;
 }
-
-// Initialize Supabase Admin Client (Service Role)
-const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
 // --- Types ---
 export type QueueItem = {
@@ -36,7 +41,13 @@ function getGoogleAuth() {
     const raw = process.env.GOOGLE_INDEXING_KEY;
     if (!raw) throw new Error("Missing GOOGLE_INDEXING_KEY.");
 
-    const key = JSON.parse(raw); // Let it throw if invalid JSON
+    let key: { client_email?: string; private_key?: string };
+
+    try {
+        key = JSON.parse(raw);
+    } catch {
+        throw new Error('GOOGLE_INDEXING_KEY is not valid JSON.');
+    }
 
     if (!key.client_email || !key.private_key) {
         throw new Error("GOOGLE_INDEXING_KEY must include client_email and private_key.");
@@ -90,6 +101,8 @@ export async function getSitemapUrls(): Promise<{ url: string; lastmod: number }
 async function internalQueueItems(items: { url: string; priority?: 'high' | 'normal' | 'low' }[]) {
     if (!items.length) return { success: true, count: 0 };
 
+    const supabaseAdmin = getSupabaseAdmin();
+
     const rows = items.map(item => ({
         url: item.url,
         status: 'pending',
@@ -111,6 +124,7 @@ export async function addToQueue(urls: string[]) {
 
 // 3. Get Queue Stats
 export async function getQueueStats() {
+    const supabaseAdmin = getSupabaseAdmin();
     const { data, error } = await supabaseAdmin.from('indexing_queue').select('status');
     if (error) throw new Error(error.message);
 
@@ -134,6 +148,7 @@ export async function getQueueStats() {
 
 // 4. Get Queue Items (for List)
 export async function getQueueItems(statusFilter: string = 'all', limit: number = 50) {
+    const supabaseAdmin = getSupabaseAdmin();
     let query = supabaseAdmin
         .from('indexing_queue')
         .select('*')
@@ -151,6 +166,7 @@ export async function getQueueItems(statusFilter: string = 'all', limit: number 
 
 // 5. PROCESS QUEUE BATCH (Production Hardened)
 export async function processQueueBatch(limit: number = 10) {
+    const supabaseAdmin = getSupabaseAdmin();
     // A. Check Rolling 24h Quota (Correct Google Logic)
     // We count actual attempts made in the last 24h
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
@@ -305,6 +321,7 @@ export async function processQueueBatch(limit: number = 10) {
 
 // 6. Delete item
 export async function deleteQueueItem(id: string) {
+    const supabaseAdmin = getSupabaseAdmin();
     const { error } = await supabaseAdmin.from('indexing_queue').delete().eq('id', id);
     if (error) throw new Error(error.message);
     return { success: true };
@@ -312,6 +329,7 @@ export async function deleteQueueItem(id: string) {
 
 // 7. Schedule Fresh Content (The "Brain")
 export async function scheduleFreshUrls(limit: number = 50) {
+    const supabaseAdmin = getSupabaseAdmin();
     // 1. Claim candidates via RPC
     const { data: candidates, error } = await supabaseAdmin
         .rpc('claim_fresh_candidates', { limit_count: limit });

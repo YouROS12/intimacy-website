@@ -419,6 +419,25 @@ async function patchStock(
   return true;
 }
 
+async function getOutOfStockProductCount(
+  log: ReturnType<typeof createLogger>['push'],
+): Promise<number> {
+  const client = getSupabaseAdminClient();
+  const { count, error } = await client
+    .from('products')
+    .select('*', { count: 'exact', head: true })
+    .eq('stock', 0);
+
+  if (error) {
+    log('warn', 'supabase', 'Failed to count out-of-stock products', {
+      error: error.message,
+    });
+    return 0;
+  }
+
+  return count ?? 0;
+}
+
 async function getNewOrders(
   sinceIso: string,
   log: ReturnType<typeof createLogger>['push'],
@@ -536,7 +555,7 @@ export async function runStockSync(params: {
 }): Promise<StockSyncResult> {
   const startedAt = new Date().toISOString();
   const logger = createLogger();
-  const stats: StockSyncStats = { updated: 0, skipped: 0, failed: 0, total: 0 };
+  const stats: StockSyncStats = { updated: 0, skipped: 0, failed: 0, total: 0, outOfStockTotal: 0 };
   const ruptureProducts: string[] = [];
   let ordersCount = 0;
   let runId: number | null = null;
@@ -544,6 +563,13 @@ export async function runStockSync(params: {
   logger.push('info', 'system', 'Stock sync started', {
     triggerSource: params.triggerSource,
   });
+  logger.push(
+    'info',
+    'system',
+    params.triggerSource === 'cron'
+      ? 'Déclenchement automatique à 07:00 et 19:00. Vous pouvez aussi lancer une synchronisation manuelle ici.'
+      : 'Synchronisation manuelle lancée depuis l’admin. Déclenchement automatique prévu à 07:00 et 19:00.',
+  );
 
   runId = await createRunLog(
     params.triggerSource,
@@ -607,6 +633,11 @@ export async function runStockSync(params: {
       }
     });
 
+    stats.outOfStockTotal = await getOutOfStockProductCount(logger.push);
+    logger.push('info', 'system', 'Total des produits en rupture après synchronisation', {
+      outOfStockTotal: stats.outOfStockTotal,
+    });
+
     const now = new Date();
     const since = new Date(now.getTime() - ORDERS_WINDOW_H * 60 * 60 * 1000);
     const timeLabel = now.toLocaleTimeString('fr-MA', {
@@ -646,7 +677,7 @@ export async function runStockSync(params: {
 
     if (newOrders.length === 0 && ruptureProducts.length === 0) {
       await sendTelegram(
-        `✅ Sync stock — ${timeLabel}\nMis à jour: ${stats.updated} | Ignorés: ${stats.skipped} | Échecs: ${stats.failed}`,
+        `✅ Sync stock — ${timeLabel}\nMis à jour: ${stats.updated} | Ignorés: ${stats.skipped} | Échecs: ${stats.failed} | Rupture totale: ${stats.outOfStockTotal ?? 0}`,
         logger.push,
       );
     }
@@ -655,6 +686,7 @@ export async function runStockSync(params: {
     logger.push('info', 'system', 'Stock sync completed', {
       failed: stats.failed,
       ordersCount,
+      outOfStockTotal: stats.outOfStockTotal,
       ruptureCount: ruptureProducts.length,
       skipped: stats.skipped,
       updated: stats.updated,
