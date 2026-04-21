@@ -102,6 +102,11 @@ type GoogleApiErrorResponse = {
     };
 };
 
+type SearchConsoleAuthContext = {
+    auth: InstanceType<typeof google.auth.JWT>;
+    clientEmail: string;
+};
+
 function getSupabaseAdmin() {
     const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -196,7 +201,7 @@ async function requireAdminUser() {
     }
 }
 
-function getSearchConsoleAuth() {
+function getSearchConsoleAuth(): SearchConsoleAuthContext {
     const raw = process.env.GOOGLE_INDEXING_KEY;
     if (!raw) {
         throw new Error('Missing GOOGLE_INDEXING_KEY. The service account key is required for Search Console access.');
@@ -214,11 +219,14 @@ function getSearchConsoleAuth() {
         throw new Error('GOOGLE_INDEXING_KEY must include client_email and private_key.');
     }
 
-    return new google.auth.JWT({
-        email: key.client_email,
-        key: key.private_key.replace(/\\n/g, '\n'),
-        scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
-    });
+    return {
+        auth: new google.auth.JWT({
+            email: key.client_email,
+            key: key.private_key.replace(/\\n/g, '\n'),
+            scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
+        }),
+        clientEmail: key.client_email,
+    };
 }
 
 function roundMetric(value: number | null, digits = 1) {
@@ -274,6 +282,19 @@ function getGoogleApiErrorDetails(error: unknown) {
     };
 }
 
+function getDomainPropertySuggestion(property: string) {
+    if (property.startsWith('sc-domain:')) {
+        return property;
+    }
+
+    try {
+        const hostname = new URL(property).hostname;
+        return hostname ? `sc-domain:${hostname}` : null;
+    } catch {
+        return null;
+    }
+}
+
 async function fetchSitemapUrls(): Promise<SitemapEntry[]> {
     let response: Response;
 
@@ -307,8 +328,9 @@ async function fetchSitemapUrls(): Promise<SitemapEntry[]> {
 }
 
 async function querySearchConsole<T>(path: string, body: Record<string, unknown>) {
-    const auth = getSearchConsoleAuth();
+    const { auth, clientEmail } = getSearchConsoleAuth();
     const property = normalizeProperty(SEARCH_CONSOLE_PROPERTY);
+    const domainPropertySuggestion = getDomainPropertySuggestion(property);
 
     try {
         const response = await auth.request<T>({
@@ -329,7 +351,11 @@ async function querySearchConsole<T>(path: string, body: Record<string, unknown>
         });
 
         if (status === 403) {
-            throw new Error(`Search Console access denied for property ${property}. Grant the service account access in Google Search Console.`);
+            const propertyHint = domainPropertySuggestion && domainPropertySuggestion !== property
+                ? ` If you verified the site as ${domainPropertySuggestion}, either set GOOGLE_SEARCH_CONSOLE_PROPERTY to ${domainPropertySuggestion} or add the same account to ${property}.`
+                : '';
+
+            throw new Error(`Search Console access denied for property ${property}. Grant ${clientEmail} Full or Owner access in Google Search Console.${propertyHint}`);
         }
 
         if (status === 401 || /invalid_grant|invalid_client|jwt/i.test(message)) {
@@ -337,7 +363,11 @@ async function querySearchConsole<T>(path: string, body: Record<string, unknown>
         }
 
         if (status === 404) {
-            throw new Error(`Search Console property ${property} was not found. Verify GOOGLE_SEARCH_CONSOLE_PROPERTY matches the exact property in Google Search Console.`);
+            const propertyHint = domainPropertySuggestion && domainPropertySuggestion !== property
+                ? ` If Search Console only has ${domainPropertySuggestion}, use that value for GOOGLE_SEARCH_CONSOLE_PROPERTY.`
+                : '';
+
+            throw new Error(`Search Console property ${property} was not found. Verify GOOGLE_SEARCH_CONSOLE_PROPERTY matches the exact property in Google Search Console.${propertyHint}`);
         }
 
         if (status === 400) {
