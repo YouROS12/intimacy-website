@@ -11,17 +11,27 @@ import {
 } from '@/services/api';
 import {
     bulkUpdateAdminOrderStatus,
+    getLacdpCatalogProducts,
     getAdminOrders,
     getAdminDashboardStats,
     getStockSyncRuns,
+    importLacdpCatalogProduct,
     runManualStockSync,
     updateAdminOrderStatus,
 } from '@/actions/admin';
-import { Order, Product, StockSyncResult, StockSyncRunRecord } from '@/types';
+import {
+    LacdpCatalogProduct,
+    LacdpImportResult,
+    Order,
+    Product,
+    StockSyncResult,
+    StockSyncRunRecord,
+} from '@/types';
 
 const OverviewTab = dynamic(() => import('@/components/admin/OverviewTab'));
 const OrdersTab = dynamic(() => import('@/components/admin/OrdersTab'));
 const InventoryTab = dynamic(() => import('@/components/admin/InventoryTab'));
+const LacdpProductsTab = dynamic(() => import('@/components/admin/LacdpProductsTab'));
 const SeoTab = dynamic(() => import('@/components/admin/SeoTab'));
 const StockSyncTab = dynamic(() => import('@/components/admin/StockSyncTab'));
 
@@ -29,6 +39,7 @@ const tabs = [
     { key: 'overview', label: 'Overview' },
     { key: 'orders', label: 'Orders' },
     { key: 'inventory', label: 'Inventory' },
+    { key: 'lacdpProducts', label: 'LACDP Products' },
     { key: 'seo', label: 'SEO' },
     { key: 'stockSync', label: 'Stock Sync' },
 ] as const;
@@ -110,6 +121,14 @@ export default function AdminDashboard() {
         return result;
     };
 
+    const handleImportLacdpProduct = async (product: LacdpCatalogProduct): Promise<LacdpImportResult> => {
+        const result = await importLacdpCatalogProduct(product);
+        if (result.success && result.imported) {
+            await loadData();
+        }
+        return result;
+    };
+
     if (authLoading) return <div className="min-h-screen flex items-center justify-center">Authentification...</div>;
 
     if (user && user.role !== 'admin') {
@@ -163,6 +182,12 @@ export default function AdminDashboard() {
                 )}
                 {activeTab === 'inventory' && (
                     <InventoryTab products={products} onDataChanged={loadData} />
+                )}
+                {activeTab === 'lacdpProducts' && (
+                    <LacdpProductsTab
+                        onFetchCatalog={getLacdpCatalogProducts}
+                        onImportProduct={handleImportLacdpProduct}
+                    />
                 )}
                 {activeTab === 'seo' && (
                     <SeoTab />

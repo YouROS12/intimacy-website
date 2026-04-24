@@ -20,7 +20,8 @@ export enum ProductCategory {
     CONDOMS = 'Condoms',
     DELAY = 'Delay Spray/Cream',
     KIT = 'Wellness Kit',
-    INTIMATE_GEL = 'Intimate Gel'
+    INTIMATE_GEL = 'Intimate Gel',
+    DIETARY_SUPPLEMENT = 'Dietary Supplement'
 }
 
 export interface Product {
@@ -39,6 +40,10 @@ export interface Product {
     seo_title?: string;
     seo_description?: string;
     seo_slug?: string;
+    external_source?: string;
+    external_id?: string;
+    external_image_url?: string;
+    source_payload?: Record<string, unknown>;
     created_at?: string;
     updated_at?: string;
 }
@@ -111,6 +116,48 @@ export interface StockSyncResult {
     stats: StockSyncStats;
     ordersCount: number;
     ruptureProducts: string[];
+    error?: string;
+}
+
+export interface LacdpCatalogMeta {
+    queryMode: 'empty-search' | 'alpha-sweep';
+    rawCount: number;
+    uniqueCount: number;
+    existingMatches?: number;
+}
+
+export interface LacdpCatalogProduct {
+    id: string;
+    sourceId: string;
+    name: string;
+    normalizedName: string;
+    description: string;
+    category: ProductCategory;
+    brand?: string;
+    imageUrl?: string;
+    price: number;
+    stock: number;
+    raw: Record<string, unknown>;
+    existingProductId?: string | null;
+    existingProductName?: string | null;
+    matchReason?: 'external_id' | 'name_slug' | null;
+}
+
+export interface LacdpCatalogResult {
+    success: boolean;
+    fetchedAt: string;
+    products: LacdpCatalogProduct[];
+    meta?: LacdpCatalogMeta;
+    error?: string;
+}
+
+export interface LacdpImportResult {
+    success: boolean;
+    imported: boolean;
+    alreadyExists?: boolean;
+    productId?: string;
+    productName?: string;
+    productSlug?: string;
     error?: string;
 }
 

@@ -41,6 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         'Delay Spray/Cream': 'Spray Retardant',
         'Wellness Kit': 'Kit Bien-être',
         'Intimate Gel': 'Gel Intime',
+        'Dietary Supplement': 'Complément Alimentaire',
     };
     const categoryLabel = categoryLabels[product.category] || product.category;
     const brandPart = product.brand ? ` ${product.brand}` : '';
@@ -171,6 +172,7 @@ export default async function ProductPage({ params }: Props) {
         'Delay Spray/Cream': 'Spray Retardant',
         'Wellness Kit': 'Kits Bien-être',
         'Intimate Gel': 'Gels Intimes',
+        'Dietary Supplement': 'Compléments Alimentaires',
     };
 
     const breadcrumbLd = {

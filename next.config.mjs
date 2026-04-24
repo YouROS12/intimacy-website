@@ -11,6 +11,7 @@ const nextConfig = {
     images: {
         remotePatterns: [
             { protocol: 'https', hostname: 'lacdp.ma' },
+            { protocol: 'https', hostname: 'webdash.lacdp.ma' },
             { protocol: 'https', hostname: 'cquuanvqjupmtevrtjvl.supabase.co' },
             { protocol: 'https', hostname: 'via.placeholder.com' },
             { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
